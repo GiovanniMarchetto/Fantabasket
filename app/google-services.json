@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "881303153013",
+    "project_id": "fantabasket-a0a49",
+    "storage_bucket": "fantabasket-a0a49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881303153013:android:fb0d394875615764094b3c",
+        "android_client_info": {
+          "package_name": "it.units.fantabasket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881303153013-arlogqmj979tsm6ssrqhgs4rmo6i113f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAE608AB33PtIXhmUIAHcQBncTVop_WhVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881303153013-arlogqmj979tsm6ssrqhgs4rmo6i113f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
