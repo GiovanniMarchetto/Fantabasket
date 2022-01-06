@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.enums;
 
 public enum Team {
     ATHLETISMO,
