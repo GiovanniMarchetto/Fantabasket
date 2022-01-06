@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import it.units.fantabasket.enums.Team;
 
 @SuppressLint("ViewConstructor")
 public class PlayerLayout extends LinearLayout {
