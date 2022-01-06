@@ -2,17 +2,17 @@ package it.units.fantabasket.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.location.GnssAntennaInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import it.units.fantabasket.R;
-import it.units.fantabasket.enums.Team;
+import androidx.annotation.Nullable;
 
 @SuppressLint("ViewConstructor")
 public class PlayerLayout extends LinearLayout {
 
     private final LinearLayout playerLayout;
+    private final Button playerButton;
 
     public PlayerLayout(Context context, Player player) {
         super(context);
@@ -24,44 +24,29 @@ public class PlayerLayout extends LinearLayout {
         playerLayout = new LinearLayout(context);
         playerLayout.setOrientation(LinearLayout.VERTICAL);
 
-        Button button = new Button(context);
-        button.setText(player.number);
-        button.setBackground(getShirt(context, player.team));
+        playerButton = new Button(context);
+        playerButton.setText(player.number);
+        playerButton.setBackground(context.getDrawable(player.getShirt()));
 
         final float scale = context.getResources().getDisplayMetrics().density;
         int dp = 58;
         int pixels = (int) (dp * scale + 0.5f);
         linearParams.width = pixels;
         linearParams.height = pixels;
-        button.setLayoutParams(linearParams);
+        playerButton.setLayoutParams(linearParams);
 
         TextView name = new TextView(context);
         name.setText(player.name);
 //                name.setLayoutParams(linearParams);
 
-        playerLayout.addView(button);
+        playerLayout.addView(playerButton);
         playerLayout.addView(name);
     }
 
-    private Drawable getShirt(Context context, Team team) {
-        int shirt;
-        switch (team) {
-            case ATHLETISMO:
-                shirt= R.drawable.shirt_athletismo;
-                break;
-            case GORIZIANA:
-                shirt=R.drawable.shirt_goriziana;
-                break;
-            case OLIMPIA:
-                shirt=R.drawable.shirt_olimpia;
-                break;
-            case ROMANS:
-                shirt=R.drawable.shirt2;
-                break;
-            default:
-                shirt=R.drawable.shirt;
-        }
-        return context.getDrawable(shirt);
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        super.setOnClickListener(l);
+        playerButton.setOnClickListener(l);
     }
 
     public LinearLayout getPlayerLayout() {

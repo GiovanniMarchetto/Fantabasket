@@ -3,6 +3,7 @@ package it.units.fantabasket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,13 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.exitButton.setOnClickListener(view -> returnToLogin());
 
-        binding.playmaker.setOnClickListener(view ->
-                binding.playmaker.setImageResource(R.drawable.shirt2)
-        );
-
-        binding.centro.setOnClickListener(view ->
-                showBottomSheet()
-        );
+        binding.playmaker.setOnClickListener(view -> showBottomSheet(binding.playmaker));
+        binding.guardiaDx.setOnClickListener(view -> showBottomSheet(binding.guardiaDx));
+        binding.guardiaSx.setOnClickListener(view -> showBottomSheet(binding.guardiaSx));
+        binding.ala.setOnClickListener(view -> showBottomSheet(binding.ala));
+        binding.centro.setOnClickListener(view -> showBottomSheet(binding.centro));
     }
 
     private void setPlayerList() {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         playerList.add(new Player("Vecchiet", 19, Role.CENTRO, Team.ROMANS));
     }
 
-    private void showBottomSheet() {
+    private void showBottomSheet(ImageButton imageButton) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
 
         int nCol = 3;
@@ -97,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
                 PlayerLayout playerLayout = new PlayerLayout(this, playerList.get(index));
                 playerLayout.setLayoutParams(rowParams);
+                playerLayout.setOnClickListener(view -> {
+                    occupyPositionField(imageButton, playerList.get(index));
+                    bottomSheetDialog.dismiss();
+                });
 
                 tableRow.addView(playerLayout.getPlayerLayout());
                 Log.i("MIO", "fine");
@@ -108,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MIO", "fuori al for");
         bottomSheetDialog.setContentView(playersTableLayout);
         bottomSheetDialog.show();
+    }
+
+    private void occupyPositionField(ImageButton imageButton, Player player) {
+        imageButton.setImageResource(player.getShirt());
     }
 
     private void returnToLogin() {
