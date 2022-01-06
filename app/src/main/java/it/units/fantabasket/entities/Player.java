@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.entities;
 
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;

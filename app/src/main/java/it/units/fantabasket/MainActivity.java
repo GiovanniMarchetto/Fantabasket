@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.databinding.ActivityMainBinding;
+import it.units.fantabasket.entities.Player;
+import it.units.fantabasket.entities.PlayerLayout;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
 

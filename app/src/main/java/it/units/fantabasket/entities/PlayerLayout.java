@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import it.units.fantabasket.R;
 import it.units.fantabasket.enums.Team;
 
 @SuppressLint("ViewConstructor")
@@ -46,7 +47,7 @@ public class PlayerLayout extends LinearLayout {
         int shirt;
         switch (team) {
             case ATHLETISMO:
-                shirt=R.drawable.shirt_athletismo;
+                shirt= R.drawable.shirt_athletismo;
                 break;
             case GORIZIANA:
                 shirt=R.drawable.shirt_goriziana;
