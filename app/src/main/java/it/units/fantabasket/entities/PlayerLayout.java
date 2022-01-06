@@ -2,7 +2,6 @@ package it.units.fantabasket.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.GnssAntennaInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;

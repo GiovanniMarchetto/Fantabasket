@@ -5,7 +5,7 @@ import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
 
 public class Player {
-//    String id;
+    //    String id;
     String name;
     String number;
     Role role;
@@ -13,7 +13,7 @@ public class Player {
 
     public Player(String name, int number, Role role, Team team) {
         this.name = name;
-        this.number = number+"";
+        this.number = number + "";
         this.role = role;
         this.team = team;
     }
@@ -22,19 +22,19 @@ public class Player {
         int shirt;
         switch (team) {
             case ATHLETISMO:
-                shirt= R.drawable.shirt_athletismo;
+                shirt = R.drawable.shirt_athletismo;
                 break;
             case GORIZIANA:
-                shirt=R.drawable.shirt_goriziana;
+                shirt = R.drawable.shirt_goriziana;
                 break;
             case OLIMPIA:
-                shirt=R.drawable.shirt_olimpia;
+                shirt = R.drawable.shirt_olimpia;
                 break;
             case ROMANS:
-                shirt=R.drawable.shirt2;
+                shirt = R.drawable.shirt2;
                 break;
             default:
-                shirt=R.drawable.shirt;
+                shirt = R.drawable.shirt;
         }
         return shirt;
     }

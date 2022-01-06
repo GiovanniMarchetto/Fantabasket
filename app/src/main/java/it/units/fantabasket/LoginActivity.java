@@ -18,12 +18,12 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        Log.i("TAG","start");
+        Log.i("TAG", "start");
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Log.i("TAG","not null user: "+currentUser.getDisplayName());
+            Log.i("TAG", "not null user: " + currentUser.getDisplayName());
             passToMainActivity();
         }
     }
@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Log.i("TAG","create login activity");
+        Log.i("TAG", "create login activity");
 
 
         mAuth = FirebaseAuth.getInstance();//inizializzo
@@ -59,10 +59,12 @@ public class LoginActivity extends AppCompatActivity {
 
         TextWatcher validator = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
