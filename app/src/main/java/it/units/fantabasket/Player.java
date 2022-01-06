@@ -1,16 +1,18 @@
 package it.units.fantabasket;
 
+import it.units.fantabasket.enums.Role;
+import it.units.fantabasket.enums.Team;
+
 public class Player {
-    String id;
+//    String id;
     String name;
     String number;
-    String role;
+    Role role;
     Team team;
 
-    public Player(String id, String name, String number, String role, Team team) {
-        this.id = id;
+    public Player(String name, int number, Role role, Team team) {
         this.name = name;
-        this.number = number;
+        this.number = number+"";
         this.role = role;
         this.team = team;
     }
