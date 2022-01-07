@@ -1,27 +1,33 @@
 package it.units.fantabasket;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageButton;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.databinding.ActivityMainBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.PlayerLayout;
+import it.units.fantabasket.entities.PlayerLayoutHorizontal;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
     public static String user = "Pinco pallino";
     private static List<Player> playerList;
+    private static HashMap<Role, Player> selectedPlayerList;
+    private static Role selectedRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +47,36 @@ public class MainActivity extends AppCompatActivity {
 
         binding.exitButton.setOnClickListener(view -> returnToLogin());
 
-        binding.playmaker.setOnClickListener(view -> showBottomSheet(binding.playmaker));
-        binding.guardiaDx.setOnClickListener(view -> showBottomSheet(binding.guardiaDx));
-        binding.guardiaSx.setOnClickListener(view -> showBottomSheet(binding.guardiaSx));
-        binding.ala.setOnClickListener(view -> showBottomSheet(binding.ala));
-        binding.centro.setOnClickListener(view -> showBottomSheet(binding.centro));
+        binding.playmakerButton.setOnClickListener(view -> {
+            selectedRole = Role.PLAY;
+            showBottomSheet(binding.playmakerButton, binding.playmakerText);
+        });
+        binding.guardiaDxButton.setOnClickListener(view -> {
+            selectedRole = Role.GUARDIA_DX;
+            showBottomSheet(binding.guardiaDxButton, binding.guardiaDxText);
+        });
+        binding.guardiaSxButton.setOnClickListener(view -> {
+            selectedRole = Role.GUARDIA_SX;
+            showBottomSheet(binding.guardiaSxButton, binding.guardiaSxText);
+        });
+        binding.alaButton.setOnClickListener(view -> {
+            selectedRole = Role.ALA;
+            showBottomSheet(binding.alaButton, binding.alaText);
+        });
+        binding.centroButton.setOnClickListener(view -> {
+            selectedRole = Role.CENTRO;
+            showBottomSheet(binding.centroButton, binding.centroText);
+        });
     }
 
     private void setPlayerList() {
+        selectedPlayerList = new HashMap<>();
+        selectedPlayerList.put(Role.PLAY, null);
+        selectedPlayerList.put(Role.GUARDIA_DX, null);
+        selectedPlayerList.put(Role.GUARDIA_SX, null);
+        selectedPlayerList.put(Role.ALA, null);
+        selectedPlayerList.put(Role.CENTRO, null);
+
         playerList = new ArrayList<>();
 
         playerList.add(new Player("Marchetto", 14, Role.GUARDIA, Team.ATHLETISMO));
@@ -65,56 +93,43 @@ public class MainActivity extends AppCompatActivity {
         playerList.add(new Player("Vecchiet", 19, Role.CENTRO, Team.ROMANS));
     }
 
-    private void showBottomSheet(ImageButton imageButton) {
+    private void showBottomSheet(Button playerButton, TextView playerName) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
 
-        int nCol = 3;
-        int nRow = playerList.size() / 3 + 1;
+        LinearLayout playersLayout = new LinearLayout(this);
+        final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        playersLayout.setLayoutParams(params);
+        playersLayout.setOrientation(LinearLayout.VERTICAL);
 
-        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
-                TableLayout.LayoutParams.WRAP_CONTENT,
-                TableLayout.LayoutParams.WRAP_CONTENT);
-        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT);
-        rowParams.bottomMargin = 50;
-        rowParams.leftMargin = 25;
-
-        TableLayout playersTableLayout = new TableLayout(this);
-        playersTableLayout.setStretchAllColumns(true);
-
-        for (int i = 0; i < nRow; i++) {
-            TableRow tableRow = new TableRow(this);
-            tableRow.setLayoutParams(tableParams);// TableLayout is the parent view
-
-            for (int j = 0; j < nCol; j++) {
-
-                int index = i * 3 + j;
-                if (i * 3 + j >= playerList.size()) {
-                    break;
-                }
-
-                PlayerLayout playerLayout = new PlayerLayout(this, playerList.get(index));
-                playerLayout.setLayoutParams(rowParams);
-                playerLayout.setOnClickListener(view -> {
-                    occupyPositionField(imageButton, playerList.get(index));
-                    bottomSheetDialog.dismiss();
-                });
-
-                tableRow.addView(playerLayout.getPlayerLayout());
-                Log.i("MIO", "fine");
-            }
-            playersTableLayout.addView(tableRow);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            playerList.stream()
+                    .filter(player -> !selectedPlayerList.containsValue(player))
+                    .forEach(
+                            player -> {
+                                PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(this, player);
+                                playerLayout.setOnClickListener(view -> {
+                                    occupyPositionField(playerButton, playerName, player);
+                                    bottomSheetDialog.dismiss();
+                                });
+                                playerLayout.setLayoutParams(params);
+                                playersLayout.addView(playerLayout.getPlayerLayout());
+                            }
+                    );
         }
 
-
-        Log.i("MIO", "fuori al for");
-        bottomSheetDialog.setContentView(playersTableLayout);
+        bottomSheetDialog.setContentView(playersLayout);
         bottomSheetDialog.show();
     }
 
-    private void occupyPositionField(ImageButton imageButton, Player player) {
-        imageButton.setImageResource(player.getShirt());
+    private void occupyPositionField(Button playerButton, TextView playerName, Player player) {
+        playerButton.setText(player.getNumber());
+        playerButton.setBackground(this.getDrawable(player.getShirt()));
+        playerName.setText(player.getName());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            selectedPlayerList.replace(selectedRole, player);
+        }
     }
 
     private void returnToLogin() {
