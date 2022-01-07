@@ -3,12 +3,17 @@
           package="it.units.fantabasket">
 
     <application
+            android:fullBackupOnly="true"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Fantabasket">
+        <activity
+                android:name=".MainActivity"
+                android:exported="true"
+                android:label="@string/title_activity_main"/>
         <activity
                 android:name=".LoginActivity"
                 android:exported="true">
@@ -17,10 +22,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity
-                android:name=".MainActivity"
-                android:exported="true">
         </activity>
     </application>
 
