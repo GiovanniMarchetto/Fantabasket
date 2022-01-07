@@ -4,19 +4,18 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressLint("ViewConstructor")
 public class PlayerLayoutHorizontal extends LinearLayout{
 
     private final LinearLayout playerLayout;
-    private final Button playerButton;
 
     public PlayerLayoutHorizontal(Context context, Player player) {
         super(context);
@@ -32,6 +31,21 @@ public class PlayerLayoutHorizontal extends LinearLayout{
         playerLayout.setBackground(border);
         playerLayout.setPadding(30,15,15,15);
 
+        Button playerButton = getPlayerButton(context, player);
+
+        TextView name = new TextView(context);
+        name.setText(player.name);
+
+        LinearLayout subLayout = getRightLinearLayout(context, player);
+
+        playerLayout.addView(playerButton);
+        playerLayout.addView(name);
+        playerLayout.addView(subLayout);
+    }
+
+    @NotNull
+    private Button getPlayerButton(Context context, Player player) {
+        final Button playerButton;
         playerButton = new Button(context);
         playerButton.setText(player.number);
         playerButton.setTextColor(player.colorNumber);
@@ -39,29 +53,28 @@ public class PlayerLayoutHorizontal extends LinearLayout{
 
         int pixels = getPixelsOfShirts(context);
         //linear params: width and height
-        LinearLayout.LayoutParams linearParamsButton = new LinearLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LayoutParams linearParamsButton = new LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         linearParamsButton.width = pixels;
         linearParamsButton.height = pixels;
         playerButton.setLayoutParams(linearParamsButton);
+        return playerButton;
+    }
 
-        TextView name = new TextView(context);
-        name.setText(player.name);
-
-        LinearLayout.LayoutParams emptyParam = new LinearLayout.LayoutParams(
+    @NotNull
+    private LinearLayout getRightLinearLayout(Context context, Player player) {
+        LayoutParams subParam = new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         LinearLayout subLayout = new LinearLayout(context);
-        subLayout.setLayoutParams(emptyParam);
+        subLayout.setLayoutParams(subParam);
         subLayout.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+//        subLayout.setOnClickListener(view -> playerLayout.cli);
 
         TextView role = new TextView(context);
         role.setText(player.role.name());
         subLayout.addView(role);
-
-        playerLayout.addView(playerButton);
-        playerLayout.addView(name);
-        playerLayout.addView(subLayout);
+        return subLayout;
     }
 
     private int getPixelsOfShirts(Context context) {
@@ -73,7 +86,8 @@ public class PlayerLayoutHorizontal extends LinearLayout{
     @Override
     public void setOnClickListener(@Nullable View.OnClickListener l) {
         super.setOnClickListener(l);
-        playerButton.setOnClickListener(l);
+        playerLayout.setOnClickListener(l);
+//        playerButton.setOnClickListener(l);
     }
 
     public LinearLayout getPlayerLayout() {
