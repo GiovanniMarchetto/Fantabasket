@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
@@ -12,12 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 @SuppressLint("ViewConstructor")
-public class PlayerLayout extends LinearLayout {
+public class PlayerLayoutVertical extends LinearLayout {
 
     private final LinearLayout playerLayout;
     private final Button playerButton;
 
-    public PlayerLayout(Context context, Player player) {
+    public PlayerLayoutVertical(Context context, Player player) {
         super(context);
         int pixels = getPixelsOfShirts(context);
         playerLayout = new LinearLayout(context);

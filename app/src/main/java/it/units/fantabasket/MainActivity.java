@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.databinding.ActivityMainBinding;
 import it.units.fantabasket.entities.Player;
-import it.units.fantabasket.entities.PlayerLayout;
 import it.units.fantabasket.entities.PlayerLayoutHorizontal;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
@@ -20,7 +18,6 @@ import it.units.fantabasket.enums.Team;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
