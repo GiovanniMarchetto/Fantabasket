@@ -11,4 +11,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="team_logo">Team_logo</string>
+    <string name="team_name">Team_name</string>
 </resources>

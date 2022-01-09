@@ -8,6 +8,10 @@ android {
     compileSdk 31
 //    buildToolsVersion '27.0.3'
 
+    sourceSets {
+        main.res.srcDirs += 'src/main/resShirts'
+    }
+
     buildFeatures {
         viewBinding true
     }
