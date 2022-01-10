@@ -28,8 +28,7 @@
             android:id="@+id/teamLogo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/teamName"
             app:layout_constraintBottom_toTopOf="@+id/text_home"
             android:layout_marginBottom="119dp"
             android:contentDescription="@string/team_logo"/>
@@ -41,15 +40,22 @@
             android:id="@+id/teamName"
             android:textAlignment="center"
             android:textSize="20sp"
+            android:layout_marginTop="?attr/actionBarSize"
             app:layout_constraintBottom_toTopOf="@+id/teamLogo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-            android:background="@mipmap/matita"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/button"
+    <ImageButton
+            android:src="@mipmap/matita"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/modifyButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/mod_team_button"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
