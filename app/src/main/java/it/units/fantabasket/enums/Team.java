@@ -1,8 +1,12 @@
 package it.units.fantabasket.enums;
 
 public enum Team {
-    ATHLETISMO,
-    OLIMPIA,
-    GORIZIANA,
-    ROMANS
+    BOLOGNA_V,
+    BRINDISI,
+    MILANO,
+    NAPOLI,
+    TORTONA,
+    TRENTO,
+    TRIESTE,
+    VENEZIA
 }

@@ -51,7 +51,7 @@ public class PlayerLayoutVertical extends LinearLayout {
 //        name.setLayoutParams(linearParamsText);
         name.setBackgroundColor(Color.DKGRAY);//TODO: remove
         name.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        name.setText(player.name);
+        name.setText(player.surname);
 
         playerLayout.addView(playerButton);
         playerLayout.addView(name);

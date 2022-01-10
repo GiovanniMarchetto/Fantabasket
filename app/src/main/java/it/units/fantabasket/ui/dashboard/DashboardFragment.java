@@ -19,6 +19,9 @@ import it.units.fantabasket.entities.PlayerLayoutHorizontal;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +29,10 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 public class DashboardFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
     private static List<Player> playerList;
     private static HashMap<Role, Player> selectedPlayerList;
     private static Role selectedRole;
+    private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class DashboardFragment extends Fragment {
         setPlayerList();
 
         binding.playmakerButton.setOnClickListener(view -> {
-            selectedRole = Role.PLAY;
+            selectedRole = Role.PLAYMAKER;
             showBottomSheet(binding.playmakerButton, binding.playmakerText);
         });
         binding.guardiaDxButton.setOnClickListener(view -> {
@@ -71,7 +74,7 @@ public class DashboardFragment extends Fragment {
 
     private void setPlayerList() {
         selectedPlayerList = new HashMap<>();
-        selectedPlayerList.put(Role.PLAY, null);
+        selectedPlayerList.put(Role.PLAYMAKER, null);
         selectedPlayerList.put(Role.GUARDIA_DX, null);
         selectedPlayerList.put(Role.GUARDIA_SX, null);
         selectedPlayerList.put(Role.ALA, null);
@@ -79,24 +82,47 @@ public class DashboardFragment extends Fragment {
 
         playerList = new ArrayList<>();
 
-        playerList.add(new Player("Marchetto", 14, Role.GUARDIA, Team.ATHLETISMO));
-        playerList.add(new Player("Junior", 4, Role.PLAY, Team.ATHLETISMO));
-        playerList.add(new Player("Mago", 19, Role.PLAY, Team.ATHLETISMO));
+        for (Team team : Team.values()) {
+            try {
+                InputStreamReader is = new InputStreamReader(
+                        getActivity().getAssets()
+                                .open("giocatori/" + team.name().toLowerCase() + ".csv"));
+                BufferedReader reader = new BufferedReader(is);
+                reader.readLine();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(",");
+                    Role role_1;
+                    Role role_2 = null;
+                    if (values[3].contains("/")) {
+                        String[] roles = values[3].split("/");
+                        role_1 = Role.valueOf(roles[0].toUpperCase());
+                        role_2 = Role.valueOf(roles[1].toUpperCase());
+                    } else {
+                        role_1 = Role.valueOf(values[3].toUpperCase());
+                    }
 
-        playerList.add(new Player("Rosso", 6, Role.GUARDIA, Team.GORIZIANA));
-        playerList.add(new Player("Minu", 4, Role.CENTRO, Team.GORIZIANA));
 
-        playerList.add(new Player("Zeus", 1, Role.ALA, Team.OLIMPIA));
-        playerList.add(new Player("Ade", 99, Role.GUARDIA, Team.OLIMPIA));
-        playerList.add(new Player("Poseidone", 8, Role.GUARDIA, Team.OLIMPIA));
-
-        playerList.add(new Player("Vecchiet", 19, Role.CENTRO, Team.ROMANS));
+                    playerList.add(new Player(
+                            values[0], values[1], values[2],
+                            role_1, role_2,
+                            values[4], values[5], values[6],
+                            values[7], team
+                    ));
+                }
+            } catch (IOException e) {
+                Log.e("DATI", "Error loading asset files", e);
+            } catch (Exception ee) {
+                Log.e("DATI", ee.getMessage());
+                ee.printStackTrace();
+            }
+        }
     }
 
     private void showBottomSheet(Button playerButton, TextView playerName) {
         Context context = getContext();
-        if (context==null){
-            Log.e("URCA","Contesto nullo");
+        if (context == null) {
+            Log.e("URCA", "Contesto nullo");
         }
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
@@ -128,8 +154,9 @@ public class DashboardFragment extends Fragment {
 
     private void occupyPositionField(Button playerButton, TextView playerName, Player player) {
         playerButton.setText(player.getNumber());
+        playerButton.setTextColor(player.getNumberColor());
         playerButton.setBackground(getContext().getDrawable(player.getShirt()));
-        playerName.setText(player.getName());
+        playerName.setText(player.getSurname());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             selectedPlayerList.replace(selectedRole, player);

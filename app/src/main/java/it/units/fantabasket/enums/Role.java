@@ -1,7 +1,7 @@
 package it.units.fantabasket.enums;
 
 public enum Role {
-    PLAY,
+    PLAYMAKER,
     GUARDIA,
     GUARDIA_DX,
     GUARDIA_SX,
