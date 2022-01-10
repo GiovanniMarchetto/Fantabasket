@@ -179,6 +179,17 @@
 
     <!--endregion-->
 
+    <ImageButton
+            android:src="@mipmap/matita"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/modifyButton"
+            android:contentDescription="@string/mod_team_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/basic_margin"
+            android:layout_marginBottom="@dimen/basic_margin"/>
+
     <!--    <TextView-->
     <!--            android:id="@+id/text_dashboard"-->
     <!--            android:layout_width="match_parent"-->

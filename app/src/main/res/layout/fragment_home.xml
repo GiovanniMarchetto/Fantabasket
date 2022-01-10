@@ -28,9 +28,8 @@
             android:id="@+id/teamLogo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teamName"
-            app:layout_constraintBottom_toTopOf="@+id/text_home"
-            android:layout_marginBottom="119dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/team_logo"/>
 
     <TextView
@@ -40,10 +39,9 @@
             android:id="@+id/teamName"
             android:textAlignment="center"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/teamLogo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/teamLogo"/>
 
     <ImageButton
             android:src="@mipmap/matita"
@@ -52,9 +50,20 @@
             android:id="@+id/modifyButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/basic_margin"
+            android:layout_marginEnd="@dimen/basic_margin"
             android:contentDescription="@string/mod_team_button"/>
+
+    <TextView
+            android:id="@+id/legaName"
+            android:text="@string/lega"
+            android:textSize="25sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/basic_margin"
+            android:layout_marginStart="@dimen/basic_margin"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
