@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -32,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: rivedere perché accesso provvisorio
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            String welcome = "Benvenuto " + user.getEmail();
-            Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+//            String welcome = "Benvenuto " + user.getEmail();
+//            Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
