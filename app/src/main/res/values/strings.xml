@@ -13,4 +13,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="team_logo">Team_logo</string>
     <string name="team_name">Team_name</string>
+    <string name="mod_team_button">Mod team</string>
 </resources>
