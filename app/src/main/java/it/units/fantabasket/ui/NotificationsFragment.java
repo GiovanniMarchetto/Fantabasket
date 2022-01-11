@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui.notifications;
+package it.units.fantabasket.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,13 +21,9 @@ public class NotificationsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel = new ViewModelProvider(this).get(NotificationsViewModel.class);
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         binding.text.setText(user.getEmail());
 
