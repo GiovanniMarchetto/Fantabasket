@@ -89,41 +89,7 @@ public class DashboardFragment extends Fragment {
 
         playerList = new ArrayList<>();
 
-        for (Team team : Team.values()) {
-            try {
-                InputStreamReader is = new InputStreamReader(
-                        getActivity().getAssets()
-                                .open("giocatori/" + team.name().toLowerCase() + ".csv"));
-                BufferedReader reader = new BufferedReader(is);
-                reader.readLine();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] values = line.split(",");
-                    Role role_1;
-                    Role role_2 = null;
-                    if (values[3].contains("/")) {
-                        String[] roles = values[3].split("/");
-                        role_1 = Role.valueOf(roles[0].toUpperCase());
-                        role_2 = Role.valueOf(roles[1].toUpperCase());
-                    } else {
-                        role_1 = Role.valueOf(values[3].toUpperCase());
-                    }
-
-
-                    playerList.add(new Player(
-                            values[0], values[1], values[2],
-                            role_1, role_2,
-                            values[4], values[5], values[6],
-                            values[7], team
-                    ));
-                }
-            } catch (IOException e) {
-                Log.e("DATI", "Error loading asset files", e);
-            } catch (Exception ee) {
-                Log.e("DATI", ee.getMessage());
-                ee.printStackTrace();
-            }
-        }
+        PlayerListFragment.setCompletePlayerList(getActivity(),playerList);
     }
 
     private void showBottomSheet(Button playerButton, TextView playerName) {
