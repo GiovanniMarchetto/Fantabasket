@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static it.units.fantabasket.MainActivity.roster;
+
 @SuppressWarnings("ConstantConditions")
 public class DashboardFragment extends Fragment {
 
@@ -85,7 +87,15 @@ public class DashboardFragment extends Fragment {
 
         playerList = new ArrayList<>();
 
-        PlayerListFragment.setCompletePlayerList(getActivity(), playerList);//TODO: qua ci vanno solo i giocatori della squadra dell'user
+        List<Player> completePlayersList = new ArrayList<>();
+        PlayerListFragment.setCompletePlayerList(getActivity(), completePlayersList);
+        //TODO: valutare se rendere la complete list una variabile globale
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            completePlayersList.stream().filter(player->roster.contains(player.getId())).forEach(
+                    player -> playerList.add(player)
+            );
+        }
     }
 
     private void showBottomSheet(Button playerButton, TextView playerName) {
