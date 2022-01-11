@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui.dashboard;
+package it.units.fantabasket.ui;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentDashboardBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.PlayerLayoutHorizontal;
@@ -62,6 +64,11 @@ public class DashboardFragment extends Fragment {
             selectedRole = Role.CENTRO;
             showBottomSheet(binding.centroButton, binding.centroText);
         });
+
+        binding.modifyButton.setOnClickListener(view ->
+                NavHostFragment.findNavController(DashboardFragment.this)
+                        .navigate(R.id.action_DashboardFragment_to_PlayerListFragment)
+        );
 
         return root;
     }

@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.dashboard.DashboardFragment">
+        tools:context=".ui.DashboardFragment">
 
     <!--TODO: forse meglio farlo programmaticamente-->
     <!--region field and player buttons-->
@@ -188,7 +188,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/basic_margin"
-            android:layout_marginBottom="@dimen/basic_margin"/>
+            android:layout_marginTop="@dimen/basic_margin"
+            app:layout_constraintTop_toBottomOf="@+id/basketField"/>
 
     <!--    <TextView-->
     <!--            android:id="@+id/text_dashboard"-->

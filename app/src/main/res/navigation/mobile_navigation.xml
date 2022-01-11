@@ -9,13 +9,28 @@
             android:id="@+id/navigation_home"
             android:name="it.units.fantabasket.ui.HomeFragment"
             android:label="@string/title_home"
-            tools:layout="@layout/fragment_home"/>
+            tools:layout="@layout/fragment_home">
+    </fragment>
 
     <fragment
             android:id="@+id/navigation_dashboard"
-            android:name="it.units.fantabasket.ui.dashboard.DashboardFragment"
+            android:name="it.units.fantabasket.ui.DashboardFragment"
             android:label="@string/title_dashboard"
-            tools:layout="@layout/fragment_dashboard"/>
+            tools:layout="@layout/fragment_dashboard">
+        <action
+                android:id="@+id/action_DashboardFragment_to_PlayerListFragment"
+                app:destination="@id/navigation_player_list"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_player_list"
+            android:name="it.units.fantabasket.ui.PlayerListFragment"
+            android:label="@string/title_player_list"
+            tools:layout="@layout/fragment_player_list">
+        <action
+                android:id="@+id/action_PlayerListFragment_to_DashboardFragment"
+                app:destination="@id/navigation_dashboard"/>
+    </fragment>
 
     <fragment
             android:id="@+id/navigation_notifications"
