@@ -16,5 +16,7 @@
     <string name="mod_team_button">Mod team</string>
     <string name="lega">Lega</string>
     <string name="title_player_list">Player List</string>
-    <string name="fantamilioni_restanti_500">Fantamilioni restanti: 500</string>
+    <string name="fantamilioni">Fantamilioni</string>
+    <string name="roster">Roster</string>
+    <string name="salva">Salva</string>
 </resources>
