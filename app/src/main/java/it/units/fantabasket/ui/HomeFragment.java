@@ -14,20 +14,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import static it.units.fantabasket.MainActivity.user;
+import static it.units.fantabasket.MainActivity.userDataReference;
 
 public class HomeFragment extends Fragment {
 
@@ -73,12 +75,9 @@ public class HomeFragment extends Fragment {
                                     byte[] imageBytes = baos.toByteArray();
                                     String base64String = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
 
-                                    Log.i("DATI", "prima: "+original.getByteCount() + " --> "+bitmap.getByteCount() +" --> baos "+imageBytes.length);
+                                    Log.i("DATI", "prima: " + original.getByteCount() + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
 
                                     //save file in db
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    assert user != null;
-                                    DatabaseReference userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
                                     userDataReference.child("teamLogo").setValue(base64String);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -95,10 +94,8 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
 
-            DatabaseReference userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
             userDataReference.child("teamName").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NotNull DataSnapshot dataSnapshot) {

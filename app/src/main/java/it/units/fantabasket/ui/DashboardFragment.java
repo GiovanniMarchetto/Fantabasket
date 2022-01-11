@@ -19,11 +19,7 @@ import it.units.fantabasket.databinding.FragmentDashboardBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.PlayerLayoutHorizontal;
 import it.units.fantabasket.enums.Role;
-import it.units.fantabasket.enums.Team;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +85,7 @@ public class DashboardFragment extends Fragment {
 
         playerList = new ArrayList<>();
 
-        PlayerListFragment.setCompletePlayerList(getActivity(),playerList);
+        PlayerListFragment.setCompletePlayerList(getActivity(), playerList);//TODO: qua ci vanno solo i giocatori della squadra dell'user
     }
 
     private void showBottomSheet(Button playerButton, TextView playerName) {
@@ -129,7 +125,7 @@ public class DashboardFragment extends Fragment {
         playerButton.setText(player.getNumber());
         playerButton.setTextColor(player.getNumberColor());
         playerButton.setBackground(getContext().getDrawable(player.getShirt()));
-        playerName.setText(player.getSurname());
+        playerName.setText(player.getId());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             selectedPlayerList.replace(selectedRole, player);

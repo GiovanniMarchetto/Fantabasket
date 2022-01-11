@@ -34,7 +34,7 @@ public class PlayerLayoutHorizontal extends LinearLayout{
         Button playerButton = getPlayerButton(context, player);
 
         TextView name = new TextView(context);
-        name.setText(player.surname);
+        name.setText(player.id);
 
         LinearLayout subLayout = getRightLinearLayout(context, player);
 

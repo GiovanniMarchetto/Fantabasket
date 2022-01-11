@@ -7,14 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import it.units.fantabasket.LoginActivity;
 import it.units.fantabasket.databinding.FragmentNotificationsBinding;
+
+import static it.units.fantabasket.MainActivity.user;
 
 public class NotificationsFragment extends Fragment {
 
@@ -30,9 +29,6 @@ public class NotificationsFragment extends Fragment {
         final TextView textView = binding.textNotifications;
         notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
         binding.text.setText(user.getEmail());
 
         binding.exitButton.setOnClickListener(view -> returnToLogin());

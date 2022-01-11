@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    //    String id;
+    String id;
     String name;
     String surname;
     String dateBirth;
@@ -40,6 +40,8 @@ public class Player {
         this.team = team;
         setShirt();
         setColorNumber();
+
+        this.id = surname;
     }
 
     public static int getResId(String resName, Class<?> c) {
@@ -69,8 +71,8 @@ public class Player {
         }
     }
 
-    public String getSurname() {
-        return surname;
+    public String getId() {
+        return id;
     }
 
     public String getNumber() {

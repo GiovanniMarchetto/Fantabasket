@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.fragment.NavHostFragment;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentPlayerListBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.PlayerLayoutHorizontal;
@@ -25,10 +27,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.units.fantabasket.MainActivity.roster;
+import static it.units.fantabasket.MainActivity.userDataReference;
+
 public class PlayerListFragment extends Fragment {
 
+    public static List<String> newRoster;
+    private final int rosterSize = 16;
     private int money;
     private int numberOfPlayersSelected;
+    private FragmentPlayerListBinding binding;
 
     public static void setCompletePlayerList(FragmentActivity fragmentActivity, List<Player> playerList) {
         for (Team team : Team.values()) {
@@ -73,11 +81,24 @@ public class PlayerListFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        FragmentPlayerListBinding binding = FragmentPlayerListBinding.inflate(inflater, container, false);
+        binding = FragmentPlayerListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        money = 500;
+        newRoster = new ArrayList<>(roster);
+
+        int moneySize = 500;
+        money = moneySize;
         numberOfPlayersSelected = 0;
+        binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + moneySize);
+        binding.roster.setText(getString(R.string.roster) + ": " + newRoster.size() + "/" + rosterSize);
+
+        binding.saveRosterButton.setOnClickListener(view -> {
+                    roster = new ArrayList<>(newRoster);
+                    userDataReference.child("players").setValue(roster);
+                    NavHostFragment.findNavController(PlayerListFragment.this)
+                            .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+                }
+        );
 
         List<Player> playerList = new ArrayList<>();
 
@@ -88,22 +109,30 @@ public class PlayerListFragment extends Fragment {
             playerList.forEach(
                     player -> {
                         PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
+
+                        GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
+                        if (newRoster.contains(player.getId())) {
+                            border.setColor(Color.GREEN);
+                        }
+
                         playerLayout.setOnClickListener(view -> {
 
-                            GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
                             ColorStateList color = border.getColor();
                             if (color.getDefaultColor() == Color.LTGRAY) {
-                                if (numberOfPlayersSelected < 16 && money > 0) {
+                                if (numberOfPlayersSelected < rosterSize && money > 0) {
                                     money--;//TODO: sarà da mettere sia la condizione di money sufficienti che la giusta operazione
                                     numberOfPlayersSelected++;
+                                    newRoster.add(player.getId());
                                     border.setColor(Color.GREEN);
                                 }
                             } else {
                                 money++;
                                 numberOfPlayersSelected--;
+                                newRoster.remove(player.getId());
                                 border.setColor(Color.LTGRAY);
                             }
-                            binding.moneyCount.setText("Fantamilioni restanti: " + money);
+                            binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
+                            binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
 
                         });
                         playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
