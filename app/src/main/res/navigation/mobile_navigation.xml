@@ -10,6 +10,19 @@
             android:name="it.units.fantabasket.ui.HomeFragment"
             android:label="@string/title_home"
             tools:layout="@layout/fragment_home">
+        <action
+                android:id="@+id/action_HomeFragment_to_LegheFragment"
+                app:destination="@id/navigation_leghe"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_leghe"
+            android:name="it.units.fantabasket.ui.LegheFragment"
+            android:label="@string/title_leghe"
+            tools:layout="@layout/fragment_leghe">
+        <action
+                android:id="@+id/action_LegheFragment_to_HomeFragment"
+                app:destination="@id/navigation_home"/>
     </fragment>
 
     <fragment
