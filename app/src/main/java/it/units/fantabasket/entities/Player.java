@@ -10,19 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    String id;
-    String name;
-    String surname;
-    String dateBirth;
-    String height;
-    String weight;
-    String nationality;
-    String number;
-    Role role_1;
-    Role role_2;
-    Team team;
-    int shirt;
-    int numberColor;
+    private final String id;
+    private final String name;
+    private final String surname;
+    private final String dateBirth;
+    private final String height;
+    private final String weight;
+    private final String nationality;
+    private final String number;
+    private final Role role_1;
+    private final Role role_2;
+    private final Team team;
+    private int shirt;
+    private int numberColor;
+
 
     public Player() {
         this.id = "";
@@ -101,5 +102,13 @@ public class Player {
 
     public int getNumberColor() {
         return numberColor;
+    }
+
+    public Role getRole_1() {
+        return role_1;
+    }
+
+    public Role getRole_2() {
+        return role_2;
     }
 }

@@ -34,7 +34,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         Button playerButton = getPlayerButton(context, player);
 
         TextView name = new TextView(context);
-        name.setText(player.id);
+        name.setText(player.getId());
 
         LinearLayout subLayout = getRightLinearLayout(context, player);
 
@@ -46,9 +46,9 @@ public class PlayerLayoutHorizontal extends LinearLayout {
     @NotNull
     public static Button getPlayerButton(Context context, Player player) {
         final Button playerButton = new Button(context);
-        playerButton.setText(player.number);
-        playerButton.setTextColor(player.numberColor);
-        playerButton.setBackground(context.getDrawable(player.shirt));
+        playerButton.setText(player.getNumber());
+        playerButton.setTextColor(player.getNumberColor());
+        playerButton.setBackground(context.getDrawable(player.getShirt()));
 
         int pixels = getPixelsOfShirts(context);
         //linear params: width and height
@@ -78,9 +78,9 @@ public class PlayerLayoutHorizontal extends LinearLayout {
 //        subLayout.setOnClickListener(view -> playerLayout.cli);
 
         TextView role = new TextView(context);
-        String roleText = player.role_1.name();
-        if (player.role_2 != null) {
-            roleText = roleText + "/" + player.role_2.name();
+        String roleText = player.getRole_1().name();
+        if (player.getRole_2() != null) {
+            roleText = roleText + "/" + player.getRole_2().name();
         }
         role.setText(roleText);
         subLayout.addView(role);

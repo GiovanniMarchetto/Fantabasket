@@ -29,7 +29,7 @@ public class PlayerOnFieldLayout extends LinearLayout {
         playerTextView = new TextView(context);
         playerTextView.setLayoutParams(new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        playerTextView.setText(player.id);
+        playerTextView.setText(player.getId());
         playerTextView.setPadding(5, 0, 5, 0);
 
         playerLayout.addView(playerButton);
