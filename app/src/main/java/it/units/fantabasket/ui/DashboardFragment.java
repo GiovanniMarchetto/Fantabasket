@@ -18,7 +18,8 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentDashboardBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.PlayerLayoutHorizontal;
-import it.units.fantabasket.enums.Role;
+import it.units.fantabasket.entities.PlayerOnFieldLayout;
+import it.units.fantabasket.enums.FieldPositions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +31,8 @@ import static it.units.fantabasket.MainActivity.roster;
 public class DashboardFragment extends Fragment {
 
     private static List<Player> playerList;
-    private static HashMap<Role, Player> selectedPlayerList;
-    private static Role selectedRole;
+    private static HashMap<FieldPositions, Player> selectedPlayerList;
+    private static FieldPositions selectedRole;
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -40,26 +41,38 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        int panchinaSize = 5;
+        for (int i = 1; i <= panchinaSize; i++) {
+            PlayerOnFieldLayout playerOnFieldLayout = new PlayerOnFieldLayout(getContext(), new Player());
+            int finalI = i;
+            playerOnFieldLayout.getPlayerButton().setOnClickListener(view -> {
+                        selectedRole = FieldPositions.valueOf("PANCHINA_" + finalI);
+                        showBottomSheet(playerOnFieldLayout.getPlayerButton(), playerOnFieldLayout.getPlayerTextView());
+                    }
+            );
+            binding.panchina.addView(playerOnFieldLayout.getPlayerLayout());
+        }
+
         setPlayerList();
 
         binding.playmakerButton.setOnClickListener(view -> {
-            selectedRole = Role.PLAYMAKER;
+            selectedRole = FieldPositions.PLAYMAKER;
             showBottomSheet(binding.playmakerButton, binding.playmakerText);
         });
         binding.guardiaDxButton.setOnClickListener(view -> {
-            selectedRole = Role.GUARDIA_DX;
+            selectedRole = FieldPositions.GUARDIA_DX;
             showBottomSheet(binding.guardiaDxButton, binding.guardiaDxText);
         });
         binding.guardiaSxButton.setOnClickListener(view -> {
-            selectedRole = Role.GUARDIA_SX;
+            selectedRole = FieldPositions.GUARDIA_SX;
             showBottomSheet(binding.guardiaSxButton, binding.guardiaSxText);
         });
         binding.alaButton.setOnClickListener(view -> {
-            selectedRole = Role.ALA;
+            selectedRole = FieldPositions.ALA;
             showBottomSheet(binding.alaButton, binding.alaText);
         });
         binding.centroButton.setOnClickListener(view -> {
-            selectedRole = Role.CENTRO;
+            selectedRole = FieldPositions.CENTRO;
             showBottomSheet(binding.centroButton, binding.centroText);
         });
 
@@ -79,11 +92,9 @@ public class DashboardFragment extends Fragment {
 
     private void setPlayerList() {
         selectedPlayerList = new HashMap<>();
-        selectedPlayerList.put(Role.PLAYMAKER, null);
-        selectedPlayerList.put(Role.GUARDIA_DX, null);
-        selectedPlayerList.put(Role.GUARDIA_SX, null);
-        selectedPlayerList.put(Role.ALA, null);
-        selectedPlayerList.put(Role.CENTRO, null);
+        for (FieldPositions position : FieldPositions.values()) {
+            selectedPlayerList.put(position, null);
+        }
 
         playerList = new ArrayList<>();
 
@@ -92,7 +103,7 @@ public class DashboardFragment extends Fragment {
         //TODO: valutare se rendere la complete list una variabile globale
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            completePlayersList.stream().filter(player->roster.contains(player.getId())).forEach(
+            completePlayersList.stream().filter(player -> roster.contains(player.getId())).forEach(
                     player -> playerList.add(player)
             );
         }

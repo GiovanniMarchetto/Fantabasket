@@ -24,6 +24,22 @@ public class Player {
     int shirt;
     int numberColor;
 
+    public Player() {
+        this.id = "";
+        this.name = "";
+        this.surname = "";
+        this.dateBirth = "";
+        this.height = "";
+        this.weight = "";
+        this.nationality = "";
+        this.number = "";
+        this.role_1 = Role.SCONOSCIUTO;
+        this.role_2 = Role.SCONOSCIUTO;
+        this.team = null;
+        this.shirt = R.drawable.shirt;
+        this.numberColor = Color.TRANSPARENT;
+    }
+
     public Player(String number, String name, String surname,
                   Role role_1, Role role_2,
                   String dateBirth, String height, String weight,

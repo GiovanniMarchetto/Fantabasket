@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressLint("ViewConstructor")
-public class PlayerLayoutHorizontal extends LinearLayout{
+public class PlayerLayoutHorizontal extends LinearLayout {
 
     private final LinearLayout playerLayout;
 
@@ -29,7 +29,7 @@ public class PlayerLayoutHorizontal extends LinearLayout{
         border.setStroke(1, Color.BLACK);
 
         playerLayout.setBackground(border);
-        playerLayout.setPadding(30,15,15,15);
+        playerLayout.setPadding(30, 15, 15, 15);
 
         Button playerButton = getPlayerButton(context, player);
 
@@ -44,9 +44,8 @@ public class PlayerLayoutHorizontal extends LinearLayout{
     }
 
     @NotNull
-    private Button getPlayerButton(Context context, Player player) {
-        final Button playerButton;
-        playerButton = new Button(context);
+    public static Button getPlayerButton(Context context, Player player) {
+        final Button playerButton = new Button(context);
         playerButton.setText(player.number);
         playerButton.setTextColor(player.numberColor);
         playerButton.setBackground(context.getDrawable(player.shirt));
@@ -62,6 +61,12 @@ public class PlayerLayoutHorizontal extends LinearLayout{
         return playerButton;
     }
 
+    private static int getPixelsOfShirts(Context context) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        int dp = 58;
+        return (int) (dp * scale + 0.5f);
+    }
+
     @SuppressLint("SetTextI18n")
     @NotNull
     private LinearLayout getRightLinearLayout(Context context, Player player) {
@@ -69,23 +74,17 @@ public class PlayerLayoutHorizontal extends LinearLayout{
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         LinearLayout subLayout = new LinearLayout(context);
         subLayout.setLayoutParams(subParam);
-        subLayout.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+        subLayout.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
 //        subLayout.setOnClickListener(view -> playerLayout.cli);
 
         TextView role = new TextView(context);
         String roleText = player.role_1.name();
-        if (player.role_2!=null){
-            roleText=roleText+"/"+player.role_2.name();
+        if (player.role_2 != null) {
+            roleText = roleText + "/" + player.role_2.name();
         }
         role.setText(roleText);
         subLayout.addView(role);
         return subLayout;
-    }
-
-    private int getPixelsOfShirts(Context context) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        int dp = 58;
-        return (int) (dp * scale + 0.5f);
     }
 
     @Override
