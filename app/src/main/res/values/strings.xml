@@ -20,4 +20,8 @@
     <string name="roster">Roster</string>
     <string name="salva">Salva</string>
     <string name="change">Change</string>
+    <string name="leghe_a_cui_partecipi">Leghe a cui partecipi</string>
+    <string name="leghe_esistenti">Leghe esistenti</string>
+    <string name="crea_lega">Crea Lega</string>
+    <string name="title_leghe">Leghe</string>
 </resources>
