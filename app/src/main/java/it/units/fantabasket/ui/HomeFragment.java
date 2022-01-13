@@ -14,14 +14,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.google.firebase.database.*;
+import androidx.navigation.fragment.NavHostFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
 import org.jetbrains.annotations.NotNull;
 
@@ -135,6 +138,11 @@ public class HomeFragment extends Fragment {
             teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);
             teamLogoLoaderLauncher.launch(teamLogoIntent);
         });
+
+        binding.changeLegaButton.setOnClickListener(view ->
+                NavHostFragment.findNavController(HomeFragment.this)
+                        .navigate(R.id.action_HomeFragment_to_LegheFragment)
+        );
 
         return root;
     }

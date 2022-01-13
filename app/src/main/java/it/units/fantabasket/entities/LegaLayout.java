@@ -4,60 +4,108 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import it.units.fantabasket.R;
+import org.jetbrains.annotations.NotNull;
 
 public class LegaLayout {
     final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     private final LinearLayout legaHeaderLayout;
-    private final LinearLayout legaLayout;
+    private final LinearLayout legaParamsLayout;
+    private final TextView admin;
+    private final Button actionButton;
 
     @SuppressLint("SetTextI18n")
-    public LegaLayout(Context context, Lega lega) {
+    public LegaLayout(Context context, Lega lega, String action) {
         legaHeaderLayout = new LinearLayout(context);
-        legaHeaderLayout.setOrientation(LinearLayout.HORIZONTAL);
+        legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);
         legaHeaderLayout.setLayoutParams(params);
+        int paddingLati = 20;
+        legaHeaderLayout.setPadding(paddingLati, 0, paddingLati, 0);
+        GradientDrawable border = new GradientDrawable();
+        border.setColor(Color.LTGRAY);
+        border.setStroke(1, Color.BLACK);
+        legaHeaderLayout.setBackground(border);
 
         TextView name = new TextView(context);
         name.setText(lega.getName());
+        name.setTextSize(20);
         legaHeaderLayout.addView(name);
 
-        legaLayout = new LinearLayout(context);
-        legaLayout.setOrientation(LinearLayout.VERTICAL);
-        legaLayout.setLayoutParams(params);
-        legaLayout.setPadding(5, 0, 5, 0);
+        legaParamsLayout = new LinearLayout(context);
+        legaParamsLayout.setOrientation(LinearLayout.VERTICAL);
+        legaParamsLayout.setLayoutParams(params);
+        legaParamsLayout.setPadding(paddingLati * 2, 0, paddingLati * 2, paddingLati);
 
 
         TextView location = new TextView(context);
         location.setText("Location: " + lega.getLocation());
-        legaLayout.addView(location);
+        legaParamsLayout.addView(location);
 
-        TextView admin = new TextView(context);
-        admin.setText("Admin: " + lega.getAdmin());
-        legaLayout.addView(admin);
+        admin = new TextView(context);
+        admin.setText("Admin: ");
+        getAdminName(lega.getAdmin());
+        legaParamsLayout.addView(admin);
 
         TextView tipologia = new TextView(context);
         tipologia.setText("Tipologia: " + lega.getLegaType().name());
-        legaLayout.addView(tipologia);
+        legaParamsLayout.addView(tipologia);
 
         TextView partecipanti = new TextView(context);
         partecipanti.setText("Partecipanti: " + lega.getPartecipanti().size() + "/" + lega.getNumPartecipanti());
-        legaLayout.addView(partecipanti);
+        legaParamsLayout.addView(partecipanti);
 
         TextView started = new TextView(context);
         started.setText("Iniziata: " + lega.isStarted());
-        legaLayout.addView(started);
+        legaParamsLayout.addView(started);
+
+        actionButton = new Button(context);
+        actionButton.setText(action);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            actionButton.setBackgroundColor(context.getResources().getColor(R.color.esteco, context.getTheme()));
+        } else {
+            actionButton.setBackgroundColor(context.getResources().getColor(R.color.esteco));
+        }
+        actionButton.setTextColor(Color.WHITE);
+        legaParamsLayout.addView(actionButton);
 
 
-        legaLayout.setVisibility(View.GONE);
+        legaParamsLayout.setVisibility(View.GONE);
+        legaHeaderLayout.addView(legaParamsLayout);
         legaHeaderLayout.setOnClickListener(view -> {
-            if (legaLayout.getVisibility() == View.GONE) {
+            if (legaParamsLayout.getVisibility() == View.GONE) {
                 expand();
             } else {
                 collapse();
+            }
+        });
+    }
+
+    private void getAdminName(String userId) {
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.getValue(String.class);
+                admin.setText("Admin: " + name);
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Log.w("ERROR", "legheEsistenti:onCancelled", databaseError.toException());
             }
         });
     }
@@ -66,23 +114,23 @@ public class LegaLayout {
         return legaHeaderLayout;
     }
 
-    public LinearLayout getLegaLayout() {
-        return legaLayout;
+    public Button getActionButton() {
+        return actionButton;
     }
 
     private void expand() {
-        legaLayout.setVisibility(View.VISIBLE);
+        legaParamsLayout.setVisibility(View.VISIBLE);
 
         final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        legaLayout.measure(widthSpec, heightSpec);
+        legaParamsLayout.measure(widthSpec, heightSpec);
 
-        ValueAnimator mAnimator = slideAnimator(0, legaLayout.getMeasuredHeight());
+        ValueAnimator mAnimator = slideAnimator(0, legaParamsLayout.getMeasuredHeight());
         mAnimator.start();
     }
 
     private void collapse() {
-        int finalHeight = legaLayout.getHeight();
+        int finalHeight = legaParamsLayout.getHeight();
 
         ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
 
@@ -95,7 +143,7 @@ public class LegaLayout {
             @Override
             public void onAnimationEnd(Animator animator) {
                 //Height=0, but it set visibility to GONE
-                legaLayout.setVisibility(View.GONE);
+                legaParamsLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -118,9 +166,9 @@ public class LegaLayout {
         animator.addUpdateListener(valueAnimator -> {
             //Update Height
             int value = (Integer) valueAnimator.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = legaLayout.getLayoutParams();
+            ViewGroup.LayoutParams layoutParams = legaParamsLayout.getLayoutParams();
             layoutParams.height = value;
-            legaLayout.setLayoutParams(layoutParams);
+            legaParamsLayout.setLayoutParams(layoutParams);
         });
         return animator;
     }
