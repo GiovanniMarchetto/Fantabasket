@@ -3,7 +3,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.LegheFragment">
+            tools:context=".ui.LegheFragment"
+            android:padding="10dp">
 
 
     <LinearLayout
@@ -29,7 +30,8 @@
                 android:id="@+id/legheAttive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/basic_margin"/>
 
         <TextView
                 android:id="@+id/title_leghe_esistenti"
