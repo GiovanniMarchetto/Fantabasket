@@ -31,7 +31,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/basic_margin"/>
+                android:paddingBottom="@dimen/basic_margin">
+
+            <TextView
+                    android:id="@+id/nessunaLegaPartecipata"
+                    android:text="@string/nessuna_lega_partecipata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkRed"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"/>
+        </LinearLayout>
 
         <TextView
                 android:id="@+id/title_leghe_esistenti"
@@ -44,7 +54,17 @@
                 android:id="@+id/legheEsistenti"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/nessunaLegaEsistente"
+                    android:text="@string/nessuna_lega_presente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkRed"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"/>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

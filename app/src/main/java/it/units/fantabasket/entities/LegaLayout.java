@@ -29,7 +29,7 @@ public class LegaLayout {
     private final Button actionButton;
 
     @SuppressLint("SetTextI18n")
-    public LegaLayout(Context context, Lega lega, String action) {
+    public LegaLayout(Context context, Lega lega) {
         legaHeaderLayout = new LinearLayout(context);
         legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);
         legaHeaderLayout.setLayoutParams(params);
@@ -73,7 +73,6 @@ public class LegaLayout {
         legaParamsLayout.addView(started);
 
         actionButton = new Button(context);
-        actionButton.setText(action);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             actionButton.setBackgroundColor(context.getResources().getColor(R.color.esteco, context.getTheme()));
         } else {
