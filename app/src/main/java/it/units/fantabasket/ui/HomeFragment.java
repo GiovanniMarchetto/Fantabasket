@@ -128,6 +128,19 @@ public class HomeFragment extends Fragment {
                     Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
                 }
             });
+
+            userDataReference.child("legaSelezionata").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                    String legaSelezionata = dataSnapshot.getValue(String.class);
+                    binding.legaName.setText(legaSelezionata);
+                }
+
+                @Override
+                public void onCancelled(@NotNull DatabaseError databaseError) {
+                    Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+                }
+            });
         } else {
             Log.e("ERROR", "KIM POSSIBLE");
         }
