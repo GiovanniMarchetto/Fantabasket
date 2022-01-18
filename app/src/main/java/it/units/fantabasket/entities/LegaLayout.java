@@ -61,7 +61,7 @@ public class LegaLayout {
         legaParamsLayout.addView(admin);
 
         TextView tipologia = new TextView(context);
-        tipologia.setText("Tipologia: " + lega.getLegaType().name());
+        tipologia.setText("Tipologia: " + lega.getTipologia().name());
         legaParamsLayout.addView(tipologia);
 
         TextView partecipanti = new TextView(context);

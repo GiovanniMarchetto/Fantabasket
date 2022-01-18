@@ -12,15 +12,15 @@ public class Lega {
     private final String admin;
     private final List<String> partecipanti;
     private final int numPartecipanti;
-    private final LegaType legaType;
+    private final LegaType tipologia;
 
-    public Lega(String name, String location, String admin, int numPartecipanti, LegaType legaType) {
+    public Lega(String name, String location, String admin, int numPartecipanti, LegaType tipologia) {
         this.name = name;
         this.location = location;
         this.started = false;
         this.admin = admin;
         this.numPartecipanti = numPartecipanti;
-        this.legaType = legaType;
+        this.tipologia = tipologia;
         this.partecipanti = new ArrayList<>(numPartecipanti);
         this.partecipanti.add(admin);
     }
@@ -49,7 +49,7 @@ public class Lega {
         return numPartecipanti;
     }
 
-    public LegaType getLegaType() {
-        return legaType;
+    public LegaType getTipologia() {
+        return tipologia;
     }
 }
