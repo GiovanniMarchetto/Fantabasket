@@ -10,8 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,9 +32,6 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: rivedere perché accesso provvisorio
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-//            String welcome = "Benvenuto " + user.getEmail();
-//            Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -46,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login);
 
         ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -80,9 +74,13 @@ public class LoginActivity extends AppCompatActivity {
                 login(username.getText().toString(),
                         password.getText().toString()));
 
-        binding.registrationButton.setOnClickListener(view ->
-                registration(username.getText().toString(),
-                        password.getText().toString()));
+        binding.passToRegistrationButton.setOnClickListener(view ->
+                {
+                    Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+        );
     }
 
     private void login(String email, String password) {
@@ -97,25 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("TAG", "signInWithEmail:failure", task.getException());
-                        Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-//                        updateUI(null);
-                    }
-                });
-    }
-
-    private void registration(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("TAG", "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        passToMainActivity();
-//                        updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w("TAG", "createUserWithEmail:failure", task.getException());
                         Toast.makeText(getApplicationContext(), "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
 //                        updateUI(null);

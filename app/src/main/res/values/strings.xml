@@ -11,8 +11,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="team_logo">Team_logo</string>
-    <string name="team_name">Team_name</string>
+    <string name="team_logo">Team logo</string>
+    <string name="team_name">Team name</string>
     <string name="mod_team_button">Mod team</string>
     <string name="lega">Lega</string>
     <string name="title_player_list">Player List</string>
@@ -37,4 +37,8 @@
     <string name="location">Location</string>
     <string name="tipologia">Tipologia</string>
     <string name="crea">Crea</string>
+    <string name="nickname">Nickname</string>
+    <string name="team">Team</string>
+    <string name="user_data">User Data</string>
+    <string name="team_logo_image">Team logo image</string>
 </resources>
