@@ -13,7 +13,6 @@ import it.units.fantabasket.databinding.ActivityRegistrationBinding;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -105,8 +104,6 @@ public class RegistrationActivity extends AppCompatActivity {
         userData.put("name", name);
         userData.put("teamName", teamName);
         userData.put("teamLogo", teamLogoBase64);
-        userData.put("players", new ArrayList<String>());
-        userData.put("legaSelezionata", "");
 
         FirebaseDatabase.getInstance().getReference("users").child(userId).setValue(userData);
     }
