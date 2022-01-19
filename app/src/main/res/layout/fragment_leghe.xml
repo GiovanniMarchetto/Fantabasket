@@ -20,14 +20,14 @@
                 android:layout_gravity="center"/>
 
         <TextView
-                android:id="@+id/title_leghe_attive"
+                android:id="@+id/title_leghe_partecipate"
                 android:text="@string/leghe_a_cui_partecipi"
                 android:textSize="@dimen/base_text_size_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <LinearLayout
-                android:id="@+id/legheAttive"
+                android:id="@+id/leghePartecipate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -44,20 +44,20 @@
         </LinearLayout>
 
         <TextView
-                android:id="@+id/title_leghe_esistenti"
-                android:text="@string/leghe_esistenti"
+                android:id="@+id/title_leghe_disponibili"
+                android:text="@string/leghe_disponibili"
                 android:textSize="@dimen/base_text_size_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <LinearLayout
-                android:id="@+id/legheEsistenti"
+                android:id="@+id/legheDisponibili"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/nessunaLegaEsistente"
+                    android:id="@+id/nessunaLegaDisponibile"
                     android:text="@string/nessuna_lega_presente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
