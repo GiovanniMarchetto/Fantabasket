@@ -1,4 +1,4 @@
-package it.units.fantabasket.entities;
+package it.units.fantabasket.layouts;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
+import it.units.fantabasket.entities.Lega;
 import org.jetbrains.annotations.NotNull;
 
 public class LegaLayout {

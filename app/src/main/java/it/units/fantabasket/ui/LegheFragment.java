@@ -13,8 +13,8 @@ import com.google.firebase.database.*;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLegheBinding;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.entities.LegaLayout;
 import it.units.fantabasket.enums.LegaType;
+import it.units.fantabasket.layouts.LegaLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

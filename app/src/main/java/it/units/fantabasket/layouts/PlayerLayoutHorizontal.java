@@ -1,4 +1,4 @@
-package it.units.fantabasket.entities;
+package it.units.fantabasket.layouts;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import it.units.fantabasket.entities.Player;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressLint("ViewConstructor")

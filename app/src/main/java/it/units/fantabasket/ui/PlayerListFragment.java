@@ -16,9 +16,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentPlayerListBinding;
 import it.units.fantabasket.entities.Player;
-import it.units.fantabasket.entities.PlayerLayoutHorizontal;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
+import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;

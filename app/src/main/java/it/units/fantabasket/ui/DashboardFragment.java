@@ -17,9 +17,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentDashboardBinding;
 import it.units.fantabasket.entities.Player;
-import it.units.fantabasket.entities.PlayerLayoutHorizontal;
-import it.units.fantabasket.entities.PlayerOnFieldLayout;
 import it.units.fantabasket.enums.FieldPositions;
+import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
+import it.units.fantabasket.layouts.PlayerOnFieldLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
