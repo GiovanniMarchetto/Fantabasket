@@ -70,12 +70,7 @@ public class LegheFragment extends Fragment {
                             numLeghePartecipate++;
                             Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
                             actionButton.setText("SELEZIONA");
-                            actionButton.setOnClickListener(view -> {
-                                userDataReference.child("legaSelezionata").setValue(legaName);
-                                NavHostFragment.findNavController(LegheFragment.this).popBackStack();
-//                                NavHostFragment.findNavController(LegheFragment.this)
-//                                        .navigate(R.id.action_LegheFragment_to_HomeFragment);
-                            });
+                            actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
                         } else {
                             numLegheDisponibili++;
                             Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
@@ -86,6 +81,7 @@ public class LegheFragment extends Fragment {
                                         List<String> newPartecipanti = lega.getPartecipanti();
                                         newPartecipanti.add(user.getUid());
                                         legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
+                                        setLegaSelezionataAndReturnToHome(legaName);
                                     } else {
                                         Log.e("MIO", "È già iniziata");
                                     }
@@ -109,6 +105,13 @@ public class LegheFragment extends Fragment {
                 Log.w("ERROR", "leghe:onCancelled", databaseError.toException());
             }
         };
+    }
+
+    private void setLegaSelezionataAndReturnToHome(String legaName) {
+        userDataReference.child("legaSelezionata").setValue(legaName);
+        NavHostFragment.findNavController(LegheFragment.this).popBackStack();
+//                                NavHostFragment.findNavController(LegheFragment.this)
+//                                        .navigate(R.id.action_LegheFragment_to_HomeFragment);
     }
 
     private Button createLegaLayoutAndAddToViewAndReturnActionButton(ViewGroup parent, Lega lega) {
