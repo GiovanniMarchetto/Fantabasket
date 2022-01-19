@@ -23,6 +23,19 @@
         <action
                 android:id="@+id/action_LegheFragment_to_HomeFragment"
                 app:destination="@id/navigation_home"/>
+        <action
+                android:id="@+id/action_LegheFragment_to_LegaCreationFragment"
+                app:destination="@id/navigation_lega_creation"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_lega_creation"
+            android:name="it.units.fantabasket.ui.LegaCreationFragment"
+            android:label="Lega creation"
+            tools:layout="@layout/fragment_lega_creation">
+        <action
+                android:id="@+id/action_LegaCreationFragment_to_HomeFragment"
+                app:destination="@id/navigation_home"/>
     </fragment>
 
     <fragment

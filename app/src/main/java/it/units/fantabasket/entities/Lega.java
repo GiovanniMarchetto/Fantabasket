@@ -25,6 +25,16 @@ public class Lega {
         this.partecipanti.add(admin);
     }
 
+    public Lega(String name, String location, boolean started, String admin, List<String> partecipanti, int numPartecipanti, LegaType tipologia) {
+        this.name = name;
+        this.location = location;
+        this.started = started;
+        this.admin = admin;
+        this.partecipanti = partecipanti;
+        this.numPartecipanti = numPartecipanti;
+        this.tipologia = tipologia;
+    }
+
     public String getName() {
         return name;
     }

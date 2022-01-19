@@ -17,7 +17,9 @@ import it.units.fantabasket.entities.LegaLayout;
 import it.units.fantabasket.enums.LegaType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.units.fantabasket.MainActivity.user;
 import static it.units.fantabasket.MainActivity.userDataReference;
@@ -26,92 +28,57 @@ public class LegheFragment extends Fragment {
 
     private FragmentLegheBinding binding;
     private DatabaseReference legheReference;
-    private List<String> leghePartecipate;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLegheBinding.inflate(inflater, container, false);
 
-        userDataReference.child("leghe").addValueEventListener(getLeghePartecipateValueEventListener());
-
         legheReference = FirebaseDatabase.getInstance().getReference("leghe");
 
-        legheReference.addValueEventListener(getLegheEsistentiNonPartecipateValueEventListener());
+        legheReference.addValueEventListener(getLegheValueEventListener());
+
+        binding.creaLegaButton.setOnClickListener(view ->
+                NavHostFragment.findNavController(LegheFragment.this)
+                        .navigate(R.id.action_LegheFragment_to_LegaCreationFragment)
+        );
 
         return binding.getRoot();
     }
 
     @SuppressLint("SetTextI18n")
-    private ValueEventListener getLeghePartecipateValueEventListener() {
+    private ValueEventListener getLegheValueEventListener() {
         return new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                binding.nessunaLegaPartecipata.setVisibility(View.GONE);
                 //noinspection unchecked
-                leghePartecipate = (List<String>) dataSnapshot.getValue();
-                if (leghePartecipate != null && leghePartecipate.size() > 0) {
-                    for (String legaName : leghePartecipate) {
-                        legheReference.child(legaName).addValueEventListener(
-                                new ValueEventListener() {
+                Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
 
-                                    @Override
-                                    public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                                        @SuppressWarnings("unchecked")
-                                        HashMap<String, Object> legaParams = (HashMap<String, Object>) dataSnapshot.getValue();
-                                        assert legaParams != null;
-                                        Lega lega = getLegaFromNameAndHashMapParams(legaName, legaParams);
 
-                                        Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheAttive, lega);
-                                        actionButton.setText("SELEZIONA");
-                                        actionButton.setOnClickListener(view -> {
-                                            userDataReference.child("legaSelezionata").setValue(legaName);
-                                            NavHostFragment.findNavController(LegheFragment.this)
-                                                    .navigate(R.id.action_LegheFragment_to_HomeFragment);
-                                        });
-                                    }
+                if (legheEsistenti != null && legheEsistenti.size() > 0) {
+                    int numLeghePartecipate = 0;
+                    int numLegheDisponibili = 0;
 
-                                    @Override
-                                    public void onCancelled(@NotNull DatabaseError databaseError) {
-                                        Log.w("ERROR", "leghePartecipateChild:onCancelled", databaseError.toException());
-                                    }
-                                }
-                        );
-                    }
-                } else {
-                    leghePartecipate = new ArrayList<>();
-                    binding.nessunaLegaPartecipata.setVisibility(View.VISIBLE);
-                }
-            }
+                    for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
+                        String legaName = valueOfMap.getKey();
+                        //noinspection unchecked
+                        HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
+                        Lega lega = getLegaFromHashMapParams(legaParams);
+                        Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
 
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "leghe:onCancelled", databaseError.toException());
-            }
-        };
-    }
-
-    @SuppressLint("SetTextI18n")
-    private ValueEventListener getLegheEsistentiNonPartecipateValueEventListener() {
-        ViewGroup parent = binding.legheEsistenti;
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> legheAcquisite = (Map<String, Object>) dataSnapshot.getValue();
-                if (legheAcquisite != null) {
-                    for (String legaName : leghePartecipate) {
-                        legheAcquisite.remove(legaName);
-                    }
-                    if (legheAcquisite.size() > 0) {
-                        binding.nessunaLegaEsistente.setVisibility(View.GONE);
-                        for (Map.Entry<String, Object> entry : legheAcquisite.entrySet()) {
-                            String legaName = entry.getKey();
-                            //noinspection unchecked
-                            HashMap<String, Object> legaParams = (HashMap<String, Object>) entry.getValue();
-                            Lega lega = getLegaFromNameAndHashMapParams(legaName, legaParams);
-
-                            Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(parent, lega);
+                        if (lega.getPartecipanti().contains(user.getUid())) {
+                            numLeghePartecipate++;
+                            Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
+                            actionButton.setText("SELEZIONA");
+                            actionButton.setOnClickListener(view -> {
+                                userDataReference.child("legaSelezionata").setValue(legaName);
+                                NavHostFragment.findNavController(LegheFragment.this).popBackStack();
+//                                NavHostFragment.findNavController(LegheFragment.this)
+//                                        .navigate(R.id.action_LegheFragment_to_HomeFragment);
+                            });
+                        } else {
+                            numLegheDisponibili++;
+                            Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
                             actionButton.setText("UNISCITI");
                             actionButton.setOnClickListener(view -> {
                                 if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
@@ -119,9 +86,6 @@ public class LegheFragment extends Fragment {
                                         List<String> newPartecipanti = lega.getPartecipanti();
                                         newPartecipanti.add(user.getUid());
                                         legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
-                                        leghePartecipate.add(legaName);
-                                        userDataReference.child("leghe").setValue(leghePartecipate);
-
                                     } else {
                                         Log.e("MIO", "È già iniziata");
                                     }
@@ -130,9 +94,13 @@ public class LegheFragment extends Fragment {
                                 }
                             });
                         }
-                    } else {
-                        binding.nessunaLegaEsistente.setVisibility(View.VISIBLE);
+
+                        binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
+                        binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
                     }
+                } else {
+                    binding.nessunaLegaDisponibile.setVisibility(View.VISIBLE);
+                    binding.nessunaLegaPartecipata.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -149,13 +117,18 @@ public class LegheFragment extends Fragment {
         return legaLayout.getActionButton();
     }
 
-    private Lega getLegaFromNameAndHashMapParams(String legaName, HashMap<String, Object> legaParams) {
-        long numPartecipantiLong = (long) legaParams.get("numPartecipanti");
-        String legaType = ((String) Objects.requireNonNull(legaParams.get("tipo"))).toUpperCase();
-        return new Lega(legaName,
+    private Lega getLegaFromHashMapParams(HashMap<String, Object> legaParams) {
+        Object numPartecipanti = legaParams.get("numPartecipanti");
+        Object started = legaParams.get("started");
+        String legaType = (String) legaParams.get("tipologia");
+        //noinspection unchecked
+        return new Lega(
+                (String) legaParams.get("name"),
                 (String) legaParams.get("location"),
+                (started != null) && (boolean) started,
                 (String) legaParams.get("admin"),
-                (int) (numPartecipantiLong),
+                (List<String>) legaParams.get("partecipanti"),
+                (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
                 LegaType.valueOf(legaType)
         );
     }

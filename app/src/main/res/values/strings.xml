@@ -21,11 +21,20 @@
     <string name="salva">Salva</string>
     <string name="change">Change</string>
     <string name="leghe_a_cui_partecipi">Leghe a cui partecipi</string>
-    <string name="leghe_esistenti">Leghe esistenti</string>
+    <string name="leghe_disponibili">Leghe disponibili</string>
     <string name="crea_lega">Crea Lega</string>
     <string name="title_leghe">Leghe</string>
     <string name="nessuna_lega_partecipata">Nessuna lega partecipata</string>
     <string name="nessuna_lega_presente">Nessuna lega presente</string>
     <string name="creazione_lega">Creazione lega</string>
     <string name="nome_lega">Nome lega</string>
+    <string name="increment">+</string>
+    <string name="decrement">-</string>
+    <string name="start_partecipanti_number">8</string>
+    <string name="formula_1">Formula 1</string>
+    <string name="calendario">Calendario</string>
+    <string name="numero_di_partecipanti">Numero di partecipanti</string>
+    <string name="location">Location</string>
+    <string name="tipologia">Tipologia</string>
+    <string name="crea">Crea</string>
 </resources>

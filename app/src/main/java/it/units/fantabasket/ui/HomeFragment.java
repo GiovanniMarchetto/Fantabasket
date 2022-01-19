@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static it.units.fantabasket.MainActivity.user;
 import static it.units.fantabasket.MainActivity.userDataReference;
 
 public class HomeFragment extends Fragment {
@@ -93,57 +92,56 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
+        super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (user != null) {
+        userDataReference.child("teamName").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                String teamName = dataSnapshot.getValue(String.class);
+                binding.teamName.setText(teamName);
+            }
 
-            userDataReference.child("teamName").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                    String teamName = dataSnapshot.getValue(String.class);
-                    binding.teamName.setText(teamName);
-                    Log.i("DATI", teamName);
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+
+        userDataReference.child("teamLogo").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                String teamLogo = dataSnapshot.getValue(String.class);
+                byte[] decodedString = Base64.decode(teamLogo, Base64.NO_WRAP);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                binding.teamLogo.setImageBitmap(decodedByte);
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+
+        userDataReference.child("legaSelezionata").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                String legaSelezionata = dataSnapshot.getValue(String.class);
+                if (binding == null) {//TODO: capire come fare a "riciclare" i fragment
+                    Log.i("MIO", getId() + "---binding null");
+                    binding = FragmentHomeBinding.inflate(inflater, container, false);
+                } else {
+                    Log.i("MIO", getId() + "---binding find");
                 }
+                binding.legaName.setText(legaSelezionata);
+            }
 
-                @Override
-                public void onCancelled(@NotNull DatabaseError databaseError) {
-                    Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-                }
-            });
-
-            userDataReference.child("teamLogo").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                    String teamLogo = dataSnapshot.getValue(String.class);
-                    byte[] decodedString = Base64.decode(teamLogo, Base64.NO_WRAP);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    binding.teamLogo.setImageBitmap(decodedByte);
-
-                }
-
-                @Override
-                public void onCancelled(@NotNull DatabaseError databaseError) {
-                    Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-                }
-            });
-
-            userDataReference.child("legaSelezionata").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                    String legaSelezionata = dataSnapshot.getValue(String.class);
-                    binding.legaName.setText(legaSelezionata);
-                }
-
-                @Override
-                public void onCancelled(@NotNull DatabaseError databaseError) {
-                    Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-                }
-            });
-        } else {
-            Log.e("ERROR", "KIM POSSIBLE");
-        }
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+            }
+        });
 
         binding.modifyButton.setOnClickListener(view -> {
             Intent teamLogoIntent = new Intent();
