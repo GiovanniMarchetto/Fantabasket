@@ -1,8 +1,11 @@
 package it.units.fantabasket;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -26,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                PackageManager.PERMISSION_GRANTED
+        );
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
         roster = new ArrayList<>(16);
@@ -33,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         it.units.fantabasket.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.addOnBackStackChangedListener(() -> Log.i("MIO-BS","Numero di fragment: "+fragmentManager.getBackStackEntryCount()));
 
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

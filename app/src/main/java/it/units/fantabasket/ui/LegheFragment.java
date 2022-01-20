@@ -124,10 +124,14 @@ public class LegheFragment extends Fragment {
         Object numPartecipanti = legaParams.get("numPartecipanti");
         Object started = legaParams.get("started");
         String legaType = (String) legaParams.get("tipologia");
+        Object latitude = legaParams.get("latitude");
+        Object longitude = legaParams.get("longitude");
         //noinspection unchecked
         return new Lega(
                 (String) legaParams.get("name"),
                 (String) legaParams.get("location"),
+                (latitude != null) ? (Double) latitude : 0,
+                (longitude != null) ? (Double) longitude : 0,
                 (started != null) && (boolean) started,
                 (String) legaParams.get("admin"),
                 (List<String>) legaParams.get("partecipanti"),

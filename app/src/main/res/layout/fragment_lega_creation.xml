@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="1dp">
+            android:padding="2dp">
 
         <TextView
                 android:layout_width="match_parent"
@@ -21,21 +21,35 @@
 
         <EditText
                 android:id="@+id/legaName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/min_touch_48dp"
                 android:inputType="textPersonName"
                 android:ems="10"
                 android:hint="@string/nome_lega"
                 tools:ignore="LabelFor,Autofill"/>
 
-        <EditText
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/min_touch_48dp"
-                android:inputType="textPersonName"
-                android:hint="@string/location"
-                android:ems="10"
-                tools:ignore="LabelFor,Autofill"/>
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:hint="@string/location"
+                    android:ems="10"
+                    android:layout_weight="2"
+                    tools:ignore="LabelFor,Autofill"/>
+
+            <Button
+                    android:layout_weight="1"
+                    android:id="@+id/getLocationButton"
+                    android:text="@string/get"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
 
 
         <TextView

@@ -8,15 +8,20 @@ import java.util.List;
 public class Lega {
     private final String name;
     private final String location;
+    private final double latitude;
+    private final double longitude;
     private final boolean started;
     private final String admin;
     private final List<String> partecipanti;
     private final int numPartecipanti;
     private final LegaType tipologia;
 
-    public Lega(String name, String location, String admin, int numPartecipanti, LegaType tipologia) {
+    public Lega(String name, String location, double latitude, double longitude,
+                String admin, int numPartecipanti, LegaType tipologia) {
         this.name = name;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.started = false;
         this.admin = admin;
         this.numPartecipanti = numPartecipanti;
@@ -25,9 +30,13 @@ public class Lega {
         this.partecipanti.add(admin);
     }
 
-    public Lega(String name, String location, boolean started, String admin, List<String> partecipanti, int numPartecipanti, LegaType tipologia) {
+    public Lega(String name, String location, double latitude, double longitude,
+                boolean started, String admin, List<String> partecipanti, int numPartecipanti, LegaType tipologia) {
+        //copy constructor
         this.name = name;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.started = started;
         this.admin = admin;
         this.partecipanti = partecipanti;
@@ -41,6 +50,14 @@ public class Lega {
 
     public String getLocation() {
         return location;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public boolean isStarted() {
