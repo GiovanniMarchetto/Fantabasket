@@ -34,6 +34,8 @@ public class DashboardFragment extends Fragment {
     private static HashMap<FieldPositions, Player> selectedPlayerList;
     private static FieldPositions selectedRole;
     private final int formazioneSize = 12;
+    private final int postiPanchinaPrimaSezione = 3;
+    private final int postiPanchinaSecondaSezione = 2;
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,7 +52,13 @@ public class DashboardFragment extends Fragment {
                         showBottomSheet(playerOnFieldLayout.getPlayerButton(), playerOnFieldLayout.getPlayerTextView());
                     }
             );
-            binding.panchina.addView(playerOnFieldLayout.getPlayerLayout());
+            if (i < 4) {
+                binding.panchinaFirstSection.addView(playerOnFieldLayout.getPlayerLayout());
+            } else if (i < 6) {
+                binding.panchinaSecondSection.addView(playerOnFieldLayout.getPlayerLayout());
+            } else {
+                binding.panchinaThirdSection.addView(playerOnFieldLayout.getPlayerLayout());
+            }
         }
 
         setPlayerList();
@@ -76,7 +84,7 @@ public class DashboardFragment extends Fragment {
             showBottomSheet(binding.centroButton, binding.centroText);
         });
 
-        binding.modifyButton.setOnClickListener(view ->
+        binding.changeRosterButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(DashboardFragment.this)
                         .navigate(R.id.action_DashboardFragment_to_PlayerListFragment)
         );

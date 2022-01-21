@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
                 Utils.getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(requireContext().getContentResolver(), binding.teamLogo, true));
 
         //BUTTONS
-        binding.modifyButton.setOnClickListener(view -> {
+        binding.changeLogoButton.setOnClickListener(view -> {
             Intent teamLogoIntent = new Intent();
             teamLogoIntent.setType("image/*");
             teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);

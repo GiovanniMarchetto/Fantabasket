@@ -147,7 +147,7 @@
                     android:textSize="20sp"/>
 
             <ImageButton
-                    android:id="@+id/modifyButton"
+                    android:id="@+id/changeLogoButton"
                     android:src="@mipmap/matita"
                     android:layout_width="48dp"
                     android:layout_height="48dp"

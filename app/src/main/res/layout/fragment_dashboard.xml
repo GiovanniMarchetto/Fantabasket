@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -7,224 +7,242 @@
         android:layout_height="match_parent"
         tools:context=".ui.DashboardFragment">
 
-    <!--TODO: forse meglio farlo programmaticamente-->
-    <!--region field and player buttons-->
-    <ImageView
-            android:id="@+id/basketField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:srcCompat="@drawable/ic_half_basketball_field"
-            android:contentDescription="@string/basketball_field"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-    <!--region PLAYMAKER-->
     <LinearLayout
-            android:id="@+id/playmaker"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            app:layout_constraintEnd_toEndOf="@+id/basketField"
-            app:layout_constraintStart_toStartOf="@+id/basketField"
-            app:layout_constraintBottom_toBottomOf="@+id/basketField"
-            app:layout_constraintHorizontal_bias="0.495"
-            android:layout_marginBottom="110dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <!--region field and player buttons-->
+            <ImageView
+                    android:id="@+id/basketField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:srcCompat="@drawable/ic_half_basketball_field"
+                    android:contentDescription="@string/basketball_field"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/playmakerButton"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                android:background="@drawable/shirt"
+            <!--region PLAYMAKER-->
+            <LinearLayout
+                    android:id="@+id/playmaker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
 
-                android:contentDescription="@string/add_player"/>
+                    app:layout_constraintEnd_toEndOf="@+id/basketField"
+                    app:layout_constraintStart_toStartOf="@+id/basketField"
+                    app:layout_constraintBottom_toBottomOf="@+id/basketField"
+                    app:layout_constraintHorizontal_bias="0.495"
+                    android:layout_marginBottom="110dp">
 
-        <TextView
-                android:id="@+id/playmakerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
-    </LinearLayout>
-    <!--endregion-->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/playmakerButton"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:background="@drawable/shirt"
 
-    <!--region GUARDIA DX-->
-    <LinearLayout
-            android:id="@+id/guardiaDx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+                        android:contentDescription="@string/add_player"/>
 
-            app:layout_constraintRight_toLeftOf="@+id/basketField"
-            app:layout_constraintBottom_toBottomOf="@+id/basketField"
-            app:layout_constraintEnd_toEndOf="@+id/basketField"
-            android:layout_marginBottom="184dp"
-            android:layout_marginEnd="20dp">
+                <TextView
+                        android:id="@+id/playmakerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+            <!--endregion-->
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/guardiaDxButton"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                android:background="@drawable/shirt"
+            <!--region GUARDIA DX-->
+            <LinearLayout
+                    android:id="@+id/guardiaDx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
 
-                android:contentDescription="@string/add_player"/>
+                    app:layout_constraintRight_toLeftOf="@+id/basketField"
+                    app:layout_constraintBottom_toBottomOf="@+id/basketField"
+                    app:layout_constraintEnd_toEndOf="@+id/basketField"
+                    android:layout_marginBottom="184dp"
+                    android:layout_marginEnd="20dp">
 
-        <TextView
-                android:id="@+id/guardiaDxText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
-    </LinearLayout>
-    <!--endregion GUARDIA DX-->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/guardiaDxButton"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:background="@drawable/shirt"
 
-    <!--region GUARDIA SX-->
-    <LinearLayout
-            android:id="@+id/guardiaSx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+                        android:contentDescription="@string/add_player"/>
 
-            app:layout_constraintBottom_toBottomOf="@+id/basketField"
-            android:layout_marginBottom="184dp"
-            app:layout_constraintStart_toStartOf="@+id/basketField"
-            android:layout_marginStart="28dp">
+                <TextView
+                        android:id="@+id/guardiaDxText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+            <!--endregion GUARDIA DX-->
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/guardiaSxButton"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                android:background="@drawable/shirt"
+            <!--region GUARDIA SX-->
+            <LinearLayout
+                    android:id="@+id/guardiaSx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
 
-                android:contentDescription="@string/add_player"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/basketField"
+                    android:layout_marginBottom="184dp"
+                    app:layout_constraintStart_toStartOf="@+id/basketField"
+                    android:layout_marginStart="28dp">
 
-        <TextView
-                android:id="@+id/guardiaSxText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
-    </LinearLayout>
-    <!--endregion GUARDIA SX-->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/guardiaSxButton"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:background="@drawable/shirt"
 
-    <!--region ALA-->
-    <LinearLayout
-            android:id="@+id/ala"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+                        android:contentDescription="@string/add_player"/>
 
-            app:layout_constraintBottom_toBottomOf="@+id/basketField"
-            app:layout_constraintStart_toStartOf="@+id/basketField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/basketField"
-            app:layout_constraintHorizontal_bias="0.085"
-            app:layout_constraintVertical_bias="0.062">
+                <TextView
+                        android:id="@+id/guardiaSxText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+            <!--endregion GUARDIA SX-->
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/alaButton"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                android:background="@drawable/shirt"
+            <!--region ALA-->
+            <LinearLayout
+                    android:id="@+id/ala"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
 
-                android:contentDescription="@string/add_player"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/basketField"
+                    app:layout_constraintStart_toStartOf="@+id/basketField"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/basketField"
+                    app:layout_constraintHorizontal_bias="0.085"
+                    app:layout_constraintVertical_bias="0.062">
 
-        <TextView
-                android:id="@+id/alaText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
-    </LinearLayout>
-    <!--endregion ALA-->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/alaButton"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:background="@drawable/shirt"
 
-    <!--region CENTRO-->
-    <LinearLayout
-            android:id="@+id/centro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+                        android:contentDescription="@string/add_player"/>
 
-            app:layout_constraintBottom_toBottomOf="@+id/basketField"
-            app:layout_constraintStart_toStartOf="@+id/basketField"
-            app:layout_constraintTop_toTopOf="@+id/basketField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.176"
-            app:layout_constraintVertical_bias="0.083"
-            android:layout_marginStart="204dp">
+                <TextView
+                        android:id="@+id/alaText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+            <!--endregion ALA-->
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/centroButton"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                android:background="@drawable/shirt"
+            <!--region CENTRO-->
+            <LinearLayout
+                    android:id="@+id/centro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
 
-                android:contentDescription="@string/add_player"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/basketField"
+                    app:layout_constraintStart_toStartOf="@+id/basketField"
+                    app:layout_constraintTop_toTopOf="@+id/basketField"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.176"
+                    app:layout_constraintVertical_bias="0.083"
+                    android:layout_marginStart="204dp">
 
-        <TextView
-                android:id="@+id/centroText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
-    </LinearLayout>
-    <!--endregion CENTRO-->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/centroButton"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:background="@drawable/shirt"
 
-    <!--endregion-->
+                        android:contentDescription="@string/add_player"/>
 
-    <ImageButton
-            android:src="@mipmap/matita"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:id="@+id/modifyButton"
-            android:contentDescription="@string/mod_team_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/basic_margin"
-            android:layout_marginBottom="@dimen/basic_margin"/>
+                <TextView
+                        android:id="@+id/centroText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+            <!--endregion CENTRO-->
 
-    <HorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/basketField"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/basic_margin">
+            <!--endregion-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
-                android:id="@+id/panchina"
-                android:backgroundTint="@color/green_400"
+                android:id="@+id/panchina_firstSection"
+                android:layout_marginTop="@dimen/basic_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
-    </HorizontalScrollView>
 
-    <Button
-            android:id="@+id/salvaFormazioneButton"
-            android:text="@string/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        <LinearLayout
+                android:id="@+id/panchina_SecondSection"
+                android:layout_marginTop="@dimen/basic_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
 
-    <!--    <TextView-->
-    <!--            android:id="@+id/text_dashboard"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="8dp"-->
-    <!--            android:layout_marginTop="8dp"-->
-    <!--            android:layout_marginEnd="8dp"-->
-    <!--            android:textAlignment="center"-->
-    <!--            android:textSize="20sp"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"/>-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+                android:id="@+id/panchina_ThirdSection"
+                android:layout_marginTop="@dimen/basic_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/basic_margin">
+
+            <ImageButton
+                    android:id="@+id/changeRosterButton"
+                    android:src="@mipmap/matita"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="@dimen/basic_margin"
+                    android:contentDescription="@string/mod_team_button"/>
+
+            <Button
+                    android:id="@+id/resetFormazioneButton"
+                    android:text="@string/reset"
+                    android:backgroundTint="@color/darkRed"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_marginEnd="@dimen/basic_margin"
+                    android:layout_height="wrap_content"/>
+
+            <Button
+                    android:id="@+id/salvaFormazioneButton"
+                    android:text="@string/save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!--TODO: forse meglio farlo programmaticamente-->
+</ScrollView>
