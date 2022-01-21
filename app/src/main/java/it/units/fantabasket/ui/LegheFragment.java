@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLegheBinding;
 import it.units.fantabasket.entities.Lega;
@@ -21,20 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.units.fantabasket.MainActivity.user;
-import static it.units.fantabasket.MainActivity.userDataReference;
+import static it.units.fantabasket.MainActivity.*;
 
 public class LegheFragment extends Fragment {
 
     private FragmentLegheBinding binding;
-    private DatabaseReference legheReference;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLegheBinding.inflate(inflater, container, false);
-
-        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
 
         legheReference.addValueEventListener(getLegheValueEventListener());
 
@@ -44,6 +42,26 @@ public class LegheFragment extends Fragment {
         );
 
         return binding.getRoot();
+    }
+
+    public static Lega getLegaFromHashMapParams(HashMap<String, Object> legaParams) {
+        Object numPartecipanti = legaParams.get("numPartecipanti");
+        Object started = legaParams.get("started");
+        String legaType = (String) legaParams.get("tipologia");
+        Object latitude = legaParams.get("latitude");
+        Object longitude = legaParams.get("longitude");
+        //noinspection unchecked
+        return new Lega(
+                (String) legaParams.get("name"),
+                (String) legaParams.get("location"),
+                (latitude != null) ? (Double) latitude : 0,
+                (longitude != null) ? (Double) longitude : 0,
+                (started != null) && (boolean) started,
+                (String) legaParams.get("admin"),
+                (List<String>) legaParams.get("partecipanti"),
+                (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
+                LegaType.valueOf(legaType)
+        );
     }
 
     @SuppressLint("SetTextI18n")
@@ -72,6 +90,7 @@ public class LegheFragment extends Fragment {
                             actionButton.setText("SELEZIONA");
                             actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
                         } else {
+                            //TODO: ordinale in base alla vicinanza
                             numLegheDisponibili++;
                             Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
                             actionButton.setText("UNISCITI");
@@ -107,36 +126,16 @@ public class LegheFragment extends Fragment {
         };
     }
 
-    private void setLegaSelezionataAndReturnToHome(String legaName) {
-        userDataReference.child("legaSelezionata").setValue(legaName);
-        NavHostFragment.findNavController(LegheFragment.this).popBackStack();
-//                                NavHostFragment.findNavController(LegheFragment.this)
-//                                        .navigate(R.id.action_LegheFragment_to_HomeFragment);
-    }
-
     private Button createLegaLayoutAndAddToViewAndReturnActionButton(ViewGroup parent, Lega lega) {
         LegaLayout legaLayout = new LegaLayout(getContext(), lega);
         parent.addView(legaLayout.getLegaHeaderLayout());
         return legaLayout.getActionButton();
     }
 
-    private Lega getLegaFromHashMapParams(HashMap<String, Object> legaParams) {
-        Object numPartecipanti = legaParams.get("numPartecipanti");
-        Object started = legaParams.get("started");
-        String legaType = (String) legaParams.get("tipologia");
-        Object latitude = legaParams.get("latitude");
-        Object longitude = legaParams.get("longitude");
-        //noinspection unchecked
-        return new Lega(
-                (String) legaParams.get("name"),
-                (String) legaParams.get("location"),
-                (latitude != null) ? (Double) latitude : 0,
-                (longitude != null) ? (Double) longitude : 0,
-                (started != null) && (boolean) started,
-                (String) legaParams.get("admin"),
-                (List<String>) legaParams.get("partecipanti"),
-                (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
-                LegaType.valueOf(legaType)
-        );
+    private void setLegaSelezionataAndReturnToHome(String legaName) {
+        userDataReference.child("legaSelezionata").setValue(legaName);
+//        NavHostFragment.findNavController(LegheFragment.this).popBackStack();//generate an error (quando elimina diventa contesto nullo e impazzisce...)
+        NavHostFragment.findNavController(LegheFragment.this)
+                .navigate(R.id.action_LegheFragment_to_HomeFragment);
     }
 }

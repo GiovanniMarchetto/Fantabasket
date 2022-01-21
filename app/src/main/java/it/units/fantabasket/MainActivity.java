@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static FirebaseUser user;
     public static DatabaseReference userDataReference;
+    public static DatabaseReference legheReference;
+    public static int giornataCorrente;
     public static List<String> roster;
 
     @Override
@@ -37,8 +40,26 @@ public class MainActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
         roster = new ArrayList<>(16);
         loadCurrentRoster();
+
+
+        FirebaseDatabase.getInstance().getReference("giornataCorrente").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Integer value = snapshot.getValue(Integer.class);
+                if (value != null) {
+                    giornataCorrente = value;
+                }
+                Log.i("MIO", "GiornataCorrente: " + giornataCorrente);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
 
         it.units.fantabasket.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
