@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static it.units.fantabasket.MainActivity.roster;
+import static it.units.fantabasket.MainActivity.*;
 
 @SuppressWarnings("ConstantConditions")
 public class DashboardFragment extends Fragment {
@@ -33,6 +33,7 @@ public class DashboardFragment extends Fragment {
     private static List<Player> playerList;
     private static HashMap<FieldPositions, Player> selectedPlayerList;
     private static FieldPositions selectedRole;
+    private final int formazioneSize = 12;
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,8 +42,7 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        int panchinaSize = 5;
-        for (int i = 1; i <= panchinaSize; i++) {
+        for (int i = 1; i <= formazioneSize - 5; i++) {
             PlayerOnFieldLayout playerOnFieldLayout = new PlayerOnFieldLayout(getContext(), new Player());
             int finalI = i;
             playerOnFieldLayout.getPlayerButton().setOnClickListener(view -> {
@@ -81,6 +81,24 @@ public class DashboardFragment extends Fragment {
                         .navigate(R.id.action_DashboardFragment_to_PlayerListFragment)
         );
 
+
+        binding.salvaFormazioneButton.setOnClickListener(view -> {
+            if (getCalendarNow().before(orarioInizio)) {
+                if (!selectedPlayerList.containsValue(null)) {
+                    HashMap<String, String> formazione = new HashMap<>(formazioneSize);
+                    for (FieldPositions key : selectedPlayerList.keySet()) {
+                        Log.i("MIO", "chiave : " + key);
+                        formazione.put(key.name(), selectedPlayerList.get(key).getId());
+                    }
+                    userDataReference.child("formazionePerGiornata").child(String.valueOf(giornataCorrente)).setValue(formazione);
+                } else {
+                    Log.i("MIO", "Formazione non completa");
+                }
+            } else {
+                Log.i("MIO", "Tempo scaduto");
+            }
+        });
+
         return root;
     }
 
@@ -91,7 +109,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setPlayerList() {
-        selectedPlayerList = new HashMap<>();
+        selectedPlayerList = new HashMap<>(formazioneSize);
         for (FieldPositions position : FieldPositions.values()) {
             selectedPlayerList.put(position, null);
         }

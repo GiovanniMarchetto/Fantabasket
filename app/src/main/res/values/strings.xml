@@ -47,4 +47,5 @@
     <string name="hometeam">HomeTeam</string>
     <string name="awayteam">AwayTeam</string>
     <string name="next_game">Next Game</string>
+    <string name="save">Save</string>
 </resources>
