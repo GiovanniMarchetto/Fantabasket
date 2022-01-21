@@ -104,6 +104,43 @@ public class PlayerListFragment extends Fragment {
 
         setCompletePlayerList(getActivity(), playerList);
 
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            List<Integer> listOfValues = new ArrayList<>();
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            listOfValues.add(0);
+//            DatabaseReference playerStatisticsRef = FirebaseDatabase.getInstance().getReference("playersStatistics");
+//
+//            playerList.forEach(player -> {
+//                        HashMap<String, Object> playerStatistics = new HashMap<>();
+//                        playerStatistics.put("id", player.getId());
+//                        playerStatistics.put("points", listOfValues);
+//                        playerStatistics.put("fouls", listOfValues);
+//                        playerStatistics.put("rebounds", listOfValues);
+//                        playerStatistics.put("recoverBalls", listOfValues);
+//                        playerStatistics.put("lostBalls", listOfValues);
+//                        playerStatistics.put("voteL", listOfValues);
+//                        playerStatisticsRef.child(player.getId()).setValue(playerStatistics);
+//                    }
+//            );
+//
+//            int size = playerList.size();
+//            Log.e("MIO", "dim "+size);
+//            int sizeD = (int) playerList.stream().distinct().count();
+//            if (size != sizeD) {
+//                Log.e("MIO", "NON SONO IDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+//            }else {
+//                Log.e("MIO", "Tutti cognomi diversi");
+//            }
+//
+//            Log.i("MIO","MANNION: "+playerList.stream().filter(player -> !Objects.equals(player.getId(), "MANNION")).count());
+//            Log.i("MIO","BANKS: "+playerList.stream().filter(player -> !Objects.equals(player.getId(), "BANKS")).count());
+//        }
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             playerList.forEach(
