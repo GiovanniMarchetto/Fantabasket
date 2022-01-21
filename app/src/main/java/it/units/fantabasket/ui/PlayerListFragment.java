@@ -27,8 +27,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.units.fantabasket.MainActivity.roster;
-import static it.units.fantabasket.MainActivity.userDataReference;
+import static it.units.fantabasket.MainActivity.*;
 
 public class PlayerListFragment extends Fragment {
 
@@ -92,11 +91,19 @@ public class PlayerListFragment extends Fragment {
         binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + moneySize);
         binding.roster.setText(getString(R.string.roster) + ": " + newRoster.size() + "/" + rosterSize);
 
+        if (getCalendarNow().after(orarioInizio)) {
+            binding.saveRosterButton.setEnabled(false);
+        }
+
         binding.saveRosterButton.setOnClickListener(view -> {
-                    roster = new ArrayList<>(newRoster);
-                    userDataReference.child("players").setValue(roster);
-                    NavHostFragment.findNavController(PlayerListFragment.this)
-                            .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+                    if (getCalendarNow().after(orarioInizio)) {
+                        binding.saveRosterButton.setEnabled(false);//TODO:messaggino
+                    } else {
+                        roster = new ArrayList<>(newRoster);
+                        userDataReference.child("players").setValue(roster);
+                        NavHostFragment.findNavController(PlayerListFragment.this)
+                                .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+                    }
                 }
         );
 
