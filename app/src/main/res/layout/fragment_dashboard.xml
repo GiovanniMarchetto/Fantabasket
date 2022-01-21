@@ -35,6 +35,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
 
+                    android:gravity="center_horizontal"
                     app:layout_constraintEnd_toEndOf="@+id/basketField"
                     app:layout_constraintStart_toStartOf="@+id/basketField"
                     app:layout_constraintBottom_toBottomOf="@+id/basketField"
@@ -66,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
 
+                    android:gravity="center_horizontal"
                     app:layout_constraintRight_toLeftOf="@+id/basketField"
                     app:layout_constraintBottom_toBottomOf="@+id/basketField"
                     app:layout_constraintEnd_toEndOf="@+id/basketField"
@@ -97,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
 
+                    android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="@+id/basketField"
                     android:layout_marginBottom="184dp"
                     app:layout_constraintStart_toStartOf="@+id/basketField"
@@ -127,6 +130,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
 
+                    android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="@+id/basketField"
                     app:layout_constraintStart_toStartOf="@+id/basketField"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -159,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
 
+                    android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="@+id/basketField"
                     app:layout_constraintStart_toStartOf="@+id/basketField"
                     app:layout_constraintTop_toTopOf="@+id/basketField"
