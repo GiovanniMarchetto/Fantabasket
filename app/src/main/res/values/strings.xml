@@ -43,4 +43,8 @@
     <string name="team_logo_image">Team logo image</string>
     <string name="get">Get</string>
     <string name="start">Start</string>
+    <string name="versus">VS</string>
+    <string name="hometeam">HomeTeam</string>
+    <string name="awayteam">AwayTeam</string>
+    <string name="next_game">Next Game</string>
 </resources>

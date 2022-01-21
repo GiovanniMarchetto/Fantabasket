@@ -10,6 +10,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
@@ -103,7 +106,7 @@ public class HomeFragment extends Fragment {
 
         ActivityResultLauncher<Intent> teamLogoLoaderLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                Utils.getActivityResultCallbackForChangeTeamLogo(requireContext().getContentResolver(), binding.teamLogo));
+                Utils.getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(requireContext().getContentResolver(), binding.teamLogo, true));
 
         //BUTTONS
         binding.modifyButton.setOnClickListener(view -> {
@@ -111,8 +114,6 @@ public class HomeFragment extends Fragment {
             teamLogoIntent.setType("image/*");
             teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);
             teamLogoLoaderLauncher.launch(teamLogoIntent);
-            //save file in db
-            userDataReference.child("teamLogo").setValue(Utils.teamLogoBase64);
         });
 
         binding.changeLegaButton.setOnClickListener(view ->
@@ -125,6 +126,7 @@ public class HomeFragment extends Fragment {
 
     private void setLegaSelezionataValueEventListener() {
         legaSelezionataListener = new ValueEventListener() {
+            @SuppressWarnings("ConstantConditions")
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 @SuppressWarnings("unchecked") HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
@@ -135,28 +137,79 @@ public class HomeFragment extends Fragment {
                 binding.legaStartOption.setText(start);
 
                 boolean isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
-                boolean isNotStarted = !lega.isStarted();
-                binding.startLeagueButton.setVisibility((isNotStarted && isUserTheAdminOfLeague) ? View.VISIBLE : View.GONE);
-
-                boolean enableStart = isUserTheAdminOfLeague && isNotStarted &&
-                        ((lega.getTipologia() == LegaType.CALENDARIO && lega.getPartecipanti().size() == lega.getNumPartecipanti())
-                                || (lega.getTipologia() == LegaType.FORMULA1 && lega.getPartecipanti().size() > 1));
-                binding.startLeagueButton.setEnabled(enableStart);
-
-                if (enableStart) {
-                    binding.startLeagueButton.setOnClickListener(view -> {
-                        legheReference.child(legaSelezionata).child("started").setValue(true);
-                        if (lega.getTipologia() == LegaType.CALENDARIO) {
-                            HashMap<String, List<Pair<String, String>>> campionato = getCampionato(lega.getPartecipanti());
-                            legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
+                if (lega.isStarted()) {
+                    if (lega.getTipologia() == LegaType.CALENDARIO) {
+                        @SuppressWarnings("unchecked") HashMap<String, List<HashMap<String, String>>> calendario = (HashMap<String, List<HashMap<String, String>>>) legaParams.get("calendario");
+                        assert calendario != null;
+                        List<HashMap<String, String>> partiteDellaGiornata = calendario.get("giornata_" + giornataCorrente);
+                        Pair<String, String> partitaMy = null;
+                        assert partiteDellaGiornata != null;
+                        for (HashMap<String, String> partita : partiteDellaGiornata) {
+                            if (partita.get("first").equals(user.getUid()) || partita.get("second").equals(user.getUid())) {
+                                partitaMy = new Pair<>(partita.get("first"), partita.get("second"));
+                                break;
+                            }
                         }
-                    });
+
+                        assert partitaMy != null;
+                        FirebaseDatabase.getInstance().getReference("users").child(partitaMy.first).addValueEventListener(
+                                getPlayerListener(binding.logoHome, binding.teamHome));
+
+                        FirebaseDatabase.getInstance().getReference("users").child(partitaMy.second).addValueEventListener(
+                                getPlayerListener(binding.logoAway, binding.teamAway));
+
+                    } else {
+//TODO: scegli cosa mostrare nel caso di modalità formula1
+                        Log.i("MIO", "modalità formula 1");
+                    }
+
+                    binding.nextGameLayout.setVisibility((lega.getTipologia() == LegaType.CALENDARIO) ? View.VISIBLE : View.GONE);
+//                    binding.myTeamLayout.setVisibility((lega.getTipologia() == LegaType.FORMULA1) ?View.VISIBLE  : View.GONE);
+                } else {
+                    binding.startLeagueButton.setVisibility(isUserTheAdminOfLeague ? View.VISIBLE : View.GONE);
+
+                    boolean enableStart = isUserTheAdminOfLeague &&
+                            (
+                                    (lega.getTipologia() == LegaType.CALENDARIO && lega.getPartecipanti().size() == lega.getNumPartecipanti())
+                                            || (lega.getTipologia() == LegaType.FORMULA1 && lega.getPartecipanti().size() > 1)
+                            );
+                    binding.startLeagueButton.setEnabled(enableStart);
+
+                    if (enableStart) {
+                        binding.startLeagueButton.setOnClickListener(view -> {
+                            legheReference.child(legaSelezionata).child("started").setValue(true);
+                            if (lega.getTipologia() == LegaType.CALENDARIO) {
+                                HashMap<String, List<Pair<String, String>>> campionato = getCampionato(lega.getPartecipanti());
+                                legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
+                            }
+                        });
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 Log.w("ERROR", "legaSelezionataIn leghe:onCancelled", error.toException());
+            }
+        };
+    }
+
+    @NotNull
+    private ValueEventListener getPlayerListener(ImageView imageView, TextView textView) {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                @SuppressWarnings("unchecked") HashMap<String, Object> user = (HashMap<String, Object>) snapshot.getValue();
+                assert user != null;
+                byte[] decodedString = Base64.decode((String) user.get("teamLogo"), Base64.NO_WRAP);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                imageView.setImageBitmap(decodedByte);
+                textView.setText((String) user.get("teamName"));
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
             }
         };
     }
@@ -175,7 +228,6 @@ public class HomeFragment extends Fragment {
 
         HashMap<String, List<Pair<String, String>>> campionato = new HashMap<>();
 
-        //andata
         for (int i = 1; i <= allGiornate / 2; i++) {
             int j = i + allGiornate / 2;
             List<Pair<String, String>> partiteAndata = new ArrayList<>(coppieTotaliPerGiornata);

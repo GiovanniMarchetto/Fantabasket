@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="pannaOrange">#FFD180</color>
     <color name="esteco">#133A53</color>
     <color name="darkRed">#7E0E0E</color>
     <color name="green_400">#66BB6A</color>

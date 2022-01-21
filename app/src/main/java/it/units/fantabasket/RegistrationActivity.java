@@ -50,7 +50,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         ActivityResultLauncher<Intent> teamLogoLoaderLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                Utils.getActivityResultCallbackForChangeTeamLogo(getContentResolver(), binding.teamLogoImage));
+                Utils.getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(getContentResolver(), binding.teamLogoImage, false));
 
         binding.teamLogoButton.setOnClickListener(view -> {
             Intent teamLogoIntent = new Intent();

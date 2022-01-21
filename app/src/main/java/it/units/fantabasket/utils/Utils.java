@@ -17,11 +17,13 @@ import androidx.activity.result.ActivityResultCallback;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static it.units.fantabasket.MainActivity.userDataReference;
+
 public class Utils {
 
     public static String teamLogoBase64;
 
-    public static ActivityResultCallback<ActivityResult> getActivityResultCallbackForChangeTeamLogo(ContentResolver contentResolver, ImageView imageView) {
+    public static ActivityResultCallback<ActivityResult> getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(ContentResolver contentResolver, ImageView imageView, boolean saveInDB) {
         return result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -36,18 +38,7 @@ public class Utils {
 
                             //compress bitmap
                             int maxSize = 200; //kB
-                            float width = original.getWidth();
-                            float height = original.getHeight();
-                            float bitmapRatio = width / height;
-                            if (bitmapRatio > 1) {
-                                width = maxSize;
-                                height = (width / bitmapRatio);
-                            } else {
-                                height = maxSize;
-                                width = (height * bitmapRatio);
-                            }
-                            Bitmap bitmap = Bitmap.createScaledBitmap(original,
-                                    (int) width, (int) height, true);
+                            Bitmap bitmap = Bitmap.createScaledBitmap(original, maxSize, maxSize, true);
 
                             //from bitmap to base64
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -55,8 +46,12 @@ public class Utils {
                             byte[] imageBytes = baos.toByteArray();
                             teamLogoBase64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
 
+                            if (saveInDB) {
+                                userDataReference.child("teamLogo").setValue(Utils.teamLogoBase64);
+                            }
+
                             imageView.setImageBitmap(bitmap);
-                            Log.i("DATI", "prima: " + original.getByteCount() + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
+                            Log.i("MIO", "LOGO-- prima: " + original.getByteCount() + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

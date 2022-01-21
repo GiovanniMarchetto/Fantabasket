@@ -8,7 +8,7 @@
         android:padding="@dimen/min_touch_48dp"
         android:id="@+id/registrationConstraintLayout"
         tools:context=".RegistrationActivity">
-
+<!--TODO:scroll layout-->
     <LinearLayout
             android:id="@+id/linearLayoutForUserData"
             android:orientation="vertical"
