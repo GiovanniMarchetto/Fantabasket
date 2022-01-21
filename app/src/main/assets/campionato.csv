@@ -1,7 +1,15 @@
-1,Trieste - Napoli,Milano - Venezia,Brindisi - Trento,Tortona - Bologna_v
-2,Napoli - Tortona, Bologna_v - Brindisi, Trento - Milano, Venezia - Trieste
-3,Milano - Bologna_v, Brindisi - Napoli, Tortona - Trieste, Trento - Venezia
-4,Trieste - Brindisi, Napoli - Milano, Bologna_v - Trento, Venezia - Tortona
-5,Milano - Trieste, Brindisi - Tortona, Bologna_v - Venezia, Trento - Napoli
-6,Trieste - Trento, Napoli - Bologna_v, Brindisi - Venezia, Tortona - Milano
-7,Milano - Brindisi, Bologna_v - Trieste, Trento - Tortona, Venezia - Napoli
+
+1,Trieste-Napoli,Milano-Venezia,Brindisi-Trento,Tortona-Bologna_v
+2,Napoli-Tortona,Bologna_v-Brindisi,Trento-Milano,Venezia-Trieste
+3,Milano-Bologna_v,Brindisi-Napoli,Tortona-Trieste,Trento-Venezia
+4,Trieste-Brindisi,Napoli-Milano,Bologna_v-Trento,Venezia-Tortona
+5,Milano-Trieste,Brindisi-Tortona,Bologna_v-Venezia,Trento-Napoli
+6,Trieste-Trento,Napoli-Bologna_v,Brindisi-Venezia,Tortona-Milano
+7,Milano-Brindisi,Bologna_v-Trieste,Trento-Tortona,Venezia-Napoli
+8,Napoli-Trieste,Venezia-Milano,Trento-Brindisi,Bologna_v-Tortona
+9,Tortona-Napoli,Brindisi-Bologna_v,Milano-Trento,Trieste-Venezia
+10,Bologna_v-Milano,Napoli-Brindisi,Trieste-Tortona,Venezia-Trento
+11,Brindisi-Trieste,Milano-Napoli,Trento-Bologna_v,Tortona-Venezia
+12,Trieste-Milano,Tortona-Brindisi,Venezia-Bologna_v,Napoli-Trento
+13,Trento-Trieste,Bologna_v-Napoli,Venezia-Brindisi,Milano-Tortona
+14,Brindisi-Milano,Trieste-Bologna_v,Tortona-Trento,Napoli-Venezia
