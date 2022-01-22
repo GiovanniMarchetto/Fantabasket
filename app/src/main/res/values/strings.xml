@@ -64,4 +64,7 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="calcolo_giornata">Calcolo giornata</string>
+    <string name="primo_posto">1º</string>
+    <string name="zero_punti">0 punti</string>
 </resources>

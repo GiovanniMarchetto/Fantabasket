@@ -36,10 +36,10 @@
         </LinearLayout>
 
         <LinearLayout
+                android:id="@+id/nextGameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/nextGameLayout"
                 android:background="@color/pannaOrange"
                 android:gravity="center">
 
@@ -122,6 +122,14 @@
 
         </LinearLayout>
 
+        <Button
+                android:id="@+id/calcoloGiornataButton"
+                android:enabled="false"
+                android:visibility="gone"
+                android:text="@string/calcolo_giornata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         <LinearLayout
                 android:id="@+id/myTeamLayout"
                 android:layout_width="match_parent"
@@ -129,6 +137,14 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/min_touch_48dp"
                 android:gravity="center">
+
+            <TextView
+                    android:id="@+id/posizioneInClassifica"
+                    android:text="@string/primo_posto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="20sp"/>
 
             <ImageView
                     android:src="@drawable/logo_fanta"
@@ -139,10 +155,18 @@
                     android:contentDescription="@string/team_logo"/>
 
             <TextView
+                    android:id="@+id/teamName"
                     android:text="@string/team_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/teamName"
+                    android:textAlignment="center"
+                    android:textSize="20sp"/>
+
+            <TextView
+                    android:id="@+id/totalePunti"
+                    android:text="@string/zero_punti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:textSize="20sp"/>
 

@@ -8,11 +8,18 @@ public class Game {
     public int homePoints;
     public int awayPoints;
 
-    public Game(String homeId, String awayId) {
-        this.homeUserId = homeId;
-        this.awayUserId = awayId;
+    public Game(String homeUserId, String awayUserId) {
+        this.homeUserId = homeUserId;
+        this.awayUserId = awayUserId;
         this.homePoints = 0;
         this.awayPoints = 0;
+    }
+
+    public Game(String homeUserId, String awayUserId, int homePoints, int awayPoints) {
+        this.homeUserId = homeUserId;
+        this.awayUserId = awayUserId;
+        this.homePoints = homePoints;
+        this.awayPoints = awayPoints;
     }
 
     public String getHomeUserId() {
