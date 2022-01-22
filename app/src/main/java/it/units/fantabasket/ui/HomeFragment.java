@@ -25,6 +25,7 @@ import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.LegaType;
+import it.units.fantabasket.enums.Team;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
@@ -219,7 +220,7 @@ public class HomeFragment extends Fragment {
     }
 
     private HashMap<String, List<Game>> getCampionato(List<String> players) {
-        int allGiornate = 14;//TODO: totale squadre
+        int allGiornate = (Team.values().length - 1) * 2;
         int coppieTotaliPerGiornata = (players.size() - players.size() % 2) / 2;// TODO: rendi possibile che con il calendario si possa fare solo in pari
 
         List<Game> allCouples = new ArrayList<>();
