@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
+import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.utils.Utils;
@@ -139,24 +139,28 @@ public class HomeFragment extends Fragment {
                 boolean isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
                 if (lega.isStarted()) {
                     if (lega.getTipologia() == LegaType.CALENDARIO) {
-                        @SuppressWarnings("unchecked") HashMap<String, List<HashMap<String, String>>> calendario = (HashMap<String, List<HashMap<String, String>>>) legaParams.get("calendario");
-                        assert calendario != null;
+                        @SuppressWarnings("unchecked")
+                        HashMap<String, List<HashMap<String, String>>> calendario =
+                                (HashMap<String, List<HashMap<String, String>>>) legaParams.get("calendario");
                         List<HashMap<String, String>> partiteDellaGiornata = calendario.get("giornata_" + giornataCorrente);
-                        Pair<String, String> partitaMy = null;
-                        assert partiteDellaGiornata != null;
                         for (HashMap<String, String> partita : partiteDellaGiornata) {
-                            if (partita.get("first").equals(user.getUid()) || partita.get("second").equals(user.getUid())) {
-                                partitaMy = new Pair<>(partita.get("first"), partita.get("second"));
+
+                            String homeUserId = partita.get("homeUserId");
+                            String awayUserId = partita.get("awayUserId");
+
+                            if (homeUserId.equals(user.getUid()) || awayUserId.equals(user.getUid())) {
+
+                                Game userGame = new Game(homeUserId, awayUserId);
+
+                                FirebaseDatabase.getInstance().getReference("users").child(userGame.homeUserId).addValueEventListener(
+                                        getPlayerListener(binding.logoHome, binding.teamHome));
+
+                                FirebaseDatabase.getInstance().getReference("users").child(userGame.awayUserId).addValueEventListener(
+                                        getPlayerListener(binding.logoAway, binding.teamAway));
                                 break;
                             }
                         }
 
-                        assert partitaMy != null;
-                        FirebaseDatabase.getInstance().getReference("users").child(partitaMy.first).addValueEventListener(
-                                getPlayerListener(binding.logoHome, binding.teamHome));
-
-                        FirebaseDatabase.getInstance().getReference("users").child(partitaMy.second).addValueEventListener(
-                                getPlayerListener(binding.logoAway, binding.teamAway));
 
                     } else {
 //TODO: scegli cosa mostrare nel caso di modalità formula1
@@ -179,7 +183,7 @@ public class HomeFragment extends Fragment {
                         binding.startLeagueButton.setOnClickListener(view -> {
                             legheReference.child(legaSelezionata).child("started").setValue(true);
                             if (lega.getTipologia() == LegaType.CALENDARIO) {
-                                HashMap<String, List<Pair<String, String>>> campionato = getCampionato(lega.getPartecipanti());
+                                HashMap<String, List<Game>> campionato = getCampionato(lega.getPartecipanti());
                                 legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
                             }
                         });
@@ -214,32 +218,32 @@ public class HomeFragment extends Fragment {
         };
     }
 
-    private HashMap<String, List<Pair<String, String>>> getCampionato(List<String> players) {
+    private HashMap<String, List<Game>> getCampionato(List<String> players) {
         int allGiornate = 14;//TODO: totale squadre
         int coppieTotaliPerGiornata = (players.size() - players.size() % 2) / 2;// TODO: rendi possibile che con il calendario si possa fare solo in pari
 
-        List<Pair<String, String>> allCouples = new ArrayList<>();
+        List<Game> allCouples = new ArrayList<>();
 
         for (int i = 0; i < players.size() - 1; i++) {
             for (int j = i + 1; j < players.size(); j++) {
-                allCouples.add(new Pair<>(players.get(i), players.get(j)));
+                allCouples.add(new Game(players.get(i), players.get(j)));
             }
         }
 
-        HashMap<String, List<Pair<String, String>>> campionato = new HashMap<>();
+        HashMap<String, List<Game>> campionato = new HashMap<>();
 
         for (int i = 1; i <= allGiornate / 2; i++) {
             int j = i + allGiornate / 2;
-            List<Pair<String, String>> partiteAndata = new ArrayList<>(coppieTotaliPerGiornata);
-            List<Pair<String, String>> partiteRitorno = new ArrayList<>(coppieTotaliPerGiornata);
+            List<Game> partiteAndata = new ArrayList<>(coppieTotaliPerGiornata);
+            List<Game> partiteRitorno = new ArrayList<>(coppieTotaliPerGiornata);
             List<String> giocatoriPresentiNelTurno = new ArrayList<>();
 
-            for (Pair<String, String> couple : allCouples) {
-                if (!giocatoriPresentiNelTurno.contains(couple.first) && !giocatoriPresentiNelTurno.contains(couple.second)) {
-                    giocatoriPresentiNelTurno.add(couple.first);
-                    giocatoriPresentiNelTurno.add(couple.second);
+            for (Game couple : allCouples) {
+                if (!giocatoriPresentiNelTurno.contains(couple.homeUserId) && !giocatoriPresentiNelTurno.contains(couple.awayUserId)) {
+                    giocatoriPresentiNelTurno.add(couple.homeUserId);
+                    giocatoriPresentiNelTurno.add(couple.awayUserId);
                     partiteAndata.add(couple);
-                    Pair<String, String> coupleReturn = new Pair<>(couple.second, couple.first);
+                    Game coupleReturn = new Game(couple.awayUserId, couple.homeUserId);
                     partiteRitorno.add(coupleReturn);
                 }
             }
@@ -257,8 +261,8 @@ public class HomeFragment extends Fragment {
 
 //        for (String key:campionato.keySet()) {
 //            Log.i("CAMPIONATO", key);
-//            for (Pair<String, String> partita:campionato.get(key)) {
-//                Log.i("CAMPIONATO", "               " + partita.first + " - " + partita.second);
+//            for (Game partita:campionato.get(key)) {
+//                Log.i("CAMPIONATO", "               " + partita.homeUserId + " - " + partita.awayUserId);
 //            }
 //        }
 
