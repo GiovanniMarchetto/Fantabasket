@@ -1,7 +1,6 @@
 package it.units.fantabasket.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -28,7 +25,6 @@ import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
-import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -106,18 +102,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-        ActivityResultLauncher<Intent> teamLogoLoaderLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                Utils.getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(requireContext().getContentResolver(), binding.teamLogo, true));
-
         //BUTTONS
-        binding.changeLogoButton.setOnClickListener(view -> {
-            Intent teamLogoIntent = new Intent();
-            teamLogoIntent.setType("image/*");
-            teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);
-            teamLogoLoaderLauncher.launch(teamLogoIntent);
-        });
 
         binding.changeLegaButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(HomeFragment.this)

@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.LoginActivity;
 import it.units.fantabasket.databinding.FragmentNotificationsBinding;
+import it.units.fantabasket.utils.Utils;
 
 import static it.units.fantabasket.MainActivity.user;
 
@@ -29,6 +30,17 @@ public class NotificationsFragment extends Fragment {
 
         binding.exitButton.setOnClickListener(view -> returnToLogin());
 
+        ActivityResultLauncher<Intent> teamLogoLoaderLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                Utils.getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(
+                        requireContext().getContentResolver(), binding.teamLogo, true));
+
+        binding.changeLogoButton.setOnClickListener(view -> {
+            Intent teamLogoIntent = new Intent();
+            teamLogoIntent.setType("image/*");
+            teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);
+            teamLogoLoaderLauncher.launch(teamLogoIntent);
+        });
         return root;
     }
 
