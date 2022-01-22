@@ -1,5 +1,6 @@
 package it.units.fantabasket.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,11 +33,9 @@ import static it.units.fantabasket.MainActivity.*;
 public class DashboardFragment extends Fragment {
 
     private static List<Player> playerList;
-    private static HashMap<FieldPositions, Player> selectedPlayerList;
+    private static HashMap<FieldPositions, Player> formazione;
     private static FieldPositions selectedRole;
     private final int formazioneSize = 12;
-    private final int postiPanchinaPrimaSezione = 3;
-    private final int postiPanchinaSecondaSezione = 2;
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,9 +52,11 @@ public class DashboardFragment extends Fragment {
                         showBottomSheet(playerOnFieldLayout.getPlayerButton(), playerOnFieldLayout.getPlayerTextView());
                     }
             );
-            if (i < 4) {
+            int postiPanchinaSecondaSezione = 2;
+            int postiPanchinaPrimaSezione = 3;
+            if (i <= postiPanchinaPrimaSezione) {
                 binding.panchinaFirstSection.addView(playerOnFieldLayout.getPlayerLayout());
-            } else if (i < 6) {
+            } else if (i <= postiPanchinaPrimaSezione + postiPanchinaSecondaSezione) {
                 binding.panchinaSecondSection.addView(playerOnFieldLayout.getPlayerLayout());
             } else {
                 binding.panchinaThirdSection.addView(playerOnFieldLayout.getPlayerLayout());
@@ -92,11 +94,11 @@ public class DashboardFragment extends Fragment {
 
         binding.salvaFormazioneButton.setOnClickListener(view -> {
             if (getCalendarNow().before(orarioInizio)) {
-                if (!selectedPlayerList.containsValue(null)) {
+                if (!formazione.containsValue(null)) {
                     HashMap<String, String> formazione = new HashMap<>(formazioneSize);
-                    for (FieldPositions key : selectedPlayerList.keySet()) {
+                    for (FieldPositions key : DashboardFragment.formazione.keySet()) {
                         Log.i("MIO", "chiave : " + key);
-                        formazione.put(key.name(), selectedPlayerList.get(key).getId());
+                        formazione.put(key.name(), DashboardFragment.formazione.get(key).getId());
                     }
                     userDataReference.child("formazionePerGiornata").child(String.valueOf(giornataCorrente)).setValue(formazione);
                 } else {
@@ -117,9 +119,9 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setPlayerList() {
-        selectedPlayerList = new HashMap<>(formazioneSize);
+        formazione = new HashMap<>(formazioneSize);
         for (FieldPositions position : FieldPositions.values()) {
-            selectedPlayerList.put(position, null);
+            formazione.put(position, null);
         }
 
         playerList = new ArrayList<>();
@@ -135,6 +137,7 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void showBottomSheet(Button playerButton, TextView playerName) {
         Context context = getContext();
         if (context == null) {
@@ -142,29 +145,41 @@ public class DashboardFragment extends Fragment {
         }
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
+        ScrollView scrollView = new ScrollView(context);
         LinearLayout playersLayout = new LinearLayout(context);
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         playersLayout.setLayoutParams(params);
         playersLayout.setOrientation(LinearLayout.VERTICAL);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            playerList.stream()
-                    .filter(player -> !selectedPlayerList.containsValue(player))
-                    .forEach(
-                            player -> {
-                                PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(context, player);
-                                playerLayout.setOnClickListener(view -> {
-                                    occupyPositionField(playerButton, playerName, player);
-                                    bottomSheetDialog.dismiss();
-                                });
-                                playerLayout.setLayoutParams(params);
-                                playersLayout.addView(playerLayout.getPlayerLayout());
-                            }
-                    );
+        for (Player player : playerList) {
+            if (!formazione.containsValue(player)) {
+                PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(context, player);
+                playerLayout.setOnClickListener(view -> {
+                    occupyPositionField(playerButton, playerName, player);
+                    bottomSheetDialog.dismiss();
+                });
+                playerLayout.setLayoutParams(params);
+                playersLayout.addView(playerLayout.getPlayerLayout());
+            }
         }
 
-        bottomSheetDialog.setContentView(playersLayout);
+        //add remove button
+        Player emptyPlayer = new Player();
+        PlayerLayoutHorizontal emptyPlayerLayout = new PlayerLayoutHorizontal(context, emptyPlayer);
+        final LinearLayout subLayout = (LinearLayout) emptyPlayerLayout.getPlayerLayout().getChildAt(2);
+        TextView textView = (TextView) subLayout.getChildAt(0);
+        textView.setText("RIMUOVI");
+        emptyPlayerLayout.setOnClickListener(view -> {
+            occupyPositionField(playerButton, playerName, emptyPlayer);
+            formazione.put(selectedRole, null);
+            bottomSheetDialog.dismiss();
+        });
+        emptyPlayerLayout.setLayoutParams(params);
+        playersLayout.addView(emptyPlayerLayout.getPlayerLayout());
+
+        scrollView.addView(playersLayout);
+        bottomSheetDialog.setContentView(scrollView);
         bottomSheetDialog.show();
     }
 
@@ -174,8 +189,6 @@ public class DashboardFragment extends Fragment {
         playerButton.setBackground(getContext().getDrawable(player.getShirt()));
         playerName.setText(player.getId());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            selectedPlayerList.replace(selectedRole, player);
-        }
+        formazione.put(selectedRole, player);
     }
 }
