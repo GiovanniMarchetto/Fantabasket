@@ -14,7 +14,19 @@
         <!-- Customize your theme here. -->
 
         <!--Rimuovere la action bar di default-->
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <!--        <item name="windowActionBar">false</item>-->
+        <!--        <item name="windowNoTitle">true</item>-->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
     </style>
+
+
+    <!--    <style name="Theme.Fantabasket.NoActionBar">-->
+    <!--        <item name="windowActionBar">false</item>-->
+    <!--        <item name="windowNoTitle">true</item>-->
+    <!--    </style>-->
+    <!--    <style name="Theme.Fantabasket.AppBarOverlay"-->
+    <!--           parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
+    <!--    <style name="Theme.Fantabasket.PopupOverlay"-->
+    <!--           parent="ThemeOverlay.AppCompat.Light"/>-->
 </resources>

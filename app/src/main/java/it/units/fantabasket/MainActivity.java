@@ -1,14 +1,21 @@
 package it.units.fantabasket;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -28,6 +35,34 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar orarioInizio;
     public static List<String> roster;
     public static int ultimaGiornata;
+
+    private boolean preferencesChanged = true;
+    // called when the user changes the app's preferences
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
+            (sharedPreferences, key) -> {
+                preferencesChanged = true;
+
+                if (key.equals("theme")) {
+                    String theme = setTheme(sharedPreferences);
+                    Toast.makeText(MainActivity.this, theme, Toast.LENGTH_SHORT).show();
+                }
+
+            };
+
+    @NotNull
+    private String setTheme(SharedPreferences sharedPreferences) {
+        String theme = sharedPreferences.getString("theme", null);
+
+        switch (theme) {
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+        }
+        return theme;
+    }
 
     public static Calendar getCalendarNow() {
         final String italyId = "Europe/Rome";
@@ -113,37 +148,42 @@ public class MainActivity extends AppCompatActivity {
         loadCurrentRoster();
 
 
-//        FirebaseDatabase.getInstance().getReference("giornataCorrente").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                Integer value = snapshot.getValue(Integer.class);
-//                if (value != null) {
-//                    giornataCorrente = value;
-//                }
-//                Log.i("MIO", "GiornataCorrente: " + giornataCorrente);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//
-//            }
-//        });
-
         it.units.fantabasket.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.addOnBackStackChangedListener(() -> Log.i("MIO-BS","Numero di fragment: "+fragmentManager.getBackStackEntryCount()));
-
-//        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-//                .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+
+        //preferences
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+
+        PreferenceManager.getDefaultSharedPreferences(this).
+                registerOnSharedPreferenceChangeListener(
+                        preferencesChangeListener);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (preferencesChanged) {
+            setTheme(PreferenceManager.getDefaultSharedPreferences(this));
+            preferencesChanged = false;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.top_main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent preferencesIntent = new Intent(this, SettingsActivity.class);
+        startActivity(preferencesIntent);
+        return super.onOptionsItemSelected(item);
+    }
 }
