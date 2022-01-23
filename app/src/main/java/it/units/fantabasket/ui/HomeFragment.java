@@ -28,6 +28,7 @@ import it.units.fantabasket.enums.Team;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -317,27 +318,24 @@ public class HomeFragment extends Fragment {
         return vote[0];
     }
 
-    private double getFactorPositionOnField(FieldPositions fieldPositions) {
-        switch (fieldPositions) {
-            case PLAYMAKER:
-            case GUARDIA_DX:
-            case GUARDIA_SX:
-            case CENTRO:
-            case ALA:
-                return 1;
-            case PANCHINA_1:
-            case PANCHINA_2:
-            case PANCHINA_3:
-                return 3.0 / 4.0;
-            case PANCHINA_4:
-            case PANCHINA_5:
-                return 2.0 / 4.0;
-            case PANCHINA_6:
-            case PANCHINA_7:
-                return 1.0 / 4.0;
-            default:
-                return 0;
+    private double getFactorPositionOnField(FieldPositions fieldPosition) {
+        List<FieldPositions> onField = Arrays.asList(FieldPositions.PLAYMAKER, FieldPositions.GUARDIA_DX,
+                FieldPositions.GUARDIA_SX, FieldPositions.CENTRO, FieldPositions.ALA);
+        List<FieldPositions> firstChangeList = Arrays.asList(FieldPositions.PANCHINA_1, FieldPositions.PANCHINA_2,
+                FieldPositions.PANCHINA_3);
+        List<FieldPositions> secondChangeList = Arrays.asList(FieldPositions.PANCHINA_4, FieldPositions.PANCHINA_5);
+        List<FieldPositions> thirdChangeList = Arrays.asList(FieldPositions.PANCHINA_6, FieldPositions.PANCHINA_7);
+
+        if (onField.contains(fieldPosition)) {
+            return 1;
+        } else if (firstChangeList.contains(fieldPosition)) {
+            return 3.0 / 4.0;
+        } else if (secondChangeList.contains(fieldPosition)) {
+            return 2.0 / 4.0;
+        } else if (thirdChangeList.contains(fieldPosition)) {
+            return 1.0 / 4.0;
         }
+        return 0;
     }
 
     @NotNull
