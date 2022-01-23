@@ -9,6 +9,7 @@ android {
 //    buildToolsVersion '27.0.3'
 
     sourceSets {
+        main.res.srcDirs += 'src/main/res'
         main.res.srcDirs += 'src/main/resShirts'
     }
 
@@ -19,7 +20,7 @@ android {
     defaultConfig {
         applicationId "it.units.fantabasket"
         minSdk 21
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
