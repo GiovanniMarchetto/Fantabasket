@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/min_touch_48dp"
+        android:padding="@dimen/basic_margin_16dp"
         tools:context=".AccessActivity">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:text="@string/login"
                     android:gravity="end"
                     android:layout_weight="1"/>
@@ -33,7 +33,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:text="@string/register"
                     android:layout_weight="1"/>
         </LinearLayout>
@@ -48,7 +48,7 @@
             <TextView
                     android:id="@+id/userDataTitle"
                     android:text="@string/user_data"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:textAlignment="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -56,7 +56,7 @@
             <EditText
                     android:id="@+id/userEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/base_element"
+                    android:layout_height="@dimen/min_touch_48dp"
                     android:inputType="textEmailAddress"
                     android:ems="10"
                     android:hint="@string/email"
@@ -65,7 +65,7 @@
             <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/base_element"
+                    android:layout_height="@dimen/min_touch_48dp"
                     android:inputType="textPassword"
                     android:ems="10"
                     android:hint="@string/password"

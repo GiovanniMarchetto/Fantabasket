@@ -22,7 +22,7 @@
         <TextView
                 android:id="@+id/title_leghe_partecipate"
                 android:text="@string/leghe_a_cui_partecipi"
-                android:textSize="@dimen/base_text_size_20"
+                android:textSize="@dimen/text_size_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/basic_margin">
+                android:paddingBottom="@dimen/basic_margin_16dp">
 
             <TextView
                     android:id="@+id/nessunaLegaPartecipata"
@@ -46,7 +46,7 @@
         <TextView
                 android:id="@+id/title_leghe_disponibili"
                 android:text="@string/leghe_disponibili"
-                android:textSize="@dimen/base_text_size_20"
+                android:textSize="@dimen/text_size_20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

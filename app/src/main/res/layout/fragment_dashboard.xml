@@ -196,21 +196,21 @@
 
         <LinearLayout
                 android:id="@+id/panchina_firstSection"
-                android:layout_marginTop="@dimen/basic_margin"
+                android:layout_marginTop="@dimen/basic_margin_16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
 
         <LinearLayout
                 android:id="@+id/panchina_SecondSection"
-                android:layout_marginTop="@dimen/basic_margin"
+                android:layout_marginTop="@dimen/basic_margin_16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
 
         <LinearLayout
                 android:id="@+id/panchina_ThirdSection"
-                android:layout_marginTop="@dimen/basic_margin"
+                android:layout_marginTop="@dimen/basic_margin_16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
@@ -220,14 +220,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
-                android:padding="@dimen/basic_margin">
+                android:padding="@dimen/basic_margin_16dp">
 
             <ImageButton
                     android:id="@+id/changeRosterButton"
                     android:src="@mipmap/matita"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="@dimen/basic_margin"
+                    android:layout_marginEnd="@dimen/basic_margin_16dp"
                     android:contentDescription="@string/mod_team_button"/>
 
             <!--            <Button-->

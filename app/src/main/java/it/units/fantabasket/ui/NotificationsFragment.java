@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
-import it.units.fantabasket.LoginActivity;
+import it.units.fantabasket.AccessActivity;
 import it.units.fantabasket.databinding.FragmentNotificationsBinding;
 import it.units.fantabasket.utils.Utils;
 
@@ -53,7 +53,7 @@ public class NotificationsFragment extends Fragment {
     private void returnToLogin() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
-        Intent intent = new Intent(getContext(), LoginActivity.class);
+        Intent intent = new Intent(getContext(), AccessActivity.class);
         startActivity(intent);
 //        finish();
     }

@@ -46,7 +46,7 @@
             <TextView
                     android:id="@+id/nextGameTitle"
                     android:text="@string/next_game"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"/>
@@ -76,7 +76,7 @@
                     <TextView
                             android:id="@+id/teamHome"
                             android:text="@string/hometeam"
-                            android:textSize="@dimen/base_text_size_20"
+                            android:textSize="@dimen/text_size_20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"/>
@@ -112,7 +112,7 @@
                     <TextView
                             android:id="@+id/teamAway"
                             android:text="@string/awayteam"
-                            android:textSize="@dimen/base_text_size_20"
+                            android:textSize="@dimen/text_size_20"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
@@ -181,7 +181,7 @@
 
             <TextView
                     android:id="@+id/legaNameOption"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -189,7 +189,7 @@
 
             <TextView
                     android:id="@+id/legaStartOption"
-                    android:textSize="@dimen/base_text_size_20"
+                    android:textSize="@dimen/text_size_20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
