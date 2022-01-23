@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".RegistrationFragment"
+        tools:context=".ui.access.RegistrationFragment"
 
         android:id="@+id/linearLayoutForUserTeam"
         android:orientation="vertical">

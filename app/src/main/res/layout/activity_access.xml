@@ -73,7 +73,7 @@
 
             <fragment
                     android:id="@+id/access_fragment_container"
-                    android:name="it.units.fantabasket.LoginFragment"
+                    android:name="it.units.fantabasket.ui.access.LoginFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:layout="@layout/fragment_login"/>

@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityAccessBinding;
+import it.units.fantabasket.ui.access.LoginFragment;
+import it.units.fantabasket.ui.access.RegistrationFragment;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 
