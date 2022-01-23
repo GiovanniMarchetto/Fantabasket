@@ -11,6 +11,7 @@ public class Lega {
     private final double latitude;
     private final double longitude;
     private final boolean started;
+    private final int giornataInizio;
     private final String admin;
     private final List<String> partecipanti;
     private final int numPartecipanti;
@@ -23,6 +24,7 @@ public class Lega {
         this.latitude = latitude;
         this.longitude = longitude;
         this.started = false;
+        this.giornataInizio = 0;
         this.admin = admin;
         this.numPartecipanti = numPartecipanti;
         this.tipologia = tipologia;
@@ -31,13 +33,15 @@ public class Lega {
     }
 
     public Lega(String name, String location, double latitude, double longitude,
-                boolean started, String admin, List<String> partecipanti, int numPartecipanti, LegaType tipologia) {
+                boolean started, int giornataInizio,
+                String admin, List<String> partecipanti, int numPartecipanti, LegaType tipologia) {
         //copy constructor
         this.name = name;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
         this.started = started;
+        this.giornataInizio = giornataInizio;
         this.admin = admin;
         this.partecipanti = partecipanti;
         this.numPartecipanti = numPartecipanti;

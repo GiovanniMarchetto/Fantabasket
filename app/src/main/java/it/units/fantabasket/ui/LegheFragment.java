@@ -46,6 +46,7 @@ public class LegheFragment extends Fragment {
 
     public static Lega getLegaFromHashMapParams(HashMap<String, Object> legaParams) {
         Object numPartecipanti = legaParams.get("numPartecipanti");
+        Object giornataInizio = legaParams.get("giornataInizio");
         Object started = legaParams.get("started");
         String legaType = (String) legaParams.get("tipologia");
         Object latitude = legaParams.get("latitude");
@@ -57,6 +58,7 @@ public class LegheFragment extends Fragment {
                 (latitude != null) ? (Double) latitude : 0,
                 (longitude != null) ? (Double) longitude : 0,
                 (started != null) && (boolean) started,
+                (int) ((giornataInizio != null) ? (long) giornataInizio : 0),
                 (String) legaParams.get("admin"),
                 (List<String>) legaParams.get("partecipanti"),
                 (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
