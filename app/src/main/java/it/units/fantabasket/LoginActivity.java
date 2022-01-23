@@ -17,28 +17,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     @Override
-    public void onStart() {
-        Log.i("TAG", "start");
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Log.i("TAG", "not null user: " + currentUser.getDisplayName());
-            passToMainActivity();
-        }
-    }
-
-    private void passToMainActivity() {
-        //TODO: rivedere perché accesso provvisorio
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -91,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("TAG", "signInWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
 //                        updateUI(user);
-                        passToMainActivity();
+//                        passToMainActivity();
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("TAG", "signInWithEmail:failure", task.getException());

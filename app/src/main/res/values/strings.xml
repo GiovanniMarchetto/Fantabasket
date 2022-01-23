@@ -64,7 +64,22 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- Calcolo giornata  -->
     <string name="calcolo_giornata">Calcolo giornata</string>
     <string name="primo_posto">1º</string>
     <string name="zero_punti">0 punti</string>
+    <string name="repeat_password">Repeat password</string>
+
+    <!-- Access activity   -->
+    <string name="title_activity_access">AccessActivity</string>
+    <string name="login_fragment_label">Login Fragment</string>
+    <string name="registration_fragment_label">Registration Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="registration_arrow"><![CDATA[Registration ->]]></string>
+    <string name="login">Login</string>
 </resources>

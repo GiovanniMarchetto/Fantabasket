@@ -13,7 +13,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Fantabasket">
         <activity
-                android:name=".LoginActivity"
+                android:name=".AccessActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,13 +22,10 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".RegistrationActivity"
-                android:exported="true"/>
-        <activity
                 android:name=".MainActivity"
-                android:launchMode="singleTop"
                 android:exported="true"
-                android:label="@string/title_activity_main"/>
+                android:label="@string/title_activity_main"
+                android:launchMode="singleTop"/>
         <activity
                 android:name=".SettingsActivity"
                 android:exported="true"
