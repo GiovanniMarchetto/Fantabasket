@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,6 +22,7 @@ import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.layouts.PlayerOnFieldLayout;
+import it.units.fantabasket.ui.PlayerListFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/navigation_home"
-            android:name="it.units.fantabasket.ui.HomeFragment"
+            android:name="it.units.fantabasket.ui.main.HomeFragment"
             android:label="@string/title_home"
             tools:layout="@layout/fragment_home">
         <action
@@ -40,7 +40,7 @@
 
     <fragment
             android:id="@+id/navigation_dashboard"
-            android:name="it.units.fantabasket.ui.DashboardFragment"
+            android:name="it.units.fantabasket.ui.main.DashboardFragment"
             android:label="@string/title_dashboard"
             tools:layout="@layout/fragment_dashboard">
         <action
@@ -60,7 +60,7 @@
 
     <fragment
             android:id="@+id/navigation_notifications"
-            android:name="it.units.fantabasket.ui.NotificationsFragment"
+            android:name="it.units.fantabasket.ui.main.NotificationsFragment"
             android:label="@string/title_notifications"
             tools:layout="@layout/fragment_notifications"/>
 </navigation>

@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.main;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -23,6 +23,7 @@ import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
+import it.units.fantabasket.ui.LegheFragment;
 import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +77,6 @@ public class HomeFragment extends Fragment {
         });
 
         //BUTTONS
-
         binding.changeLegaButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(HomeFragment.this)
                         .navigate(R.id.action_HomeFragment_to_LegheFragment)

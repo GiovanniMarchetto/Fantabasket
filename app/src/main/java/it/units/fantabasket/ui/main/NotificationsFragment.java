@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
