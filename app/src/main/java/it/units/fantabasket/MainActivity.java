@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public static DatabaseReference legheReference;
     public static int giornataCorrente;
     public static Calendar orarioInizio;
+    public static List<Calendar> orariInizioPartite;
     public static List<String> roster;
     public static int ultimaGiornata;
 
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         //dati fissi
         Calendar currentCal = getCalendarNow();
-        List<Calendar> orariInizio = new ArrayList<>();
+        orariInizioPartite = new ArrayList<>();
 
         try {
             InputStreamReader is = new InputStreamReader(getAssets().open("orariInizio.csv"));
@@ -111,21 +112,21 @@ public class MainActivity extends AppCompatActivity {
                 int hour = Integer.parseInt(values[4]);
                 int minute = Integer.parseInt(values[5]);
                 Calendar orario = new GregorianCalendar(year, month, day, hour, minute, 0);
-                orariInizio.add(orario);
+                orariInizioPartite.add(orario);
                 //siccome va in ordine di giornata la prima che non è già passata è la giornata corrente
             }
         } catch (Exception e) {
             Log.e("MIO", "Error loading asset files --> " + e.getMessage(), e);
         }
 
-        ultimaGiornata = orariInizio.size();
+        ultimaGiornata = orariInizioPartite.size();
 
-        for (int i = 0; i < orariInizio.size(); i++) {//sono in ordine
-            Calendar g = orariInizio.get(i);
+        for (int i = 0; i < orariInizioPartite.size(); i++) {//sono in ordine
+            Calendar g = orariInizioPartite.get(i);
             g.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
             if (currentCal.before(g)) {
                 giornataCorrente = i + 1;
-                orarioInizio = orariInizio.get(i);
+                orarioInizio = orariInizioPartite.get(i);
                 break;
             }
         }
