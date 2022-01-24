@@ -67,9 +67,9 @@ public class PlayerListFragment extends Fragment {
                     ));
                 }
             } catch (IOException e) {
-                Log.e("DATI", "Error loading asset files", e);
+                Log.e("MIO", "Error loading asset files", e);
             } catch (Exception ee) {
-                Log.e("DATI", ee.getMessage());
+                Log.e("MIO", ee.getMessage());
                 ee.printStackTrace();
             }
         }

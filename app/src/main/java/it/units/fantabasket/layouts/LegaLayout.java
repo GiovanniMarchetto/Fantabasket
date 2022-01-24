@@ -7,19 +7,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.entities.Lega;
-import org.jetbrains.annotations.NotNull;
+import it.units.fantabasket.utils.MyValueEventListener;
 
 public class LegaLayout {
     final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
@@ -94,20 +90,13 @@ public class LegaLayout {
         });
     }
 
+    @SuppressLint("SetTextI18n")//TODO: remove this suppress lint
     private void getAdminName(String userId) {
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.getValue(String.class);
-                admin.setText("Admin: " + name);
-            }
-
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "legheEsistenti:onCancelled", databaseError.toException());
-            }
-        });
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("name")
+                .addListenerForSingleValueEvent((MyValueEventListener) dataSnapshot -> {
+                    String name = dataSnapshot.getValue(String.class);
+                    admin.setText("Admin: " + name);
+                });
     }
 
     public LinearLayout getLegaHeaderLayout() {

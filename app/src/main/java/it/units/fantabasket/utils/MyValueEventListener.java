@@ -13,6 +13,6 @@ public interface MyValueEventListener extends ValueEventListener {
 
     @Override
     default void onCancelled(@NonNull @NotNull DatabaseError error) {
-        Log.e("MIO-ERRORE", error.getMessage() + System.lineSeparator() + error.getDetails());
+        Log.w("MIO-ERRORE", error.getMessage() + System.lineSeparator() + error.getDetails());
     }
 }

@@ -9,14 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLegheBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.layouts.LegaLayout;
+import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -66,64 +65,55 @@ public class LegheFragment extends Fragment {
         );
     }
 
+    @SuppressWarnings("unchecked")
     @SuppressLint("SetTextI18n")
     private ValueEventListener getLegheValueEventListener() {
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                //noinspection unchecked
-                Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
+        return (MyValueEventListener) dataSnapshot -> {
 
+            Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
 
-                if (legheEsistenti != null && legheEsistenti.size() > 0) {
-                    int numLeghePartecipate = 0;
-                    int numLegheDisponibili = 0;
+            if (legheEsistenti != null && legheEsistenti.size() > 0) {
+                int numLeghePartecipate = 0;
+                int numLegheDisponibili = 0;
 
-                    for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
-                        String legaName = valueOfMap.getKey();
-                        //noinspection unchecked
-                        HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
-                        Lega lega = getLegaFromHashMapParams(legaParams);
-                        Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
+                for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
+                    String legaName = valueOfMap.getKey();
+                    HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
+                    Lega lega = getLegaFromHashMapParams(legaParams);
+                    Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
 
-                        if (lega.getPartecipanti().contains(user.getUid())) {
-                            numLeghePartecipate++;
-                            Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
-                            actionButton.setText("SELEZIONA");
-                            actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
-                        } else {
-                            //TODO: ordinale in base alla vicinanza
-                            numLegheDisponibili++;
-                            Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
-                            actionButton.setText("UNISCITI");
-                            actionButton.setOnClickListener(view -> {
-                                if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
-                                    if (!lega.isStarted()) {
-                                        List<String> newPartecipanti = lega.getPartecipanti();
-                                        newPartecipanti.add(user.getUid());
-                                        legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
-                                        setLegaSelezionataAndReturnToHome(legaName);
-                                    } else {
-                                        Log.e("MIO", "È già iniziata");
-                                    }
+                    if (lega.getPartecipanti().contains(user.getUid())) {
+                        numLeghePartecipate++;
+                        Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
+                        actionButton.setText("SELEZIONA");
+                        actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
+                    } else {
+                        //TODO: ordinale in base alla vicinanza
+                        numLegheDisponibili++;
+                        Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
+                        actionButton.setText("UNISCITI");
+                        actionButton.setOnClickListener(view -> {
+                            if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
+                                if (!lega.isStarted()) {
+                                    List<String> newPartecipanti = lega.getPartecipanti();
+                                    newPartecipanti.add(user.getUid());
+                                    legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
+                                    setLegaSelezionataAndReturnToHome(legaName);
                                 } else {
-                                    Log.e("MIO", "NON CI SONO POSTI");
+                                    Log.e("MIO", "È già iniziata");
                                 }
-                            });
-                        }
-
-                        binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
-                        binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
+                            } else {
+                                Log.e("MIO", "NON CI SONO POSTI");
+                            }
+                        });
                     }
-                } else {
-                    binding.nessunaLegaDisponibile.setVisibility(View.VISIBLE);
-                    binding.nessunaLegaPartecipata.setVisibility(View.VISIBLE);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "leghe:onCancelled", databaseError.toException());
+                    binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
+                    binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
+                }
+            } else {
+                binding.nessunaLegaDisponibile.setVisibility(View.VISIBLE);
+                binding.nessunaLegaPartecipata.setVisibility(View.VISIBLE);
             }
         };
     }

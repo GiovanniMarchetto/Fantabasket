@@ -70,7 +70,7 @@ public class LegaCreationFragment extends Fragment {
             Context context = getContext();
 
             if (activity == null || context == null) {
-                Log.e("NULLTAG", "Something null: \n---> Activity-" + activity + "\n---> Context-" + context);
+                Log.e("MIO", "Something null: \n---> Activity-" + activity + "\n---> Context-" + context);
                 return;
             }
 

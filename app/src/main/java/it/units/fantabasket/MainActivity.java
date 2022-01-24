@@ -18,8 +18,10 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityMainBinding;
+import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -70,24 +72,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadCurrentRoster() {
-        Log.i("DATI", ".............sto caricando i giocatori");
-        userDataReference.child("players").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                @SuppressWarnings("unchecked") List<String> currentRoster = (List<String>) dataSnapshot.getValue();
-//                Log.i("DATI", "RECUPERO ROSTER");
-
-                if (currentRoster != null) {
-                    roster = currentRoster;
-//                    for (String userPlayer : roster) {
-//                        Log.i("DATI", userPlayer);
-//                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+        Log.i("MIO", ".............sto caricando i giocatori");
+        userDataReference.child("players").addValueEventListener((MyValueEventListener) dataSnapshot -> {
+            @SuppressWarnings("unchecked")
+            List<String> currentRoster = (List<String>) dataSnapshot.getValue();
+            if (currentRoster != null) {
+                roster = currentRoster;
             }
         });
     }
@@ -125,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 //siccome va in ordine di giornata la prima che non è già passata è la giornata corrente
             }
         } catch (Exception e) {
-            Log.e("DATI", "Error loading asset files --> " + e.getMessage(), e);
+            Log.e("MIO", "Error loading asset files --> " + e.getMessage(), e);
         }
 
         ultimaGiornata = orariInizio.size();

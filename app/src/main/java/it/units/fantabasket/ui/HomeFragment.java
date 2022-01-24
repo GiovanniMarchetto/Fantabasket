@@ -14,8 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
@@ -25,12 +23,10 @@ import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
+import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static it.units.fantabasket.MainActivity.*;
 
@@ -46,60 +42,36 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        userDataReference.child("teamName").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                String teamName = dataSnapshot.getValue(String.class);
-                binding.teamName.setText(teamName);
-            }
-
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-            }
+        userDataReference.child("teamName").addValueEventListener((MyValueEventListener) dataSnapshot -> {
+            String teamName = dataSnapshot.getValue(String.class);
+            binding.teamName.setText(teamName);
         });
 
-        userDataReference.child("teamLogo").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                String teamLogo = dataSnapshot.getValue(String.class);
-                byte[] decodedString = Base64.decode(teamLogo, Base64.NO_WRAP);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                binding.teamLogo.setImageBitmap(decodedByte);
-            }
-
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-            }
+        userDataReference.child("teamLogo").addValueEventListener((MyValueEventListener) dataSnapshot -> {
+            String teamLogo = dataSnapshot.getValue(String.class);
+            byte[] decodedString = Base64.decode(teamLogo, Base64.NO_WRAP);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            binding.teamLogo.setImageBitmap(decodedByte);
         });
 
-        userDataReference.child("legaSelezionata").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) dataSnapshot -> {
 
-                if (legaSelezionata != null && legaSelezionataListener != null) {
-                    legheReference.child(legaSelezionata).removeEventListener(legaSelezionataListener);
-                }
-
-                legaSelezionata = dataSnapshot.getValue(String.class);
-                if (binding == null) {//TODO: capire come fare a "riciclare" i fragment
-                    Log.i("MIO", getId() + "---binding null");
-                    binding = FragmentHomeBinding.inflate(inflater, container, false);
-                } else {
-                    Log.i("MIO", getId() + "---binding find");
-                }
-                if (legaSelezionata != null) {
-                    binding.legaName.setText(legaSelezionata);
-
-                    setLegaSelezionataValueEventListener();
-                    legheReference.child(legaSelezionata).addValueEventListener(legaSelezionataListener);
-                }
+            if (legaSelezionata != null && legaSelezionataListener != null) {
+                legheReference.child(legaSelezionata).removeEventListener(legaSelezionataListener);
             }
 
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
-                Log.w("ERROR", "legaSelezionata:onCancelled", databaseError.toException());
+            legaSelezionata = dataSnapshot.getValue(String.class);
+            if (binding == null) {//TODO: capire come fare a "riciclare" i fragment
+                Log.i("MIO", getId() + "---binding null");
+                binding = FragmentHomeBinding.inflate(inflater, container, false);
+            } else {
+                Log.i("MIO", getId() + "---binding find");
+            }
+            if (legaSelezionata != null) {
+                binding.legaName.setText(legaSelezionata);
+
+                setLegaSelezionataValueEventListener();
+                legheReference.child(legaSelezionata).addValueEventListener(legaSelezionataListener);
             }
         });
 
@@ -113,132 +85,124 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    @SuppressLint("SetTextI18n")
     private void setLegaSelezionataValueEventListener() {
-        legaSelezionataListener = new ValueEventListener() {
-            @SuppressLint("SetTextI18n")
-            @SuppressWarnings("ConstantConditions")
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                @SuppressWarnings("unchecked") HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
-                assert legaParams != null;
-                Lega lega = LegheFragment.getLegaFromHashMapParams(legaParams);
-                binding.legaNameOption.setText(lega.getName());
-                String start = lega.isStarted() ? "IN CORSO" : "IN ATTESA";
-                binding.legaStartOption.setText(start);
+        legaSelezionataListener = (MyValueEventListener) snapshot -> {
+            HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
+            assert legaParams != null;
+            Lega lega = LegheFragment.getLegaFromHashMapParams(legaParams);
+            binding.legaNameOption.setText(lega.getName());
+            String start = lega.isStarted() ? "IN CORSO" : "IN ATTESA";
+            binding.legaStartOption.setText(start);
 
-                boolean isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
-                if (lega.isStarted()) {
-                    if (lega.getTipologia() == LegaType.CALENDARIO) {
-                        @SuppressWarnings("unchecked")
-                        HashMap<String, List<HashMap<String, Object>>> calendario =
-                                (HashMap<String, List<HashMap<String, Object>>>) legaParams.get("calendario");
-                        List<HashMap<String, Object>> partiteDellaGiornata = calendario.get("giornata_" + giornataCorrente);
-                        for (HashMap<String, Object> partita : partiteDellaGiornata) {
+            boolean isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
+            if (lega.isStarted()) {
+                if (lega.getTipologia() == LegaType.CALENDARIO) {
+                    HashMap<String, List<HashMap<String, Object>>> calendario =
+                            (HashMap<String, List<HashMap<String, Object>>>) legaParams.get("calendario");
+                    List<HashMap<String, Object>> partiteDellaGiornata = calendario.get("giornata_" + giornataCorrente);
+                    for (HashMap<String, Object> partita : partiteDellaGiornata) {
 
-                            String homeUserId = (String) partita.get("homeUserId");
-                            String awayUserId = (String) partita.get("awayUserId");
+                        String homeUserId = (String) partita.get("homeUserId");
+                        String awayUserId = (String) partita.get("awayUserId");
 
-                            if (homeUserId.equals(user.getUid()) || awayUserId.equals(user.getUid())) {
+                        if (homeUserId.equals(user.getUid()) || awayUserId.equals(user.getUid())) {
 
-                                Game userGame = new Game(homeUserId, awayUserId);
+                            Game userGame = new Game(homeUserId, awayUserId);
 
-                                FirebaseDatabase.getInstance().getReference("users").child(userGame.homeUserId).addValueEventListener(
-                                        getPlayerListener(binding.logoHome, binding.teamHome));
+                            FirebaseDatabase.getInstance().getReference("users").child(userGame.homeUserId).addValueEventListener(
+                                    getPlayerListener(binding.logoHome, binding.teamHome));
 
-                                FirebaseDatabase.getInstance().getReference("users").child(userGame.awayUserId).addValueEventListener(
-                                        getPlayerListener(binding.logoAway, binding.teamAway));
-                                break;
-                            }
+                            FirebaseDatabase.getInstance().getReference("users").child(userGame.awayUserId).addValueEventListener(
+                                    getPlayerListener(binding.logoAway, binding.teamAway));
+                            break;
                         }
-
-                        if (isUserTheAdminOfLeague && giornataCorrente > 1) {
-                            binding.calcoloGiornataButton.setOnClickListener(view -> {
-                                int giornataPrecedente = giornataCorrente - 1;
-                                List<Game> partiteDellaGiornataPrecedente = getGamesFromHashmap(calendario.get("giornata_" + giornataPrecedente));
-                                calcoloGiornata(giornataPrecedente, partiteDellaGiornataPrecedente);
-                                legheReference.child(legaSelezionata).child("calendario")
-                                        .child("giornata_" + giornataPrecedente).setValue(partiteDellaGiornataPrecedente);
-                            });
-                            binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
-                            binding.calcoloGiornataButton.setEnabled(true);
-                        }
-
-                    } else {
-                        //TODO: add classifica
-                        if (isUserTheAdminOfLeague && giornataCorrente > 1) {
-                            binding.calcoloGiornataButton.setOnClickListener(view -> {
-                                int giornataPrecedente = giornataCorrente - 1;
-                                List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
-                                List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
-                                for (HashMap<String, Object> hashMap : classifica) {
-                                    int pointsOfUser = getPointsFromPlayerIdAndGiornata((String) hashMap.get("userId"), giornataPrecedente)
-                                            + (int) hashMap.get("points");
-                                    hashMap.put("points", pointsOfUser);
-                                }
-                                //no stream no party...// also sort not supported
-                                for (int i = 0; i < classifica.size(); i++) {
-                                    HashMap<String, Object> max = classifica.get(0);
-                                    for (HashMap<String, Object> hashMap : classifica) {
-                                        if (!classificaUpdate.contains(hashMap) &&
-                                                (int) hashMap.get("points") > (int) max.get("points")) {
-                                            max = hashMap;
-                                        }
-                                    }
-                                    classificaUpdate.add(max);
-                                    classifica.remove(max);
-                                }
-                                legheReference.child(legaSelezionata).child("classifica").setValue(classificaUpdate);
-
-                            });
-                            binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
-                            binding.calcoloGiornataButton.setEnabled(true);
-                        }
-
-                        List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
-                        int punteggioAttuale = 0;
-                        int posizione = 0;
-                        //TODO: refactoring
-                        for (HashMap<String, Object> hashMap : classifica) {
-                            if (hashMap.get("userId").equals(user.getUid())) {
-                                posizione = classifica.indexOf(hashMap) + 1;
-                                punteggioAttuale = (int) hashMap.get("points");
-                            }
-                        }
-
-                        binding.posizioneInClassifica.setText(posizione + "º");
-                        binding.totalePunti.setText(punteggioAttuale + " punti");
-
-                        //TODO: trasformare i partecipanti in un hashmap con userId:punti-->cioè nella classifica stessa
-                        //  e per il calendario sarebbero i punti delle partite non il punteggio
                     }
 
-                    binding.nextGameLayout.setVisibility((lega.getTipologia() == LegaType.CALENDARIO) ? View.VISIBLE : View.GONE);
-//                    binding.myTeamLayout.setVisibility((lega.getTipologia() == LegaType.FORMULA1) ?View.VISIBLE  : View.GONE);
-                } else {
-                    binding.startLeagueButton.setVisibility(isUserTheAdminOfLeague ? View.VISIBLE : View.GONE);
-
-                    boolean enableStart = isUserTheAdminOfLeague &&
-                            (
-                                    (lega.getTipologia() == LegaType.CALENDARIO && lega.getPartecipanti().size() == lega.getNumPartecipanti())
-                                            || (lega.getTipologia() == LegaType.FORMULA1 && lega.getPartecipanti().size() > 1)
-                            );
-                    binding.startLeagueButton.setEnabled(enableStart);
-
-                    if (enableStart) {
-                        binding.startLeagueButton.setOnClickListener(view -> {
-                            legheReference.child(legaSelezionata).child("started").setValue(true);
-                            if (lega.getTipologia() == LegaType.CALENDARIO) {
-                                HashMap<String, List<Game>> campionato = getCampionato(lega.getPartecipanti());
-                                legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
-                            }
+                    if (isUserTheAdminOfLeague && giornataCorrente > 1) {
+                        binding.calcoloGiornataButton.setOnClickListener(view -> {
+                            int giornataPrecedente = giornataCorrente - 1;
+                            List<Game> partiteDellaGiornataPrecedente = getGamesFromHashmap(calendario.get("giornata_" + giornataPrecedente));
+                            calcoloGiornata(giornataPrecedente, partiteDellaGiornataPrecedente);
+                            legheReference.child(legaSelezionata).child("calendario")
+                                    .child("giornata_" + giornataPrecedente).setValue(partiteDellaGiornataPrecedente);
                         });
+                        binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
+                        binding.calcoloGiornataButton.setEnabled(true);
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Log.w("ERROR", "legaSelezionataIn leghe:onCancelled", error.toException());
+                } else {
+                    //TODO: add classifica
+                    if (isUserTheAdminOfLeague && giornataCorrente > 1) {
+                        binding.calcoloGiornataButton.setOnClickListener(view -> {
+                            int giornataPrecedente = giornataCorrente - 1;
+                            List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
+                            List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
+                            for (HashMap<String, Object> hashMap : classifica) {
+                                int pointsOfUser = getPointsFromPlayerIdAndGiornata((String) hashMap.get("userId"), giornataPrecedente)
+                                        + (int) hashMap.get("points");
+                                hashMap.put("points", pointsOfUser);
+                            }
+                            //no stream no party...// also sort not supported
+                            for (int i = 0; i < classifica.size(); i++) {
+                                HashMap<String, Object> max = classifica.get(0);
+                                for (HashMap<String, Object> hashMap : classifica) {
+                                    if (!classificaUpdate.contains(hashMap) &&
+                                            (int) hashMap.get("points") > (int) max.get("points")) {
+                                        max = hashMap;
+                                    }
+                                }
+                                classificaUpdate.add(max);
+                                classifica.remove(max);
+                            }
+                            legheReference.child(legaSelezionata).child("classifica").setValue(classificaUpdate);
+
+                        });
+                        binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
+                        binding.calcoloGiornataButton.setEnabled(true);
+                    }
+
+                    List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
+                    int punteggioAttuale = 0;
+                    int posizione = 0;
+                    //TODO: refactoring
+                    assert classifica != null;
+                    for (HashMap<String, Object> hashMap : classifica) {
+                        if (Objects.equals(hashMap.get("userId"), user.getUid())) {
+                            posizione = classifica.indexOf(hashMap) + 1;
+                            punteggioAttuale = (int) hashMap.get("points");
+                        }
+                    }
+
+                    binding.posizioneInClassifica.setText(posizione + "º");
+                    binding.totalePunti.setText(punteggioAttuale + " punti");
+
+                    //TODO: trasformare i partecipanti in un hashmap con userId:punti-->cioè nella classifica stessa
+                    //  e per il calendario sarebbero i punti delle partite non il punteggio
+                }
+
+                binding.nextGameLayout.setVisibility((lega.getTipologia() == LegaType.CALENDARIO) ? View.VISIBLE : View.GONE);
+//                    binding.myTeamLayout.setVisibility((lega.getTipologia() == LegaType.FORMULA1) ?View.VISIBLE  : View.GONE);
+            } else {
+                binding.startLeagueButton.setVisibility(isUserTheAdminOfLeague ? View.VISIBLE : View.GONE);
+
+                boolean enableStart = isUserTheAdminOfLeague &&
+                        (
+                                (lega.getTipologia() == LegaType.CALENDARIO && lega.getPartecipanti().size() == lega.getNumPartecipanti())
+                                        || (lega.getTipologia() == LegaType.FORMULA1 && lega.getPartecipanti().size() > 1)
+                        );
+                binding.startLeagueButton.setEnabled(enableStart);
+
+                if (enableStart) {
+                    binding.startLeagueButton.setOnClickListener(view -> {
+                        legheReference.child(legaSelezionata).child("started").setValue(true);
+                        if (lega.getTipologia() == LegaType.CALENDARIO) {
+                            HashMap<String, List<Game>> campionato = getCampionato(lega.getPartecipanti());
+                            legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
+                        }
+                    });
+                }
             }
         };
     }
@@ -267,52 +231,38 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private int calcolaPuntiFromUserIdAndGiornata(String userId, int giornata) {
         final int[] points = {0};
         FirebaseDatabase.getInstance().getReference("users").child(userId).child("formazionePerGiornata")
                 .child(String.valueOf(giornata)).addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @SuppressWarnings({"unchecked", "ConstantConditions"})
-                            @Override
-                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                HashMap<String, String> formazioneHome = (HashMap<String, String>) snapshot.getValue();
-                                for (String key : formazioneHome.keySet()) {
+                        (MyValueEventListener) snapshot -> {
+                            HashMap<String, String> formazione = (HashMap<String, String>) snapshot.getValue();
+                            if (formazione != null) {
+                                for (String key : formazione.keySet()) {
                                     points[0] = points[0] + (int) (Math.round(
                                             getFactorPositionOnField(FieldPositions.valueOf(key)) *
-                                                    getPointsFromPlayerIdAndGiornata(formazioneHome.get(key), giornata)));
+                                                    getPointsFromPlayerIdAndGiornata(formazione.get(key), giornata)));
                                 }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                             }
                         }
                 );
         return points[0];
     }
 
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
     private int getPointsFromPlayerIdAndGiornata(String playerId, int giornata) {
         final int[] vote = {0};
         FirebaseDatabase.getInstance().getReference("playersStatistics").child(playerId).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @SuppressWarnings({"unchecked", "ConstantConditions"})
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        HashMap<String, Object> playerStatistic = (HashMap<String, Object>) snapshot.getValue();
-                        int points = ((List<Integer>) playerStatistic.get("points")).get(giornata);
-                        int fouls = ((List<Integer>) playerStatistic.get("fouls")).get(giornata);
-                        int rebounds = ((List<Integer>) playerStatistic.get("rebounds")).get(giornata);
-                        int recoverBalls = ((List<Integer>) playerStatistic.get("recoverBalls")).get(giornata);
-                        int lostBalls = ((List<Integer>) playerStatistic.get("lostBalls")).get(giornata);
+                (MyValueEventListener) snapshot -> {
+                    HashMap<String, Object> playerStatistic = (HashMap<String, Object>) snapshot.getValue();
+                    int points = ((List<Integer>) playerStatistic.get("points")).get(giornata);
+                    int fouls = ((List<Integer>) playerStatistic.get("fouls")).get(giornata);
+                    int rebounds = ((List<Integer>) playerStatistic.get("rebounds")).get(giornata);
+                    int recoverBalls = ((List<Integer>) playerStatistic.get("recoverBalls")).get(giornata);
+                    int lostBalls = ((List<Integer>) playerStatistic.get("lostBalls")).get(giornata);
 
-                        vote[0] = points + rebounds + recoverBalls - fouls - lostBalls;
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                    }
+                    vote[0] = points + rebounds + recoverBalls - fouls - lostBalls;
                 }
         );
         return vote[0];
@@ -339,22 +289,15 @@ public class HomeFragment extends Fragment {
     }
 
     @NotNull
+    @SuppressWarnings("unchecked")
     private ValueEventListener getPlayerListener(ImageView imageView, TextView textView) {
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                @SuppressWarnings("unchecked") HashMap<String, Object> user = (HashMap<String, Object>) snapshot.getValue();
-                assert user != null;
-                byte[] decodedString = Base64.decode((String) user.get("teamLogo"), Base64.NO_WRAP);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                imageView.setImageBitmap(decodedByte);
-                textView.setText((String) user.get("teamName"));
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
+        return (MyValueEventListener) snapshot -> {
+            HashMap<String, Object> user = (HashMap<String, Object>) snapshot.getValue();
+            assert user != null;
+            byte[] decodedString = Base64.decode((String) user.get("teamLogo"), Base64.NO_WRAP);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imageView.setImageBitmap(decodedByte);
+            textView.setText((String) user.get("teamName"));
         };
     }
 
@@ -400,9 +343,9 @@ public class HomeFragment extends Fragment {
         }
 
 //        for (String key:campionato.keySet()) {
-//            Log.i("CAMPIONATO", key);
+//            Log.i("MIO", key);
 //            for (Game partita:campionato.get(key)) {
-//                Log.i("CAMPIONATO", "               " + partita.homeUserId + " - " + partita.awayUserId);
+//                Log.i("MIO", "               " + partita.homeUserId + " - " + partita.awayUserId);
 //            }
 //        }
 

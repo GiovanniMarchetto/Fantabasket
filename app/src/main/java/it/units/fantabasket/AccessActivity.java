@@ -138,7 +138,7 @@ public class AccessActivity extends AppCompatActivity {
 
                         passToMainActivityIfUserNotNull();
                     } else {
-                        Log.w("ERROR", "createUserWithEmail:failure", task.getException());
+                        Log.w("MIO", "createUserWithEmail:failure", task.getException());
                         Toast.makeText(getApplicationContext(), "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
                     }

@@ -141,7 +141,7 @@ public class DashboardFragment extends Fragment {
     private void showBottomSheet(Button playerButton, TextView playerName) {
         Context context = getContext();
         if (context == null) {
-            Log.e("URCA", "Contesto nullo");
+            Log.e("MIO", "Contesto nullo");
         }
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
