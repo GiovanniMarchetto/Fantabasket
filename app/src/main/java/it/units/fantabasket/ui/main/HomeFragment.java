@@ -16,10 +16,12 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import it.units.fantabasket.MainActivity;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
@@ -33,8 +35,10 @@ import static it.units.fantabasket.MainActivity.*;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
     public static String legaSelezionata;
+    public static LegaType legaSelezionataType;
+    public static boolean isUserTheAdminOfLeague;
+    private FragmentHomeBinding binding;
     private ValueEventListener legaSelezionataListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -92,11 +96,12 @@ public class HomeFragment extends Fragment {
             HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
             assert legaParams != null;
             Lega lega = LegheFragment.getLegaFromHashMapParams(legaParams);
+            legaSelezionataType = lega.getTipologia();
             binding.legaNameOption.setText(lega.getName());
             String start = lega.isStarted() ? "IN CORSO" : "IN ATTESA";
             binding.legaStartOption.setText(start);
 
-            boolean isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
+            isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
             if (lega.isStarted()) {
                 if (lega.getTipologia() == LegaType.CALENDARIO) {
                     HashMap<String, List<HashMap<String, Object>>> calendario =
@@ -133,7 +138,7 @@ public class HomeFragment extends Fragment {
                     }
 
                 } else {
-                    //TODO: add classifica
+                    //TODO: redo classifica button!!!
                     if (isUserTheAdminOfLeague && giornataCorrente > 1) {
                         binding.calcoloGiornataButton.setOnClickListener(view -> {
                             int giornataPrecedente = giornataCorrente - 1;
@@ -183,7 +188,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 binding.nextGameLayout.setVisibility((lega.getTipologia() == LegaType.CALENDARIO) ? View.VISIBLE : View.GONE);
-//                    binding.myTeamLayout.setVisibility((lega.getTipologia() == LegaType.FORMULA1) ?View.VISIBLE  : View.GONE);
+//                binding.myTeamLayout.setVisibility((lega.getTipologia() == LegaType.FORMULA1) ? View.VISIBLE : View.GONE);
             } else {
                 binding.startLeagueButton.setVisibility(isUserTheAdminOfLeague ? View.VISIBLE : View.GONE);
 
@@ -197,6 +202,35 @@ public class HomeFragment extends Fragment {
                 if (enableStart) {
                     binding.startLeagueButton.setOnClickListener(view -> {
                         legheReference.child(legaSelezionata).child("started").setValue(true);
+
+                        Calendar nowCalendarPlusTwoHours = MainActivity.getCalendarNow();
+                        nowCalendarPlusTwoHours.add(Calendar.HOUR, 2);
+                        int giornataInizioLega = nowCalendarPlusTwoHours.before(orarioInizio) ? giornataCorrente : giornataCorrente + 1;
+                        legheReference.child(legaSelezionata).child("giornataInizio").setValue(giornataInizioLega);
+                        legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(giornataInizioLega - 1);
+
+                        List<HashMap<String, Object>> classifica = new ArrayList<>();
+
+                        HashMap<String, Object> lastUpdate = new HashMap<>();
+                        lastUpdate.put("lastUpdate", MainActivity.getCalendarNow().getTime().getTime());
+                        classifica.add(lastUpdate);
+
+                        for (String partecipante : lega.getPartecipanti()) {
+                            User partecipanteData = new User(partecipante);
+
+                            HashMap<String, Object> elementOfClassifica = new HashMap<>();
+                            elementOfClassifica.put("userId", partecipante);
+                            elementOfClassifica.put("teamName", partecipanteData.teamName);
+                            elementOfClassifica.put("totalPointsScored", 0);
+
+                            if (legaSelezionataType == LegaType.CALENDARIO) {//TODO:check se legaSelezionataType è settata all'inizio
+                                elementOfClassifica.put("totalPointsAllowed", 0);
+                                elementOfClassifica.put("pointsOfVictories", 0);
+                            }
+
+                            classifica.add(elementOfClassifica);
+                        }
+                        legheReference.child(legaSelezionata).child("classifica").setValue(classifica);
                         if (lega.getTipologia() == LegaType.CALENDARIO) {
                             HashMap<String, List<Game>> campionato = getCampionato(lega.getPartecipanti());
                             legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
