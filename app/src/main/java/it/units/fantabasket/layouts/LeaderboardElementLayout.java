@@ -30,17 +30,17 @@ public class LeaderboardElementLayout {
     }
 
     public LeaderboardElementLayout(Context context, int position, String teamName, int totalPointsScored,
-                                    int totalPointsAllowed, int points) {
+                                    int totalPointsAllowed, int pointsOfVictories) {
         this(context, position, teamName, totalPointsScored);
 
         TextView totalPointsAllowedTextView = new TextView(context);
         totalPointsAllowedTextView.setText(String.valueOf(totalPointsAllowed));
 
-        TextView pointsTextView = new TextView(context);
-        pointsTextView.setText(String.valueOf(points));
+        TextView pointsOfVictoriesTextView = new TextView(context);
+        pointsOfVictoriesTextView.setText(String.valueOf(pointsOfVictories));
 
         leaderboardElementLayout.addView(totalPointsAllowedTextView);
-        leaderboardElementLayout.addView(pointsTextView);
+        leaderboardElementLayout.addView(pointsOfVictoriesTextView);
     }
 
     public LinearLayout getLeaderboardElementLayout() {
