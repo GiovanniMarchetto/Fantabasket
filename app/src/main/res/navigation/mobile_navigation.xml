@@ -61,6 +61,12 @@
     <fragment
             android:id="@+id/navigation_notifications"
             android:name="it.units.fantabasket.ui.main.NotificationsFragment"
-            android:label="@string/title_notifications"
+            android:label="@string/title_leaderboard"
             tools:layout="@layout/fragment_notifications"/>
+
+    <fragment
+            android:id="@+id/navigation_leaderboard"
+            android:name="it.units.fantabasket.ui.main.LeaderboardFragment"
+            android:label="Leaderboard"
+            tools:layout="@layout/fragment_leaderboard"/>
 </navigation>
