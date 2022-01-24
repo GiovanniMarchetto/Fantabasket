@@ -14,9 +14,9 @@ import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLegheBinding;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.layouts.LegaLayout;
 import it.units.fantabasket.utils.MyValueEventListener;
+import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -44,28 +44,6 @@ public class LegheFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public static Lega getLegaFromHashMapParams(HashMap<String, Object> legaParams) {
-        Object numPartecipanti = legaParams.get("numPartecipanti");
-        Object giornataInizio = legaParams.get("giornataInizio");
-        Object started = legaParams.get("started");
-        String legaType = (String) legaParams.get("tipologia");
-        Object latitude = legaParams.get("latitude");
-        Object longitude = legaParams.get("longitude");
-        //noinspection unchecked
-        return new Lega(
-                (String) legaParams.get("name"),
-                (String) legaParams.get("location"),
-                (latitude != null) ? (Double) latitude : 0,
-                (longitude != null) ? (Double) longitude : 0,
-                (started != null) && (boolean) started,
-                (int) ((giornataInizio != null) ? (long) giornataInizio : 0),
-                (String) legaParams.get("admin"),
-                (List<String>) legaParams.get("partecipanti"),
-                (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
-                LegaType.valueOf(legaType)
-        );
-    }
-
     @SuppressWarnings("unchecked")
     @SuppressLint("SetTextI18n")
     private ValueEventListener getLegheValueEventListener() {
@@ -79,7 +57,7 @@ public class LegheFragment extends Fragment {
                 for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
                     String legaName = valueOfMap.getKey();
                     HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
-                    Lega lega = getLegaFromHashMapParams(legaParams);
+                    Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
                     Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
 
                     if (lega.getPartecipanti().contains(user.getUid())) {

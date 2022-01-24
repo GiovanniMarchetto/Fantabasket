@@ -21,24 +21,36 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityMainBinding;
+import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.entities.User;
 import it.units.fantabasket.utils.MyValueEventListener;
+import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static it.units.fantabasket.utils.Utils.getUserFromHashMapOfDB;
 
 public class MainActivity extends AppCompatActivity {
 
     public static FirebaseUser user;
     public static DatabaseReference userDataReference;
+    public static DatabaseReference usersReference;
     public static DatabaseReference legheReference;
-    public static int giornataCorrente;
-    public static Calendar orarioInizio;
-    public static List<Calendar> orariInizioPartite;
-    public static List<String> roster;
-    public static int ultimaGiornata;
 
+    public static int giornataCorrente;
+    public static Calendar orarioInizioPrimaPartitaDellaGiornataCorrente;
+    public static List<Calendar> orariInizioPartite;
+
+    public static AtomicReference<Lega> leagueOn;//legaSelezionata
+    public static String legaSelezionata;
+    public static HashMap<String, User> membersLeagueOn;
+    public static List<String> roster;
+    private MyValueEventListener leagueOnListener;
+    private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
     private boolean preferencesChanged = true;
     // called when the user changes the app's preferences
     private final SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
@@ -67,11 +79,6 @@ public class MainActivity extends AppCompatActivity {
         return theme;
     }
 
-    public static Calendar getCalendarNow() {
-        final String italyId = "Europe/Rome";
-        return Calendar.getInstance(TimeZone.getTimeZone(italyId));
-    }
-
     private void loadCurrentRoster() {
         Log.i("MIO", ".............sto caricando i giocatori");
         userDataReference.child("players").addValueEventListener((MyValueEventListener) dataSnapshot -> {
@@ -95,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         //dati fissi
-        Calendar currentCal = getCalendarNow();
+        Calendar currentCal = Utils.getCalendarNow();
         orariInizioPartite = new ArrayList<>();
 
         try {
@@ -119,20 +126,19 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MIO", "Error loading asset files --> " + e.getMessage(), e);
         }
 
-        ultimaGiornata = orariInizioPartite.size();
-
         for (int i = 0; i < orariInizioPartite.size(); i++) {//sono in ordine
             Calendar g = orariInizioPartite.get(i);
             g.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
             if (currentCal.before(g)) {
                 giornataCorrente = i + 1;
-                orarioInizio = orariInizioPartite.get(i);
+                orarioInizioPrimaPartitaDellaGiornataCorrente = orariInizioPartite.get(i);
                 break;
             }
         }
 
         //dati dinamici
         user = FirebaseAuth.getInstance().getCurrentUser();
+        usersReference = FirebaseDatabase.getInstance().getReference("users");
         userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
         legheReference = FirebaseDatabase.getInstance().getReference("leghe");
         roster = new ArrayList<>(16);
@@ -162,6 +168,49 @@ public class MainActivity extends AppCompatActivity {
             setTheme(PreferenceManager.getDefaultSharedPreferences(this));
             preferencesChanged = false;
         }
+
+        //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
+        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
+            legaSelezionata = snapshotLega.getValue(String.class);
+            if (legaSelezionata != null && !legaSelezionata.equals("")) {
+                if (leagueOnListener != null) {
+                    legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
+                }
+
+                setLeagueOnListener();
+
+                legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
+            }
+        });
+    }
+
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    private void setLeagueOnListener() {
+        leagueOnListener = snapshot -> {
+            HashMap<String, Object> legaHashMap = (HashMap<String, Object>) snapshot.getValue();
+            assert legaHashMap != null;
+            leagueOn.set(Utils.getLegaFromHashMapOfDB(legaHashMap));
+
+            if (membersLeagueOnListenerList != null) {
+                for (String memberId : membersLeagueOnListenerList.keySet()) {
+                    usersReference.child(memberId).removeEventListener(membersLeagueOnListenerList.get(memberId));
+                }
+            }
+
+            membersLeagueOn = new HashMap<>();
+            membersLeagueOnListenerList = new HashMap<>();
+            for (String memberId : leagueOn.get().getPartecipanti()) {
+                if (!Objects.equals(memberId, user.getUid())) {
+                    MyValueEventListener memberListener = snapshotMember -> {
+                        HashMap<String, Object> userHashMap = (HashMap<String, Object>) snapshotMember.getValue();
+                        membersLeagueOn.put(memberId, getUserFromHashMapOfDB(userHashMap));
+                    };
+                    usersReference.child(memberId).addValueEventListener(memberListener);
+                    membersLeagueOnListenerList.put(memberId, memberListener);
+                }
+            }
+
+        };
     }
 
     @Override

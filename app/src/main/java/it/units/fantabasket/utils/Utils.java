@@ -13,9 +13,18 @@ import android.util.Log;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+import it.units.fantabasket.entities.Game;
+import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.entities.User;
+import it.units.fantabasket.enums.FieldPositions;
+import it.units.fantabasket.enums.LegaType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
 
 import static it.units.fantabasket.MainActivity.userDataReference;
 
@@ -59,5 +68,54 @@ public class Utils {
                 }
             }
         };
+    }
+
+    public static Calendar getCalendarNow() {
+        final String italyId = "Europe/Rome";
+        return Calendar.getInstance(TimeZone.getTimeZone(italyId));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Lega getLegaFromHashMapOfDB(HashMap<String, Object> legaParams) {
+        Object numPartecipanti = legaParams.get("numPartecipanti");
+        Object giornataInizio = legaParams.get("giornataInizio");
+        Object lastRoundCalculated = legaParams.get("lastRoundCalculated");
+        Object startedObject = legaParams.get("started");
+        boolean started = (startedObject != null) && (boolean) startedObject;
+        LegaType legaType = LegaType.valueOf((String) legaParams.get("tipologia"));
+        Object latitude = legaParams.get("latitude");
+        Object longitude = legaParams.get("longitude");
+        HashMap<String, List<Game>> calendario = null;
+        if (legaType == LegaType.CALENDARIO && started) {
+            calendario = (HashMap<String, List<Game>>) legaParams.get("calendario");
+        }
+
+        return new Lega(
+                (String) legaParams.get("name"),
+                (String) legaParams.get("location"),
+                (latitude != null) ? (Double) latitude : 0,
+                (longitude != null) ? (Double) longitude : 0,
+                started,
+                (int) ((giornataInizio != null) ? (long) giornataInizio : 0),
+                (int) ((lastRoundCalculated != null) ? (long) lastRoundCalculated : 0),
+                (String) legaParams.get("admin"),
+                (List<String>) legaParams.get("partecipanti"),
+                (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
+                legaType,
+                calendario
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    public static User getUserFromHashMapOfDB(HashMap<String, Object> userParams) {
+        String id = (String) userParams.get("id");
+        String nickname = (String) userParams.get("nickname");
+        String teamName = (String) userParams.get("teamName");
+        String teamLogo = (String) userParams.get("teamLogo");
+        String legaSelezionata = (String) userParams.get("legaSelezionata");
+        List<String> roster = (List<String>) userParams.get("roster");
+        List<HashMap<FieldPositions, String>> formazioniPerGiornata = (List<HashMap<FieldPositions, String>>) userParams.get("formazioniPerGiornata");
+
+        return new User(id, nickname, teamName, teamLogo, legaSelezionata, roster, formazioniPerGiornata);
     }
 }

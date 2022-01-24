@@ -19,6 +19,7 @@ import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.enums.Team;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
+import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -91,19 +92,19 @@ public class PlayerListFragment extends Fragment {
         binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + moneySize);
         binding.roster.setText(getString(R.string.roster) + ": " + newRoster.size() + "/" + rosterSize);
 
-        if (getCalendarNow().after(orarioInizio)) {
+        if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
             binding.saveRosterButton.setEnabled(false);
         }
 
         binding.saveRosterButton.setOnClickListener(view -> {
-                    if (getCalendarNow().after(orarioInizio)) {
-                        binding.saveRosterButton.setEnabled(false);//TODO:messaggino
-                    } else {
-                        roster = new ArrayList<>(newRoster);
-                        userDataReference.child("players").setValue(roster);
-                        NavHostFragment.findNavController(PlayerListFragment.this)
-                                .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
-                    }
+            if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+                binding.saveRosterButton.setEnabled(false);//TODO:messaggino
+            } else {
+                roster = new ArrayList<>(newRoster);
+                userDataReference.child("players").setValue(roster);
+                NavHostFragment.findNavController(PlayerListFragment.this)
+                        .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+            }
                 }
         );
 

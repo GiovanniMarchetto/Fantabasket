@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import it.units.fantabasket.MainActivity;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
@@ -25,8 +24,8 @@ import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
-import it.units.fantabasket.ui.LegheFragment;
 import it.units.fantabasket.utils.MyValueEventListener;
+import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -35,7 +34,6 @@ import static it.units.fantabasket.MainActivity.*;
 
 public class HomeFragment extends Fragment {
 
-    public static String legaSelezionata;
     public static LegaType legaSelezionataType;
     public static boolean isUserTheAdminOfLeague;
     private FragmentHomeBinding binding;
@@ -95,7 +93,7 @@ public class HomeFragment extends Fragment {
         legaSelezionataListener = (MyValueEventListener) snapshot -> {
             HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
             assert legaParams != null;
-            Lega lega = LegheFragment.getLegaFromHashMapParams(legaParams);
+            Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
             legaSelezionataType = lega.getTipologia();
             binding.legaNameOption.setText(lega.getName());
             String start = lega.isStarted() ? "IN CORSO" : "IN ATTESA";
@@ -203,16 +201,16 @@ public class HomeFragment extends Fragment {
                     binding.startLeagueButton.setOnClickListener(view -> {
                         legheReference.child(legaSelezionata).child("started").setValue(true);
 
-                        Calendar nowCalendarPlusTwoHours = MainActivity.getCalendarNow();
+                        Calendar nowCalendarPlusTwoHours = Utils.getCalendarNow();
                         nowCalendarPlusTwoHours.add(Calendar.HOUR, 2);
-                        int giornataInizioLega = nowCalendarPlusTwoHours.before(orarioInizio) ? giornataCorrente : giornataCorrente + 1;
+                        int giornataInizioLega = nowCalendarPlusTwoHours.before(orarioInizioPrimaPartitaDellaGiornataCorrente) ? giornataCorrente : giornataCorrente + 1;
                         legheReference.child(legaSelezionata).child("giornataInizio").setValue(giornataInizioLega);
                         legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(giornataInizioLega - 1);
 
                         List<HashMap<String, Object>> classifica = new ArrayList<>();
 
                         HashMap<String, Object> lastUpdate = new HashMap<>();
-                        lastUpdate.put("lastUpdate", MainActivity.getCalendarNow().getTime().getTime());
+                        lastUpdate.put("lastUpdate", Utils.getCalendarNow().getTime().getTime());
                         classifica.add(lastUpdate);
 
                         for (String partecipante : lega.getPartecipanti()) {

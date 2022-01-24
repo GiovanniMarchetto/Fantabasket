@@ -23,6 +23,7 @@ import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.layouts.PlayerOnFieldLayout;
 import it.units.fantabasket.ui.PlayerListFragment;
+import it.units.fantabasket.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class DashboardFragment extends Fragment {
 
 
         binding.salvaFormazioneButton.setOnClickListener(view -> {
-            if (getCalendarNow().before(orarioInizio)) {
+            if (Utils.getCalendarNow().before(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
                 if (!formazione.containsValue(null)) {
                     HashMap<String, String> formazione = new HashMap<>(formazioneSize);
                     for (FieldPositions key : DashboardFragment.formazione.keySet()) {
