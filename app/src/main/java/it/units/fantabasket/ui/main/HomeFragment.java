@@ -34,7 +34,7 @@ import static it.units.fantabasket.MainActivity.*;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private String legaSelezionata;
+    public static String legaSelezionata;
     private ValueEventListener legaSelezionataListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -138,13 +138,13 @@ public class HomeFragment extends Fragment {
                         binding.calcoloGiornataButton.setOnClickListener(view -> {
                             int giornataPrecedente = giornataCorrente - 1;
                             List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
-                            List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
                             for (HashMap<String, Object> hashMap : classifica) {
                                 int pointsOfUser = getPointsFromPlayerIdAndGiornata((String) hashMap.get("userId"), giornataPrecedente)
                                         + (int) hashMap.get("points");
                                 hashMap.put("points", pointsOfUser);
                             }
                             //no stream no party...// also sort not supported
+                            List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
                             for (int i = 0; i < classifica.size(); i++) {
                                 HashMap<String, Object> max = classifica.get(0);
                                 for (HashMap<String, Object> hashMap : classifica) {
