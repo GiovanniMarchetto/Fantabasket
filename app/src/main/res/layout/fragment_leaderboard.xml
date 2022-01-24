@@ -38,7 +38,15 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:background="@color/esteco"/>
-
         </LinearLayout>
+
+        <Button
+                android:id="@+id/updateLeaderboardButton"
+                android:text="@string/update_leaderboard"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/min_touch_48dp"
+                android:visibility="gone"
+                android:enabled="false"
+                />
     </LinearLayout>
 </ScrollView>
