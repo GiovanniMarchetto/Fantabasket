@@ -1,6 +1,7 @@
 package it.units.fantabasket.ui;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,11 +72,10 @@ public class LegheFragment extends Fragment {
         return (MyValueEventListener) dataSnapshot -> {
 
             Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
+            int numLeghePartecipate = 0;
+            int numLegheDisponibili = 0;
 
             if (legheEsistenti != null && legheEsistenti.size() > 0) {
-                int numLeghePartecipate = 0;
-                int numLegheDisponibili = 0;
-
                 for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
                     String legaName = valueOfMap.getKey();
                     HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
@@ -108,13 +108,13 @@ public class LegheFragment extends Fragment {
                         });
                     }
 
-                    binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
-                    binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
                 }
-            } else {
-                binding.nessunaLegaDisponibile.setVisibility(View.VISIBLE);
-                binding.nessunaLegaPartecipata.setVisibility(View.VISIBLE);
             }
+
+            binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
+            binding.leghePartecipate.setBackgroundColor((numLeghePartecipate > 0) ? Color.WHITE : Color.RED);
+            binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
+            binding.legheDisponibili.setBackgroundColor((numLegheDisponibili > 0) ? Color.WHITE : Color.RED);
         };
     }
 
