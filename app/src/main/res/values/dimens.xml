@@ -7,4 +7,5 @@
     <dimen name="min_touch_48dp">48dp</dimen>
     <dimen name="logo_dimension">160dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="shirts_58dp">58dp</dimen>
 </resources>
