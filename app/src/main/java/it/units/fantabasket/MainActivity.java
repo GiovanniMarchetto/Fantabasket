@@ -175,7 +175,11 @@ public class MainActivity extends AppCompatActivity {
             preferencesChanged = false;
         }
 
-        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> user = (User) snapshotLega.getValue());
+        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
+            @SuppressWarnings("unchecked") HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
+            //noinspection ConstantConditions
+            user = getUserFromHashMapOfDB(hashMap);
+        });
 
         //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
         userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
