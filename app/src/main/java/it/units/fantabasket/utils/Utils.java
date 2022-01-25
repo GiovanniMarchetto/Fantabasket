@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -130,5 +131,10 @@ public class Utils {
                             (Integer) hashMap.get("homePoints"), (Integer) hashMap.get("awayPoints")));
         }
         return gameList;
+    }
+
+    public static Bitmap getBitmapFromBase64(String base64) {
+        byte[] decodedString = Base64.decode(base64, Base64.NO_WRAP);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 }

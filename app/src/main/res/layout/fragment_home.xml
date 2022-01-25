@@ -37,6 +37,14 @@
                     android:orientation="horizontal"
                     android:padding="8dp">
 
+                <Button
+                        android:id="@+id/startLeagueButton"
+                        android:text="@string/start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:visibility="gone"/>
+
                 <TextView
                         android:id="@+id/legaName"
                         android:text="@string/lega"
@@ -47,7 +55,58 @@
             </LinearLayout>
 
             <LinearLayout
+                    android:id="@+id/myTeamLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/basic_margin_16dp"
+                    android:gravity="center">
+
+                <ImageView
+                        android:src="@drawable/logo_fanta"
+                        android:background="@color/white"
+                        android:layout_width="@dimen/logo_dimension"
+                        android:layout_height="@dimen/logo_dimension"
+                        android:id="@+id/teamLogo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:contentDescription="@string/team_logo"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:padding="@dimen/padding_8dp">
+
+                    <TextView
+                            android:id="@+id/posizioneInClassifica"
+                            android:text="@string/primo_posto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"/>
+
+                    <TextView
+                            android:id="@+id/teamName"
+                            android:text="@string/team_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="20sp"/>
+
+                    <TextView
+                            android:id="@+id/totalePunti"
+                            android:text="@string/zero_punti"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                     android:id="@+id/nextGameLayout"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/basic_margin_16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -75,17 +134,18 @@
                             android:layout_gravity="top"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            tools:ignore="UseCompoundDrawables">
 
                         <ImageView
-                                android:id="@+id/logoHome"
+                                android:id="@+id/logoHomeNextGame"
                                 android:src="@drawable/logo_fanta"
                                 android:layout_width="@dimen/logo_dimension"
                                 android:layout_height="@dimen/logo_dimension"
                                 android:contentDescription="@string/team_logo"/>
 
                         <TextView
-                                android:id="@+id/teamHome"
+                                android:id="@+id/teamHomeNextGame"
                                 android:text="@string/hometeam"
                                 android:textSize="@dimen/text_size_20"
                                 android:layout_width="wrap_content"
@@ -95,7 +155,7 @@
 
 
                     <TextView
-                            android:id="@+id/versusText"
+                            android:id="@+id/versusTextNextGame"
                             android:text="@string/versus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -111,17 +171,133 @@
                             android:layout_gravity="top"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            tools:ignore="UseCompoundDrawables">
 
                         <ImageView
-                                android:id="@+id/logoAway"
+                                android:id="@+id/logoAwayNextGame"
                                 android:src="@drawable/logo_fanta"
                                 android:layout_width="@dimen/logo_dimension"
                                 android:layout_height="@dimen/logo_dimension"
                                 android:contentDescription="@string/team_logo"/>
 
                         <TextView
-                                android:id="@+id/teamAway"
+                                android:id="@+id/teamAwayNextGame"
+                                android:text="@string/awayteam"
+                                android:textSize="@dimen/text_size_20"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:layout_gravity="center"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/pointsHomeNextGame"
+                            android:textSize="@dimen/text_size_20"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"/>
+
+                    <TextView
+                            android:id="@+id/pointsAwayNextGame"
+                            android:textSize="@dimen/text_size_20"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/lastGameLayout"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/basic_margin_16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/verdeAcqua"
+                    android:gravity="center">
+
+                <TextView
+                        android:id="@+id/lastGameTitle"
+                        android:text="@string/last_game"
+                        android:textSize="@dimen/text_size_20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="top"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                                android:id="@+id/logoHomeLastGame"
+                                android:src="@drawable/logo_fanta"
+                                android:layout_width="@dimen/logo_dimension"
+                                android:layout_height="@dimen/logo_dimension"
+                                android:contentDescription="@string/team_logo"/>
+
+                        <TextView
+                                android:id="@+id/teamHomeLastGame"
+                                android:text="@string/hometeam"
+                                android:textSize="@dimen/text_size_20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"/>
+                    </LinearLayout>
+
+
+                    <TextView
+                            android:id="@+id/versusTextLastGame"
+                            android:text="@string/versus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textAlignment="center"
+                            android:padding="10dp"
+                            android:textSize="20sp"
+                            android:layout_weight="1"/>
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                                android:id="@+id/logoAwayLastGame"
+                                android:src="@drawable/logo_fanta"
+                                android:layout_width="@dimen/logo_dimension"
+                                android:layout_height="@dimen/logo_dimension"
+                                android:contentDescription="@string/team_logo"/>
+
+                        <TextView
+                                android:id="@+id/teamAwayLastGame"
                                 android:text="@string/awayteam"
                                 android:textSize="@dimen/text_size_20"
                                 android:layout_width="match_parent"
@@ -131,81 +307,28 @@
                     </LinearLayout>
                 </LinearLayout>
 
-            </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-            <LinearLayout
-                    android:id="@+id/myTeamLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/min_touch_48dp"
-                    android:gravity="center">
+                    <TextView
+                            android:id="@+id/pointsHomeLastGame"
+                            android:textSize="@dimen/text_size_20"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"/>
 
-                <TextView
-                        android:id="@+id/posizioneInClassifica"
-                        android:text="@string/primo_posto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="20sp"/>
-
-                <ImageView
-                        android:src="@drawable/logo_fanta"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:id="@+id/teamLogo"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:contentDescription="@string/team_logo"/>
-
-                <TextView
-                        android:id="@+id/teamName"
-                        android:text="@string/team_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="20sp"/>
-
-                <TextView
-                        android:id="@+id/totalePunti"
-                        android:text="@string/zero_punti"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="20sp"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                    android:id="@+id/optionsOfLeague"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/min_touch_48dp">
-
-                <TextView
-                        android:id="@+id/legaNameOption"
-                        android:textSize="@dimen/text_size_20"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                        android:id="@+id/legaStartOption"
-                        android:textSize="@dimen/text_size_20"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-
-                <Button
-                        android:id="@+id/startLeagueButton"
-                        android:text="@string/start"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/legaStartOption"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:visibility="gone"/>
+                    <TextView
+                            android:id="@+id/pointsAwayLastGame"
+                            android:textSize="@dimen/text_size_20"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_gravity="center"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

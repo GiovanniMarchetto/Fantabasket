@@ -89,4 +89,5 @@
     <string name="not_started_yet">Non è ancora iniziata la competizione</string>
     <string name="not_league_selected">Non è selezionata alcuna lega</string>
     <string name="cambia_lega">Cambia lega</string>
+    <string name="last_game">Last game</string>
 </resources>

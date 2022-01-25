@@ -48,14 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
-    private MyValueEventListener leagueOnListener;
     public static boolean isUserTheAdminOfLeague;
-
     public static HashMap<String, User> membersLeagueOn;
-    private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
-
     public static List<String> roster;
-
+    private MyValueEventListener leagueOnListener;
+    private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
     private boolean preferencesChanged = true;
     // called when the user changes the app's preferences
     private final SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
@@ -178,9 +175,7 @@ public class MainActivity extends AppCompatActivity {
             preferencesChanged = false;
         }
 
-        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
-            user = (User) snapshotLega.getValue();
-        });
+        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> user = (User) snapshotLega.getValue());
 
         //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
         userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
@@ -215,14 +210,12 @@ public class MainActivity extends AppCompatActivity {
             membersLeagueOn = new HashMap<>();
             membersLeagueOnListenerList = new HashMap<>();
             for (String memberId : leagueOn.get().getPartecipanti()) {
-                if (!Objects.equals(memberId, firebaseUser.getUid())) {
-                    MyValueEventListener memberListener = snapshotMember -> {
-                        HashMap<String, Object> userHashMap = (HashMap<String, Object>) snapshotMember.getValue();
-                        membersLeagueOn.put(memberId, getUserFromHashMapOfDB(userHashMap));
-                    };
-                    usersReference.child(memberId).addValueEventListener(memberListener);
-                    membersLeagueOnListenerList.put(memberId, memberListener);
-                }
+                MyValueEventListener memberListener = snapshotMember -> {
+                    HashMap<String, Object> userHashMap = (HashMap<String, Object>) snapshotMember.getValue();
+                    membersLeagueOn.put(memberId, getUserFromHashMapOfDB(userHashMap));
+                };
+                usersReference.child(memberId).addValueEventListener(memberListener);
+                membersLeagueOnListenerList.put(memberId, memberListener);
             }
 
         };
