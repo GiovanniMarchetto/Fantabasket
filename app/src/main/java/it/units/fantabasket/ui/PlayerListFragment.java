@@ -6,25 +6,18 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentPlayerListBinding;
 import it.units.fantabasket.entities.Player;
-import it.units.fantabasket.enums.Role;
-import it.units.fantabasket.enums.Team;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,44 +30,6 @@ public class PlayerListFragment extends Fragment {
     private int money;
     private int numberOfPlayersSelected;
     private FragmentPlayerListBinding binding;
-
-    public static void setCompletePlayerList(FragmentActivity fragmentActivity, List<Player> playerList) {
-        for (Team team : Team.values()) {
-            try {
-                InputStreamReader is = new InputStreamReader(
-                        fragmentActivity.getAssets()
-                                .open("giocatori/" + team.name().toLowerCase() + ".csv"));
-                BufferedReader reader = new BufferedReader(is);
-                reader.readLine();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] values = line.split(",");
-                    Role role_1;
-                    Role role_2 = null;
-                    if (values[3].contains("/")) {
-                        String[] roles = values[3].split("/");
-                        role_1 = Role.valueOf(roles[0].toUpperCase());
-                        role_2 = Role.valueOf(roles[1].toUpperCase());
-                    } else {
-                        role_1 = Role.valueOf(values[3].toUpperCase());
-                    }
-
-
-                    playerList.add(new Player(
-                            values[0], values[1], values[2],
-                            role_1, role_2,
-                            values[4], values[5], values[6],
-                            values[7], team
-                    ));
-                }
-            } catch (IOException e) {
-                Log.e("MIO", "Error loading asset files", e);
-            } catch (Exception ee) {
-                Log.e("MIO", ee.getMessage());
-                ee.printStackTrace();
-            }
-        }
-    }
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -110,7 +65,7 @@ public class PlayerListFragment extends Fragment {
 
         List<Player> playerList = new ArrayList<>();
 
-        setCompletePlayerList(getActivity(), playerList);
+        Utils.setCompletePlayerList(getActivity(), playerList);
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //            List<Integer> listOfValues = new ArrayList<>();

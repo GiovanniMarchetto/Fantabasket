@@ -2,7 +2,6 @@ package it.units.fantabasket.ui.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.layouts.PlayerOnFieldLayout;
-import it.units.fantabasket.ui.PlayerListFragment;
 import it.units.fantabasket.utils.Utils;
 
 import java.util.ArrayList;
@@ -129,13 +127,13 @@ public class DashboardFragment extends Fragment {
         playerList = new ArrayList<>();
 
         List<Player> completePlayersList = new ArrayList<>();
-        PlayerListFragment.setCompletePlayerList(getActivity(), completePlayersList);
+        Utils.setCompletePlayerList(getActivity(), completePlayersList);
         //TODO: valutare se rendere la complete list una variabile globale
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            completePlayersList.stream().filter(player -> roster.contains(player.getId())).forEach(
-                    player -> playerList.add(player)
-            );
+        for (Player player : completePlayersList) {
+            if (roster.contains(player.getId())) {
+                playerList.add(player);
+            }
         }
     }
 

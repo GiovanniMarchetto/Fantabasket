@@ -14,14 +14,20 @@ import android.util.Log;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+import androidx.fragment.app.FragmentActivity;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
+import it.units.fantabasket.enums.Role;
+import it.units.fantabasket.enums.Team;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static it.units.fantabasket.MainActivity.userDataReference;
@@ -136,5 +142,43 @@ public class Utils {
     public static Bitmap getBitmapFromBase64(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.NO_WRAP);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
+    public static void setCompletePlayerList(FragmentActivity fragmentActivity, List<Player> playerList) {
+        for (Team team : Team.values()) {
+            try {
+                InputStreamReader is = new InputStreamReader(
+                        fragmentActivity.getAssets()
+                                .open("giocatori/" + team.name().toLowerCase() + ".csv"));
+                BufferedReader reader = new BufferedReader(is);
+                reader.readLine();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(",");
+                    Role role_1;
+                    Role role_2 = null;
+                    if (values[3].contains("/")) {
+                        String[] roles = values[3].split("/");
+                        role_1 = Role.valueOf(roles[0].toUpperCase());
+                        role_2 = Role.valueOf(roles[1].toUpperCase());
+                    } else {
+                        role_1 = Role.valueOf(values[3].toUpperCase());
+                    }
+
+
+                    playerList.add(new Player(
+                            values[0], values[1], values[2],
+                            role_1, role_2,
+                            values[4], values[5], values[6],
+                            values[7], team
+                    ));
+                }
+            } catch (IOException e) {
+                Log.e("MIO", "Error loading asset files", e);
+            } catch (Exception ee) {
+                Log.e("MIO", ee.getMessage());
+                ee.printStackTrace();
+            }
+        }
     }
 }
