@@ -11,12 +11,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.databinding.ActivityAccessBinding;
+import it.units.fantabasket.entities.User;
 import it.units.fantabasket.ui.access.LoginFragment;
 import it.units.fantabasket.ui.access.RegistrationFragment;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
-
-import java.util.HashMap;
 
 public class AccessActivity extends AppCompatActivity {
 
@@ -127,14 +126,12 @@ public class AccessActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        HashMap<String, Object> userData = new HashMap<>();
-                        userData.put("name", name);
-                        userData.put("teamName", teamName);
-                        userData.put("teamLogo", teamLogoBase64);
+                        @SuppressWarnings("ConstantConditions")
+                        String userId = mAuth.getCurrentUser().getUid();
+                        User thisUser = new User(userId, name, teamName, teamLogoBase64);
 
-                        //noinspection ConstantConditions
                         FirebaseDatabase.getInstance().getReference("users")
-                                .child(mAuth.getCurrentUser().getUid()).setValue(userData);
+                                .child(userId).setValue(thisUser);
 
                         passToMainActivityIfUserNotNull();
                     } else {
