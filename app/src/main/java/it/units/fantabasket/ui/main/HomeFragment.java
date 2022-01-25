@@ -11,9 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.database.ValueEventListener;
-import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.enums.Team;
@@ -54,10 +52,7 @@ public class HomeFragment extends Fragment {
             binding.legaStartOption.setText(start);
 
             //BUTTONS
-            binding.changeLegaButton.setOnClickListener(view ->
-                    NavHostFragment.findNavController(HomeFragment.this)
-                            .navigate(R.id.action_HomeFragment_to_LegheFragment)
-            );
+
         }
 
         return root;

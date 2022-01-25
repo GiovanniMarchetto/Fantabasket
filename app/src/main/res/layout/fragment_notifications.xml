@@ -29,6 +29,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/text"/>
 
+    <Button
+            android:id="@+id/changeLegaButton"
+            android:text="@string/cambia_lega"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/text"
+            app:layout_constraintBottom_toTopOf="@+id/exitButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
     <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
