@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static it.units.fantabasket.MainActivity.*;
-import static it.units.fantabasket.ui.main.HomeFragment.isUserTheAdminOfLeague;
 
 public class LeaderboardFragment extends Fragment {
 

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
     private MyValueEventListener leagueOnListener;
+    public static boolean isUserTheAdminOfLeague;
 
     public static HashMap<String, User> membersLeagueOn;
     private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
@@ -177,6 +178,10 @@ public class MainActivity extends AppCompatActivity {
             preferencesChanged = false;
         }
 
+        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
+            user = (User) snapshotLega.getValue();
+        });
+
         //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
         userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
             legaSelezionata = snapshotLega.getValue(String.class);
@@ -198,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
             HashMap<String, Object> legaHashMap = (HashMap<String, Object>) snapshot.getValue();
             assert legaHashMap != null;
             leagueOn.set(Utils.getLegaFromHashMapOfDB(legaHashMap));
+            isUserTheAdminOfLeague = leagueOn.get().getAdmin().equals(firebaseUser.getUid());
+
 
             if (membersLeagueOnListenerList != null) {
                 for (String memberId : membersLeagueOnListenerList.keySet()) {
