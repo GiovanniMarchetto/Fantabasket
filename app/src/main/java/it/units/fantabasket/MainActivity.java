@@ -36,7 +36,8 @@ import static it.units.fantabasket.utils.Utils.getUserFromHashMapOfDB;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static FirebaseUser user;
+    public static FirebaseUser firebaseUser;
+    public static User user;
     public static DatabaseReference userDataReference;
     public static DatabaseReference usersReference;
     public static DatabaseReference legheReference;
@@ -45,12 +46,15 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar orarioInizioPrimaPartitaDellaGiornataCorrente;
     public static List<Calendar> orariInizioPartite;
 
-    public static AtomicReference<Lega> leagueOn;//legaSelezionata
     public static String legaSelezionata;
-    public static HashMap<String, User> membersLeagueOn;
-    public static List<String> roster;
+    public static AtomicReference<Lega> leagueOn;//legaSelezionata
     private MyValueEventListener leagueOnListener;
+
+    public static HashMap<String, User> membersLeagueOn;
     private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
+
+    public static List<String> roster;
+
     private boolean preferencesChanged = true;
     // called when the user changes the app's preferences
     private final SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
@@ -102,6 +106,33 @@ public class MainActivity extends AppCompatActivity {
         );
 
         //dati fissi
+        setOrariPartite();
+
+        //dati dinamici
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        usersReference = FirebaseDatabase.getInstance().getReference("users");
+        userDataReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseUser.getUid());
+        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
+        roster = new ArrayList<>(16);
+        loadCurrentRoster();
+
+
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
+
+        //preferences
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+
+        PreferenceManager.getDefaultSharedPreferences(this).
+                registerOnSharedPreferenceChangeListener(
+                        preferencesChangeListener);
+    }
+
+    private void setOrariPartite() {
         Calendar currentCal = Utils.getCalendarNow();
         orariInizioPartite = new ArrayList<>();
 
@@ -135,29 +166,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
-        //dati dinamici
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        usersReference = FirebaseDatabase.getInstance().getReference("users");
-        userDataReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
-        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
-        roster = new ArrayList<>(16);
-        loadCurrentRoster();
-
-
-        it.units.fantabasket.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-
-
-        //preferences
-        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
-
-        PreferenceManager.getDefaultSharedPreferences(this).
-                registerOnSharedPreferenceChangeListener(
-                        preferencesChangeListener);
     }
 
     @Override
@@ -200,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             membersLeagueOn = new HashMap<>();
             membersLeagueOnListenerList = new HashMap<>();
             for (String memberId : leagueOn.get().getPartecipanti()) {
-                if (!Objects.equals(memberId, user.getUid())) {
+                if (!Objects.equals(memberId, firebaseUser.getUid())) {
                     MyValueEventListener memberListener = snapshotMember -> {
                         HashMap<String, Object> userHashMap = (HashMap<String, Object>) snapshotMember.getValue();
                         membersLeagueOn.put(memberId, getUserFromHashMapOfDB(userHashMap));

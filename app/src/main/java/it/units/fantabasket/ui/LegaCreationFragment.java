@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static it.units.fantabasket.MainActivity.user;
+import static it.units.fantabasket.MainActivity.firebaseUser;
 import static it.units.fantabasket.MainActivity.userDataReference;
 
 public class LegaCreationFragment extends Fragment {
@@ -138,7 +138,7 @@ public class LegaCreationFragment extends Fragment {
             String location = binding.location.getText().toString();
             int numPartecipanti = Integer.parseInt(binding.numPartecipantiTextView.getText().toString());
             LegaType legaType = binding.formula1.isChecked() ? LegaType.FORMULA1 : LegaType.CALENDARIO;
-            Lega newLega = new Lega(legaName, location, latitude, longitude, user.getUid(),
+            Lega newLega = new Lega(legaName, location, latitude, longitude, firebaseUser.getUid(),
                     numPartecipanti, legaType);
             FirebaseDatabase.getInstance().getReference("leghe").child(legaName).setValue(newLega);
             userDataReference.child("legaSelezionata").setValue(legaName);

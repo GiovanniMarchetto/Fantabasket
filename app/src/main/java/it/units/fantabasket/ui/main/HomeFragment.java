@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.User;
-import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
 import it.units.fantabasket.utils.MyValueEventListener;
@@ -34,7 +32,6 @@ import static it.units.fantabasket.MainActivity.*;
 
 public class HomeFragment extends Fragment {
 
-    public static LegaType legaSelezionataType;
     public static boolean isUserTheAdminOfLeague;
     private FragmentHomeBinding binding;
     private ValueEventListener legaSelezionataListener;
@@ -57,19 +54,8 @@ public class HomeFragment extends Fragment {
             binding.teamLogo.setImageBitmap(decodedByte);
         });
 
-        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) dataSnapshot -> {
-
-            if (legaSelezionata != null && legaSelezionataListener != null) {
-                legheReference.child(legaSelezionata).removeEventListener(legaSelezionataListener);
-            }
-
-            legaSelezionata = dataSnapshot.getValue(String.class);
-            if (binding == null) {//TODO: capire come fare a "riciclare" i fragment
-                Log.i("MIO", getId() + "---binding null");
-                binding = FragmentHomeBinding.inflate(inflater, container, false);
-            } else {
-                Log.i("MIO", getId() + "---binding find");
-            }
+        userDataReference.child("legaSelezionata").addListenerForSingleValueEvent((MyValueEventListener) dataSnapshot -> {
+            String legaSelezionata = dataSnapshot.getValue(String.class);
             if (legaSelezionata != null) {
                 binding.legaName.setText(legaSelezionata);
 
@@ -94,12 +80,11 @@ public class HomeFragment extends Fragment {
             HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot.getValue();
             assert legaParams != null;
             Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
-            legaSelezionataType = lega.getTipologia();
             binding.legaNameOption.setText(lega.getName());
             String start = lega.isStarted() ? "IN CORSO" : "IN ATTESA";
             binding.legaStartOption.setText(start);
 
-            isUserTheAdminOfLeague = lega.getAdmin().equals(user.getUid());
+            isUserTheAdminOfLeague = lega.getAdmin().equals(firebaseUser.getUid());
             if (lega.isStarted()) {
                 if (lega.getTipologia() == LegaType.CALENDARIO) {
                     HashMap<String, List<HashMap<String, Object>>> calendario =
@@ -110,7 +95,7 @@ public class HomeFragment extends Fragment {
                         String homeUserId = (String) partita.get("homeUserId");
                         String awayUserId = (String) partita.get("awayUserId");
 
-                        if (homeUserId.equals(user.getUid()) || awayUserId.equals(user.getUid())) {
+                        if (homeUserId.equals(firebaseUser.getUid()) || awayUserId.equals(firebaseUser.getUid())) {
 
                             Game userGame = new Game(homeUserId, awayUserId);
 
@@ -123,48 +108,7 @@ public class HomeFragment extends Fragment {
                         }
                     }
 
-                    if (isUserTheAdminOfLeague && giornataCorrente > 1) {
-                        binding.calcoloGiornataButton.setOnClickListener(view -> {
-                            int giornataPrecedente = giornataCorrente - 1;
-                            List<Game> partiteDellaGiornataPrecedente = getGamesFromHashmap(calendario.get("giornata_" + giornataPrecedente));
-                            calcoloGiornata(giornataPrecedente, partiteDellaGiornataPrecedente);
-                            legheReference.child(legaSelezionata).child("calendario")
-                                    .child("giornata_" + giornataPrecedente).setValue(partiteDellaGiornataPrecedente);
-                        });
-                        binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
-                        binding.calcoloGiornataButton.setEnabled(true);
-                    }
-
                 } else {
-                    //TODO: redo classifica button!!!
-                    if (isUserTheAdminOfLeague && giornataCorrente > 1) {
-                        binding.calcoloGiornataButton.setOnClickListener(view -> {
-                            int giornataPrecedente = giornataCorrente - 1;
-                            List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
-                            for (HashMap<String, Object> hashMap : classifica) {
-                                int pointsOfUser = getPointsFromPlayerIdAndGiornata((String) hashMap.get("userId"), giornataPrecedente)
-                                        + (int) hashMap.get("points");
-                                hashMap.put("points", pointsOfUser);
-                            }
-                            //no stream no party...// also sort not supported
-                            List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
-                            for (int i = 0; i < classifica.size(); i++) {
-                                HashMap<String, Object> max = classifica.get(0);
-                                for (HashMap<String, Object> hashMap : classifica) {
-                                    if (!classificaUpdate.contains(hashMap) &&
-                                            (int) hashMap.get("points") > (int) max.get("points")) {
-                                        max = hashMap;
-                                    }
-                                }
-                                classificaUpdate.add(max);
-                                classifica.remove(max);
-                            }
-                            legheReference.child(legaSelezionata).child("classifica").setValue(classificaUpdate);
-
-                        });
-                        binding.calcoloGiornataButton.setVisibility(View.VISIBLE);
-                        binding.calcoloGiornataButton.setEnabled(true);
-                    }
 
                     List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
                     int punteggioAttuale = 0;
@@ -172,7 +116,7 @@ public class HomeFragment extends Fragment {
                     //TODO: refactoring
                     assert classifica != null;
                     for (HashMap<String, Object> hashMap : classifica) {
-                        if (Objects.equals(hashMap.get("userId"), user.getUid())) {
+                        if (Objects.equals(hashMap.get("userId"), firebaseUser.getUid())) {
                             posizione = classifica.indexOf(hashMap) + 1;
                             punteggioAttuale = (int) hashMap.get("points");
                         }
@@ -208,11 +152,6 @@ public class HomeFragment extends Fragment {
                         legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(giornataInizioLega - 1);
 
                         List<HashMap<String, Object>> classifica = new ArrayList<>();
-
-                        HashMap<String, Object> lastUpdate = new HashMap<>();
-                        lastUpdate.put("lastUpdate", Utils.getCalendarNow().getTime().getTime());
-                        classifica.add(lastUpdate);
-
                         for (String partecipante : lega.getPartecipanti()) {
                             User partecipanteData = new User(partecipante);
 
@@ -221,7 +160,7 @@ public class HomeFragment extends Fragment {
                             elementOfClassifica.put("teamName", partecipanteData.teamName);
                             elementOfClassifica.put("totalPointsScored", 0);
 
-                            if (legaSelezionataType == LegaType.CALENDARIO) {//TODO:check se legaSelezionataType è settata all'inizio
+                            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
                                 elementOfClassifica.put("totalPointsAllowed", 0);
                                 elementOfClassifica.put("pointsOfVictories", 0);
                             }
@@ -237,87 +176,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         };
-    }
-
-    private List<Game> getGamesFromHashmap(List<HashMap<String, Object>> hashMapsList) {
-        List<Game> gameList = new ArrayList<>(hashMapsList.size());
-        for (HashMap<String, Object> hashMap : hashMapsList) {
-            gameList.add(
-                    new Game((String) hashMap.get("homeUserId"), (String) hashMap.get("awayUserId"),
-                            (Integer) hashMap.get("homePoints"), (Integer) hashMap.get("awayPoints")));
-        }
-        return gameList;
-    }
-
-    private void calcoloGiornata(int giornata, List<Game> gameList) {
-        for (Game game : gameList) {
-
-            int puntiHome = calcolaPuntiFromUserIdAndGiornata(game.homeUserId, giornata);
-            int puntiAway = calcolaPuntiFromUserIdAndGiornata(game.awayUserId, giornata);
-
-            //nel basket non si pareggia--> a parità vince il giocatore in casa
-            if (puntiHome == puntiAway) puntiHome++;
-
-            game.setHomePoints(puntiHome);
-            game.setAwayPoints(puntiAway);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private int calcolaPuntiFromUserIdAndGiornata(String userId, int giornata) {
-        final int[] points = {0};
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("formazionePerGiornata")
-                .child(String.valueOf(giornata)).addListenerForSingleValueEvent(
-                        (MyValueEventListener) snapshot -> {
-                            HashMap<String, String> formazione = (HashMap<String, String>) snapshot.getValue();
-                            if (formazione != null) {
-                                for (String key : formazione.keySet()) {
-                                    points[0] = points[0] + (int) (Math.round(
-                                            getFactorPositionOnField(FieldPositions.valueOf(key)) *
-                                                    getPointsFromPlayerIdAndGiornata(formazione.get(key), giornata)));
-                                }
-                            }
-                        }
-                );
-        return points[0];
-    }
-
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
-    private int getPointsFromPlayerIdAndGiornata(String playerId, int giornata) {
-        final int[] vote = {0};
-        FirebaseDatabase.getInstance().getReference("playersStatistics").child(playerId).addListenerForSingleValueEvent(
-                (MyValueEventListener) snapshot -> {
-                    HashMap<String, Object> playerStatistic = (HashMap<String, Object>) snapshot.getValue();
-                    int points = ((List<Integer>) playerStatistic.get("points")).get(giornata);
-                    int fouls = ((List<Integer>) playerStatistic.get("fouls")).get(giornata);
-                    int rebounds = ((List<Integer>) playerStatistic.get("rebounds")).get(giornata);
-                    int recoverBalls = ((List<Integer>) playerStatistic.get("recoverBalls")).get(giornata);
-                    int lostBalls = ((List<Integer>) playerStatistic.get("lostBalls")).get(giornata);
-
-                    vote[0] = points + rebounds + recoverBalls - fouls - lostBalls;
-                }
-        );
-        return vote[0];
-    }
-
-    private double getFactorPositionOnField(FieldPositions fieldPosition) {
-        List<FieldPositions> onField = Arrays.asList(FieldPositions.PLAYMAKER, FieldPositions.GUARDIA_DX,
-                FieldPositions.GUARDIA_SX, FieldPositions.CENTRO, FieldPositions.ALA);
-        List<FieldPositions> firstChangeList = Arrays.asList(FieldPositions.PANCHINA_1, FieldPositions.PANCHINA_2,
-                FieldPositions.PANCHINA_3);
-        List<FieldPositions> secondChangeList = Arrays.asList(FieldPositions.PANCHINA_4, FieldPositions.PANCHINA_5);
-        List<FieldPositions> thirdChangeList = Arrays.asList(FieldPositions.PANCHINA_6, FieldPositions.PANCHINA_7);
-
-        if (onField.contains(fieldPosition)) {
-            return 1;
-        } else if (firstChangeList.contains(fieldPosition)) {
-            return 3.0 / 4.0;
-        } else if (secondChangeList.contains(fieldPosition)) {
-            return 2.0 / 4.0;
-        } else if (thirdChangeList.contains(fieldPosition)) {
-            return 1.0 / 4.0;
-        }
-        return 0;
     }
 
     @NotNull

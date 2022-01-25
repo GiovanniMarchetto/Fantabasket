@@ -20,15 +20,19 @@ public class Lega {
     private final int numPartecipanti;
     private final LegaType tipologia;
     @Nullable
+    private final List<HashMap<String, Object>> classifica;
+    @Nullable
     private final HashMap<String, List<Game>> calendario;
 
     public Lega(String name, String location, double latitude, double longitude,
                 String admin, int numPartecipanti, LegaType tipologia) {
+        //new league
         this.name = name;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
         this.started = false;
+        this.classifica = null;
         this.giornataInizio = 0;
         this.lastRoundCalculated = 0;
         this.calendario = null;
@@ -42,8 +46,9 @@ public class Lega {
     public Lega(String name, String location, double latitude, double longitude,
                 boolean started, int giornataInizio, int lastRoundCalculated,
                 String admin, List<String> partecipanti, int numPartecipanti,
-                LegaType tipologia, @Nullable HashMap<String, List<Game>> calendario) {
-        //copy constructor
+                LegaType tipologia,
+                @Nullable List<HashMap<String, Object>> classifica,
+                @Nullable HashMap<String, List<Game>> calendario) {
         this.name = name;
         this.location = location;
         this.latitude = latitude;
@@ -55,6 +60,7 @@ public class Lega {
         this.partecipanti = partecipanti;
         this.numPartecipanti = numPartecipanti;
         this.tipologia = tipologia;
+        this.classifica = classifica;
         this.calendario = calendario;
 
     }
@@ -65,14 +71,6 @@ public class Lega {
 
     public String getLocation() {
         return location;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
     }
 
     public boolean isStarted() {
@@ -93,5 +91,31 @@ public class Lega {
 
     public LegaType getTipologia() {
         return tipologia;
+    }
+
+    public int getLastRoundCalculated() {
+        return lastRoundCalculated;
+    }
+
+    @Nullable
+    public HashMap<String, List<Game>> getCalendario() {
+        return calendario;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public int getGiornataInizio() {
+        return giornataInizio;
+    }
+
+    @Nullable
+    public List<HashMap<String, Object>> getClassifica() {
+        return classifica;
     }
 }

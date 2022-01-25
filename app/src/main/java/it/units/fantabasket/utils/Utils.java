@@ -21,10 +21,7 @@ import it.units.fantabasket.enums.LegaType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import static it.units.fantabasket.MainActivity.userDataReference;
 
@@ -85,7 +82,12 @@ public class Utils {
         LegaType legaType = LegaType.valueOf((String) legaParams.get("tipologia"));
         Object latitude = legaParams.get("latitude");
         Object longitude = legaParams.get("longitude");
+
+        List<HashMap<String, Object>> classifica = null;
         HashMap<String, List<Game>> calendario = null;
+        if (started) {
+            classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
+        }
         if (legaType == LegaType.CALENDARIO && started) {
             calendario = (HashMap<String, List<Game>>) legaParams.get("calendario");
         }
@@ -102,6 +104,7 @@ public class Utils {
                 (List<String>) legaParams.get("partecipanti"),
                 (int) ((numPartecipanti != null) ? (long) numPartecipanti : 0),
                 legaType,
+                classifica,
                 calendario
         );
     }
@@ -117,5 +120,15 @@ public class Utils {
         List<HashMap<FieldPositions, String>> formazioniPerGiornata = (List<HashMap<FieldPositions, String>>) userParams.get("formazioniPerGiornata");
 
         return new User(id, nickname, teamName, teamLogo, legaSelezionata, roster, formazioniPerGiornata);
+    }
+
+    public static List<Game> getGamesFromHashmap(List<HashMap<String, Object>> hashMapsList) {
+        List<Game> gameList = new ArrayList<>(hashMapsList.size());
+        for (HashMap<String, Object> hashMap : hashMapsList) {
+            gameList.add(
+                    new Game((String) hashMap.get("homeUserId"), (String) hashMap.get("awayUserId"),
+                            (Integer) hashMap.get("homePoints"), (Integer) hashMap.get("awayPoints")));
+        }
+        return gameList;
     }
 }

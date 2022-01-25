@@ -60,7 +60,7 @@ public class LegheFragment extends Fragment {
                     Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
                     Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
 
-                    if (lega.getPartecipanti().contains(user.getUid())) {
+                    if (lega.getPartecipanti().contains(firebaseUser.getUid())) {
                         numLeghePartecipate++;
                         Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
                         actionButton.setText("SELEZIONA");
@@ -74,7 +74,7 @@ public class LegheFragment extends Fragment {
                             if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
                                 if (!lega.isStarted()) {
                                     List<String> newPartecipanti = lega.getPartecipanti();
-                                    newPartecipanti.add(user.getUid());
+                                    newPartecipanti.add(firebaseUser.getUid());
                                     legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
                                     setLegaSelezionataAndReturnToHome(legaName);
                                 } else {

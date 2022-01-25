@@ -14,7 +14,7 @@ import it.units.fantabasket.AccessActivity;
 import it.units.fantabasket.databinding.FragmentNotificationsBinding;
 import it.units.fantabasket.utils.Utils;
 
-import static it.units.fantabasket.MainActivity.user;
+import static it.units.fantabasket.MainActivity.firebaseUser;
 
 public class NotificationsFragment extends Fragment {
 
@@ -26,7 +26,7 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.text.setText(user.getEmail());
+        binding.text.setText(firebaseUser.getEmail());
 
         binding.exitButton.setOnClickListener(view -> returnToLogin());
 
