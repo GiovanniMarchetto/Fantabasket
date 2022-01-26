@@ -145,14 +145,13 @@
                 android:padding="@dimen/basic_margin_16dp">
 
             <Button
-                    android:id="@+id/changeRosterButton"
-                    android:text="@string/roster"
+                    android:id="@+id/resetButton"
+                    android:text="@string/reset"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/basic_margin_16dp"
-                    app:backgroundTint="@color/pannaOrange"
-                    android:textColor="@color/black"
-                    android:drawableEnd="@drawable/ic_edit"
+                    app:backgroundTint="@color/darkRed"
+                    android:textColor="@color/white"
                     android:layout_weight="1"
                     style="?android:attr/buttonBarButtonStyle"/>
 
@@ -161,11 +160,24 @@
                     android:text="@string/save"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_marginEnd="@dimen/basic_margin_16dp"
+                    android:layout_weight="1"
                     app:backgroundTint="@color/verdeAcqua"
                     android:textColor="@color/black"
                     android:drawableEnd="@drawable/ic_strategy"
                     style="?android:attr/buttonBarButtonStyle"/>
+
+            <Button
+                    android:id="@+id/changeRosterButton"
+                    android:text="@string/roster"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@color/pannaOrange"
+                    android:textColor="@color/black"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:layout_weight="1"
+                    style="?android:attr/buttonBarButtonStyle"/>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

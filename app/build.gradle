@@ -65,4 +65,6 @@ dependencies {
     //For position
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
+    //For toast
+    implementation 'androidx.core:core:1.7.0'
 }

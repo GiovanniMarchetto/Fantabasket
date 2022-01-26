@@ -2,18 +2,23 @@ package it.units.fantabasket.utils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
@@ -30,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static it.units.fantabasket.MainActivity.orariInizioPartite;
 import static it.units.fantabasket.MainActivity.userDataReference;
 
 public class Utils {
@@ -124,7 +130,29 @@ public class Utils {
         String teamLogo = (String) userParams.get("teamLogo");
         String legaSelezionata = (String) userParams.get("legaSelezionata");
         List<String> roster = (List<String>) userParams.get("roster");
-        List<HashMap<FieldPositions, String>> formazioniPerGiornata = (List<HashMap<FieldPositions, String>>) userParams.get("formazioniPerGiornata");
+        List<HashMap<FieldPositions, String>> formazioniPerGiornata = null;
+
+        HashMap<String, HashMap<String, String>> formazioniRawMap = (HashMap<String, HashMap<String, String>>) userParams.get("formazioniPerGiornata");
+        if (formazioniRawMap != null) {
+            formazioniPerGiornata = new ArrayList<>(orariInizioPartite.size());
+            List<Integer> indexArray = new ArrayList<>(formazioniRawMap.size());
+            for (String stringIndex : formazioniRawMap.keySet()) {
+                int index = Integer.parseInt(stringIndex);
+                indexArray.add(index);
+            }
+            for (int i = 0; i < orariInizioPartite.size(); i++) {
+                if (indexArray.contains(i)) {
+                    HashMap<String, String> stringHashMap = formazioniRawMap.get(String.valueOf(i));
+                    HashMap<FieldPositions, String> correctHashMap = new HashMap<>();
+                    for (String key : stringHashMap.keySet()) {
+                        correctHashMap.put(FieldPositions.valueOf(key), stringHashMap.get(key));
+                    }
+                    formazioniPerGiornata.add(i, correctHashMap);
+                } else {
+                    formazioniPerGiornata.add(i, null);
+                }
+            }
+        }
 
         return new User(id, nickname, teamName, teamLogo, legaSelezionata, roster, formazioniPerGiornata);
     }
@@ -180,5 +208,31 @@ public class Utils {
                 ee.printStackTrace();
             }
         }
+    }
+
+    public static void showToast(Context context, String message, String type) {
+        String textColor;
+        String backgroundColor;
+        switch (type) {
+            case "good":
+                textColor = "#FF000000";
+                backgroundColor = "#FFCCFF90";
+                break;
+            case "warning":
+                textColor = "#FF000000";
+                backgroundColor = "#FFFFFF8D";
+                break;
+            case "error":
+                textColor = "#FF000000";
+                backgroundColor = "#FFD32F2F";
+                break;
+            default:
+                textColor = "#FF000000";
+                backgroundColor = "#FFB1B1B1";
+        }
+        Toast toast = Toast.makeText(context, HtmlCompat.fromHtml("<font color='" + textColor + "' ><b>" + message + "</b></font>", 0), Toast.LENGTH_LONG);
+        toast.getView().setBackgroundColor(Color.parseColor(backgroundColor));
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }

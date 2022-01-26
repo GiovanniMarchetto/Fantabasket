@@ -23,11 +23,11 @@
             android:src="@mipmap/matita"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="@string/mod_team_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/teamLogo"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/text"/>
+            app:layout_constraintBottom_toTopOf="@+id/text"
+            tools:ignore="ContentDescription"/>
 
     <Button
             android:id="@+id/changeLegaButton"

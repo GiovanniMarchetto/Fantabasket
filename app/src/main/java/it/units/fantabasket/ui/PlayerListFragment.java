@@ -56,7 +56,7 @@ public class PlayerListFragment extends Fragment {
                 binding.saveRosterButton.setEnabled(false);//TODO:messaggino
             } else {
                 roster = new ArrayList<>(newRoster);
-                userDataReference.child("players").setValue(roster);
+                userDataReference.child("roster").setValue(roster);
                 NavHostFragment.findNavController(PlayerListFragment.this)
                         .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
             }

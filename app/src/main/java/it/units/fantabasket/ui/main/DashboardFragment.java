@@ -19,6 +19,7 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentDashboardBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.enums.FieldPositions;
+import it.units.fantabasket.enums.Role;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.layouts.PlayerOnFieldLayout;
 import it.units.fantabasket.utils.Utils;
@@ -33,8 +34,9 @@ import static it.units.fantabasket.enums.FieldPositions.*;
 @SuppressWarnings("ConstantConditions")
 public class DashboardFragment extends Fragment {
 
-    private static List<Player> playerList;
+    private static List<Player> rosterOfPlayers;
     private static HashMap<FieldPositions, Player> formazione;
+    private static HashMap<FieldPositions, PlayerOnFieldLayout> playerOnFieldLayoutHashMap;
     private static FieldPositions selectedRole;
     private final int formazioneSize = 12;
     private FragmentDashboardBinding binding;
@@ -43,19 +45,10 @@ public class DashboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        for (FieldPositions fieldPosition : FieldPositions.values()) {
-            PlayerOnFieldLayout playerOnFieldLayout = new PlayerOnFieldLayout(getContext(), new Player());
-            playerOnFieldLayout.getPlayerButton().setOnClickListener(view -> {
-                        selectedRole = fieldPosition;
-                        showBottomSheet(playerOnFieldLayout.getPlayerButton(), playerOnFieldLayout.getPlayerTextView());
-                    }
-            );
-            addToCorrectView(fieldPosition, playerOnFieldLayout.getPlayerLayout());
-        }
+        setPlayerButtons();
 
-        setPlayerList();
+        setRoster();
 
         binding.changeRosterButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(DashboardFragment.this)
@@ -66,21 +59,37 @@ public class DashboardFragment extends Fragment {
         binding.salvaFormazioneButton.setOnClickListener(view -> {
             if (Utils.getCalendarNow().before(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
                 if (!formazione.containsValue(null)) {
-                    HashMap<String, String> formazione = new HashMap<>(formazioneSize);
-                    for (FieldPositions key : DashboardFragment.formazione.keySet()) {
-                        Log.i("MIO", "chiave : " + key);
-                        formazione.put(key.name(), DashboardFragment.formazione.get(key).getId());
+                    HashMap<String, String> formazioneDBFormat = new HashMap<>(formazioneSize);
+                    for (FieldPositions key : formazione.keySet()) {
+                        formazioneDBFormat.put(key.name(), formazione.get(key).getId());
                     }
-                    userDataReference.child("formazionePerGiornata").child(String.valueOf(giornataCorrente)).setValue(formazione);
+                    userDataReference.child("formazioniPerGiornata").child(String.valueOf(giornataCorrente)).setValue(formazioneDBFormat);
+                    Utils.showToast(getContext(), "Salvata!", "good");
                 } else {
+                    Utils.showToast(getContext(), "Formazione non completa", "error");
                     Log.i("MIO", "Formazione non completa");
                 }
             } else {
+                Utils.showToast(getContext(), "Tempo scaduto", "error");
                 Log.i("MIO", "Tempo scaduto");
             }
         });
 
-        return root;
+        return binding.getRoot();
+    }
+
+    private void setPlayerButtons() {
+        playerOnFieldLayoutHashMap = new HashMap<>(values().length);
+        for (FieldPositions fieldPosition : FieldPositions.values()) {
+            PlayerOnFieldLayout playerOnFieldLayout = new PlayerOnFieldLayout(getContext(), new Player());
+            playerOnFieldLayout.getPlayerButton().setOnClickListener(view -> {
+                        selectedRole = fieldPosition;
+                        showBottomSheet(playerOnFieldLayout);
+                    }
+            );
+            addToCorrectView(fieldPosition, playerOnFieldLayout.getPlayerLayout());
+            playerOnFieldLayoutHashMap.put(fieldPosition, playerOnFieldLayout);
+        }
     }
 
     private void addToCorrectView(FieldPositions fieldPosition, LinearLayout playerLayout) {
@@ -116,27 +125,40 @@ public class DashboardFragment extends Fragment {
         binding = null;
     }
 
-    private void setPlayerList() {
+    private void setRoster() {
         formazione = new HashMap<>(formazioneSize);
-        for (FieldPositions position : FieldPositions.values()) {
-            formazione.put(position, null);
-        }
-
-        playerList = new ArrayList<>();
+        rosterOfPlayers = new ArrayList<>();
 
         List<Player> completePlayersList = new ArrayList<>();
         Utils.setCompletePlayerList(getActivity(), completePlayersList);
+
+        if (user.formazioniPerGiornata != null && user.formazioniPerGiornata.size() > giornataCorrente && user.formazioniPerGiornata.get(giornataCorrente) != null) {
+            HashMap<FieldPositions, String> formazioneSalvata = user.formazioniPerGiornata.get(giornataCorrente);
+            for (FieldPositions position : formazioneSalvata.keySet()) {
+                for (Player player : completePlayersList) {
+                    if (formazioneSalvata.get(position).equals(player.getId())) {
+                        formazione.put(position, player);
+                        occupyPositionField(playerOnFieldLayoutHashMap.get(position), player);
+                    }
+                }
+            }
+        } else {
+            for (FieldPositions position : FieldPositions.values()) {
+                formazione.put(position, null);
+            }
+        }
+
         //TODO: valutare se rendere la complete list una variabile globale
 
         for (Player player : completePlayersList) {
             if (roster.contains(player.getId())) {
-                playerList.add(player);
+                rosterOfPlayers.add(player);
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheet(Button playerButton, TextView playerName) {
+    private void showBottomSheet(PlayerOnFieldLayout playerOnFieldLayout) {
         Context context = getContext();
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
@@ -147,11 +169,12 @@ public class DashboardFragment extends Fragment {
         playersLayout.setLayoutParams(params);
         playersLayout.setOrientation(LinearLayout.VERTICAL);
 
-        for (Player player : playerList) {
-            if (!formazione.containsValue(player)) {
+        for (Player player : rosterOfPlayers) {
+            if (!formazione.containsValue(player) && isPlayerAdaptForThisPosition(player)) {
                 PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(context, player);
                 playerLayout.setOnClickListener(view -> {
-                    occupyPositionField(playerButton, playerName, player);
+                    occupyPositionField(playerOnFieldLayout, player);
+                    formazione.put(selectedRole, player);
                     bottomSheetDialog.dismiss();
                 });
                 playerLayout.setLayoutParams(params);
@@ -166,7 +189,7 @@ public class DashboardFragment extends Fragment {
         TextView textView = (TextView) subLayout.getChildAt(0);
         textView.setText("Libera posizione");
         emptyPlayerLayout.setOnClickListener(view -> {
-            occupyPositionField(playerButton, playerName, emptyPlayer);
+            occupyPositionField(playerOnFieldLayout, emptyPlayer);
             formazione.put(selectedRole, null);
             bottomSheetDialog.dismiss();
         });
@@ -178,12 +201,29 @@ public class DashboardFragment extends Fragment {
         bottomSheetDialog.show();
     }
 
-    private void occupyPositionField(Button playerButton, TextView playerName, Player player) {
+    private boolean isPlayerAdaptForThisPosition(Player player) {
+        if (onFieldPositions.contains(selectedRole)) {
+            switch (selectedRole) {
+                case PLAYMAKER:
+                    return player.getRole_1() == Role.PLAYMAKER || player.getRole_2() == Role.PLAYMAKER;
+                case GUARDIA_DX:
+                case GUARDIA_SX:
+                    return player.getRole_1() == Role.GUARDIA || player.getRole_2() == Role.GUARDIA;
+                case ALA:
+                    return player.getRole_1() == Role.ALA || player.getRole_2() == Role.ALA;
+                case CENTRO:
+                    return player.getRole_1() == Role.CENTRO || player.getRole_2() == Role.CENTRO;
+            }
+        }
+        return true;
+    }
+
+    private void occupyPositionField(PlayerOnFieldLayout playerOnFieldLayout, Player player) {
+        Button playerButton = playerOnFieldLayout.getPlayerButton();
+        TextView playerName = playerOnFieldLayout.getPlayerTextView();
         playerButton.setText(player.getNumber());
         playerButton.setTextColor(player.getNumberColor());
         playerButton.setBackground(getContext().getDrawable(player.getShirt()));
         playerName.setText(player.getId());
-
-        formazione.put(selectedRole, player);
     }
 }

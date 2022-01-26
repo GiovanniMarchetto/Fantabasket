@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadCurrentRoster() {
         Log.i("MIO", ".............sto caricando i giocatori");
-        userDataReference.child("players").addValueEventListener((MyValueEventListener) dataSnapshot -> {
+        userDataReference.child("roster").addValueEventListener((MyValueEventListener) dataSnapshot -> {
             @SuppressWarnings("unchecked")
             List<String> currentRoster = (List<String>) dataSnapshot.getValue();
             if (currentRoster != null) {
