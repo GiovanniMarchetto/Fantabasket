@@ -75,6 +75,13 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        binding.resetButton.setOnClickListener(view -> {
+            for (FieldPositions position : FieldPositions.values()) {
+                formazione.put(position, null);
+                occupyPositionField(playerOnFieldLayoutHashMap.get(position), new Player());
+            }
+        });
+
         return binding.getRoot();
     }
 
