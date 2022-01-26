@@ -3,6 +3,7 @@ package it.units.fantabasket.layouts;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class PlayerOnFieldLayout extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         playerTextView.setText(player.getId());
         playerTextView.setTextColor(Color.WHITE);
+        playerTextView.setTypeface(playerTextView.getTypeface(), Typeface.BOLD);
 //        playerTextView.setPadding(15, 0, 15, 0);
 
         playerLayout.addView(playerButton);

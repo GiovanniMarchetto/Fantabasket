@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.MainActivity.*;
+import static it.units.fantabasket.enums.FieldPositions.*;
 
 @SuppressWarnings("ConstantConditions")
 public class DashboardFragment extends Fragment {
@@ -44,47 +45,17 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        for (int i = 1; i <= formazioneSize - 5; i++) {
+        for (FieldPositions fieldPosition : FieldPositions.values()) {
             PlayerOnFieldLayout playerOnFieldLayout = new PlayerOnFieldLayout(getContext(), new Player());
-            int finalI = i;
             playerOnFieldLayout.getPlayerButton().setOnClickListener(view -> {
-                        selectedRole = FieldPositions.valueOf("PANCHINA_" + finalI);
+                        selectedRole = fieldPosition;
                         showBottomSheet(playerOnFieldLayout.getPlayerButton(), playerOnFieldLayout.getPlayerTextView());
                     }
             );
-            int postiPanchinaSecondaSezione = 2;
-            int postiPanchinaPrimaSezione = 3;
-            if (i <= postiPanchinaPrimaSezione) {
-                binding.panchinaFirstSection.addView(playerOnFieldLayout.getPlayerLayout());
-            } else if (i <= postiPanchinaPrimaSezione + postiPanchinaSecondaSezione) {
-                binding.panchinaSecondSection.addView(playerOnFieldLayout.getPlayerLayout());
-            } else {
-                binding.panchinaThirdSection.addView(playerOnFieldLayout.getPlayerLayout());
-            }
+            addToCorrectView(fieldPosition, playerOnFieldLayout.getPlayerLayout());
         }
 
         setPlayerList();
-
-        binding.playmakerButton.setOnClickListener(view -> {
-            selectedRole = FieldPositions.PLAYMAKER;
-            showBottomSheet(binding.playmakerButton, binding.playmakerText);
-        });
-        binding.guardiaDxButton.setOnClickListener(view -> {
-            selectedRole = FieldPositions.GUARDIA_DX;
-            showBottomSheet(binding.guardiaDxButton, binding.guardiaDxText);
-        });
-        binding.guardiaSxButton.setOnClickListener(view -> {
-            selectedRole = FieldPositions.GUARDIA_SX;
-            showBottomSheet(binding.guardiaSxButton, binding.guardiaSxText);
-        });
-        binding.alaButton.setOnClickListener(view -> {
-            selectedRole = FieldPositions.ALA;
-            showBottomSheet(binding.alaButton, binding.alaText);
-        });
-        binding.centroButton.setOnClickListener(view -> {
-            selectedRole = FieldPositions.CENTRO;
-            showBottomSheet(binding.centroButton, binding.centroText);
-        });
 
         binding.changeRosterButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(DashboardFragment.this)
@@ -110,6 +81,33 @@ public class DashboardFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private void addToCorrectView(FieldPositions fieldPosition, LinearLayout playerLayout) {
+        if (onFieldPositions.contains(fieldPosition)) {
+            switch (fieldPosition) {
+                case PLAYMAKER:
+                    binding.playmaker.addView(playerLayout);
+                    break;
+                case CENTRO:
+                    binding.centro.addView(playerLayout);
+                    break;
+                case GUARDIA_SX:
+                    binding.guardiaSx.addView(playerLayout);
+                    break;
+                case GUARDIA_DX:
+                    binding.guardiaDx.addView(playerLayout);
+                    break;
+                case ALA:
+                    binding.ala.addView(playerLayout);
+            }
+        } else if (primaPanchina.contains(fieldPosition)) {
+            binding.panchinaFirstSection.addView(playerLayout);
+        } else if (secondaPanchina.contains(fieldPosition)) {
+            binding.panchinaSecondSection.addView(playerLayout);
+        } else {
+            binding.panchinaThirdSection.addView(playerLayout);
+        }
     }
 
     @Override
@@ -140,9 +138,6 @@ public class DashboardFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void showBottomSheet(Button playerButton, TextView playerName) {
         Context context = getContext();
-        if (context == null) {
-            Log.e("MIO", "Contesto nullo");
-        }
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
         ScrollView scrollView = new ScrollView(context);
@@ -169,7 +164,7 @@ public class DashboardFragment extends Fragment {
         PlayerLayoutHorizontal emptyPlayerLayout = new PlayerLayoutHorizontal(context, emptyPlayer);
         final LinearLayout subLayout = (LinearLayout) emptyPlayerLayout.getPlayerLayout().getChildAt(2);
         TextView textView = (TextView) subLayout.getChildAt(0);
-        textView.setText("RIMUOVI");
+        textView.setText("Libera posizione");
         emptyPlayerLayout.setOnClickListener(view -> {
             occupyPositionField(playerButton, playerName, emptyPlayer);
             formazione.put(selectedRole, null);
