@@ -6,14 +6,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.database.FirebaseDatabase;
-import it.units.fantabasket.R;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.utils.MyValueEventListener;
 
@@ -70,11 +68,8 @@ public class LegaLayout {
         legaParamsLayout.addView(started);
 
         actionButton = new Button(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            actionButton.setBackgroundColor(context.getResources().getColor(R.color.esteco, context.getTheme()));
-        } else {
-            actionButton.setBackgroundColor(context.getResources().getColor(R.color.esteco));
-        }
+        final String colorBlueOpaqueString = "#133A53";
+        actionButton.setBackgroundColor(Color.parseColor(colorBlueOpaqueString));
         actionButton.setTextColor(Color.WHITE);
         legaParamsLayout.addView(actionButton);
 
