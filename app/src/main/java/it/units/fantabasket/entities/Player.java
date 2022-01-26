@@ -23,6 +23,7 @@ public class Player {
     private final Team team;
     private int shirt;
     private int numberColor;
+    private final int cost;
 
 
     public Player() {
@@ -39,12 +40,15 @@ public class Player {
         this.team = null;
         this.shirt = R.drawable.shirt;
         this.numberColor = Color.TRANSPARENT;
+        this.cost = 0;
     }
 
-    public Player(String number, String name, String surname,
+    public Player(String id, String number, String name, String surname,
                   Role role_1, Role role_2,
                   String dateBirth, String height, String weight,
-                  String nationality, Team team) {
+                  String nationality, Team team,
+                  int cost) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.dateBirth = dateBirth;
@@ -58,7 +62,7 @@ public class Player {
         setShirt();
         setColorNumber();
 
-        this.id = surname;
+        this.cost = cost;
     }
 
     public static int getResId(String resName, Class<?> c) {
@@ -110,5 +114,9 @@ public class Player {
 
     public Role getRole_2() {
         return role_2;
+    }
+
+    public int getCost() {
+        return cost;
     }
 }

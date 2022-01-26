@@ -1,10 +1,8 @@
 package it.units.fantabasket.ui;
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +25,7 @@ public class PlayerListFragment extends Fragment {
 
     public static List<String> newRoster;
     private final int rosterSize = 16;
+    private final int moneySize = 150;
     private int money;
     private int numberOfPlayersSelected;
     private FragmentPlayerListBinding binding;
@@ -39,33 +38,35 @@ public class PlayerListFragment extends Fragment {
         binding = FragmentPlayerListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        newRoster = new ArrayList<>(roster);
+        List<Player> playerList = new ArrayList<>();
+        Utils.setCompletePlayerList(getActivity(), playerList);
 
-        int moneySize = 500;
+        newRoster = new ArrayList<>(roster);
         money = moneySize;
-        numberOfPlayersSelected = 0;
-        binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + moneySize);
-        binding.roster.setText(getString(R.string.roster) + ": " + newRoster.size() + "/" + rosterSize);
+        numberOfPlayersSelected = newRoster.size();
+        for (String playerId : roster) {
+            money = money - getCostFromPlayerId(playerId, playerList);
+        }
+
+        binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
+        binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
 
         if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
             binding.saveRosterButton.setEnabled(false);
         }
 
         binding.saveRosterButton.setOnClickListener(view -> {
-            if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
-                binding.saveRosterButton.setEnabled(false);//TODO:messaggino
-            } else {
-                roster = new ArrayList<>(newRoster);
-                userDataReference.child("roster").setValue(roster);
-                NavHostFragment.findNavController(PlayerListFragment.this)
-                        .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
-            }
+                    if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+                        binding.saveRosterButton.setEnabled(false);//TODO:messaggino
+                    } else {
+                        roster = new ArrayList<>(newRoster);
+                        userDataReference.child("roster").setValue(roster);
+                        NavHostFragment.findNavController(PlayerListFragment.this)
+                                .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+                    }
                 }
         );
 
-        List<Player> playerList = new ArrayList<>();
-
-        Utils.setCompletePlayerList(getActivity(), playerList);
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //            List<Integer> listOfValues = new ArrayList<>();
@@ -104,46 +105,49 @@ public class PlayerListFragment extends Fragment {
 //            Log.i("MIO","BANKS: "+playerList.stream().filter(player -> !Objects.equals(player.getId(), "BANKS")).count());
 //        }
 
+        for (Player player : playerList) {
+            PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            playerList.forEach(
-                    player -> {
-                        PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
+            GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
+            if (newRoster.contains(player.getId())) {
+                border.setColor(Color.GREEN);
+            }
 
-                        GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
-                        if (newRoster.contains(player.getId())) {
-                            border.setColor(Color.GREEN);
-                        }
+            playerLayout.setOnClickListener(view -> {
 
-                        playerLayout.setOnClickListener(view -> {
-
-                            ColorStateList color = border.getColor();
-                            if (color.getDefaultColor() == Color.LTGRAY) {
-                                if (numberOfPlayersSelected < rosterSize && money > 0) {
-                                    money--;//TODO: sarà da mettere sia la condizione di money sufficienti che la giusta operazione
-                                    numberOfPlayersSelected++;
-                                    newRoster.add(player.getId());
-                                    border.setColor(Color.GREEN);
-                                }
-                            } else {
-                                money++;
-                                numberOfPlayersSelected--;
-                                newRoster.remove(player.getId());
-                                border.setColor(Color.LTGRAY);
-                            }
-                            binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
-                            binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
-
-                        });
-                        playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT));
-                        binding.principalLinearLayout.addView(playerLayout.getPlayerLayout());
+                if (!newRoster.contains(player.getId())) {
+                    if (numberOfPlayersSelected < rosterSize && money - player.getCost() > 0) {
+                        money = money - player.getCost();
+                        numberOfPlayersSelected++;
+                        newRoster.add(player.getId());
+                        border.setColor(Color.GREEN);
                     }
-            );
+                } else {
+                    money = money + player.getCost();
+                    numberOfPlayersSelected--;
+                    newRoster.remove(player.getId());
+                    border.setColor(Color.LTGRAY);
+                }
+                binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
+                binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
+
+            });
+            playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            binding.principalLinearLayout.addView(playerLayout.getPlayerLayout());
         }
 
         return root;
 //        return inflater.inflate(R.layout.fragment_player_list, container, false);
+    }
+
+    private int getCostFromPlayerId(String playerID, List<Player> playerList) {
+        for (Player player : playerList) {
+            if (player.getId().equals(playerID)) {
+                return player.getCost();
+            }
+        }
+        return 0;
     }
 
 }

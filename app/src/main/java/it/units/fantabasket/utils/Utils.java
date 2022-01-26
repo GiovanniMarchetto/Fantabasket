@@ -173,6 +173,7 @@ public class Utils {
     }
 
     public static void setCompletePlayerList(FragmentActivity fragmentActivity, List<Player> playerList) {
+        List<String> playersId = new ArrayList<>();
         for (Team team : Team.values()) {
             try {
                 InputStreamReader is = new InputStreamReader(
@@ -192,13 +193,25 @@ public class Utils {
                     } else {
                         role_1 = Role.valueOf(values[3].toUpperCase());
                     }
+                    String name = values[1];
+                    String surname = values[2];
 
+                    String id = surname;
+                    int posName = 0;
+                    while (playersId.contains(id)) {
+                        if (posName == 0) id = id + " ";
+                        char nameChar = name.charAt(posName);
+                        id = id + nameChar;
+                        posName++;
+                    }
+                    playersId.add(id);
 
-                    playerList.add(new Player(
-                            values[0], values[1], values[2],
+                    playerList.add(new Player(id,
+                            values[0], name, surname,
                             role_1, role_2,
                             values[4], values[5], values[6],
-                            values[7], team
+                            values[7], team,
+                            Integer.parseInt(values[8])
                     ));
                 }
             } catch (IOException e) {
