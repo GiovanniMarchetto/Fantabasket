@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import it.units.fantabasket.R;
@@ -108,9 +109,17 @@ public class PlayerListFragment extends Fragment {
         for (Player player : playerList) {
             PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
+            TextView costView = new TextView(getContext());
+            costView.setText(player.getCost() + " fm");
+            costView.setPadding(15, 0, 15, 0);
+            playerLayout.getRightLinearLayout().addView(costView, 1);
+
+            int colorTake = Color.parseColor("#66BB6A");
+            int colorFree = Color.WHITE;//Color.parseColor(getResources().getString(R.color.white));
+
             GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
             if (newRoster.contains(player.getId())) {
-                border.setColor(Color.GREEN);
+                border.setColor(colorTake);
             }
 
             playerLayout.setOnClickListener(view -> {
@@ -120,13 +129,13 @@ public class PlayerListFragment extends Fragment {
                         money = money - player.getCost();
                         numberOfPlayersSelected++;
                         newRoster.add(player.getId());
-                        border.setColor(Color.GREEN);
+                        border.setColor(colorTake);
                     }
                 } else {
                     money = money + player.getCost();
                     numberOfPlayersSelected--;
                     newRoster.remove(player.getId());
-                    border.setColor(Color.LTGRAY);
+                    border.setColor(colorFree);
                 }
                 binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
                 binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
@@ -138,7 +147,6 @@ public class PlayerListFragment extends Fragment {
         }
 
         return root;
-//        return inflater.inflate(R.layout.fragment_player_list, container, false);
     }
 
     private int getCostFromPlayerId(String playerID, List<Player> playerList) {

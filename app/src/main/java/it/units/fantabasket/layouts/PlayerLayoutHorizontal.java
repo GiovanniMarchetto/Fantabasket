@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import it.units.fantabasket.R;
 import it.units.fantabasket.entities.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,35 +20,46 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerLayoutHorizontal extends LinearLayout {
 
     private final LinearLayout playerLayout;
+    private final LinearLayout headerLayout;
+    private final LinearLayout rightLinearLayout;
+    private ImageButton moreInfoButton;
 
     public PlayerLayoutHorizontal(Context context, Player player) {
         super(context);
 
-        playerLayout = new LinearLayout(context);
-        playerLayout.setOrientation(LinearLayout.HORIZONTAL);
-        playerLayout.setGravity(Gravity.CENTER_VERTICAL);
+        headerLayout = new LinearLayout(context);
+        headerLayout.setOrientation(LinearLayout.HORIZONTAL);
+        headerLayout.setGravity(Gravity.CENTER_VERTICAL);
 
         GradientDrawable border = new GradientDrawable();
-        border.setColor(Color.LTGRAY);
+        border.setColor(Color.WHITE);//Color.LTGRAY);
         border.setStroke(1, Color.BLACK);
 
-        playerLayout.setBackground(border);
-        playerLayout.setPadding(30, 15, 15, 15);
-
-        Button playerButton = getPlayerButton(context, player);
+        Button playerButton = getPlayerShirtWithNumberButton(context, player);
 
         TextView name = new TextView(context);
         name.setText(player.getId());
 
-        LinearLayout subLayout = getRightLinearLayout(context, player);
+        rightLinearLayout = createAndGetRightLinearLayout(context, player);
 
-        playerLayout.addView(playerButton);
-        playerLayout.addView(name);
-        playerLayout.addView(subLayout);
+        headerLayout.addView(playerButton);
+        headerLayout.addView(name);
+        headerLayout.addView(rightLinearLayout);
+
+        playerLayout = new LinearLayout(context);
+        playerLayout.setOrientation(VERTICAL);
+        playerLayout.setBackground(border);
+        playerLayout.setPadding(30, 15, 15, 15);
+
+        playerLayout.addView(headerLayout);
+
+        LinearLayout infoPlayerLayout = getInfoLayout(context, player);
+        playerLayout.addView(infoPlayerLayout);
+        ExpandCollapseLayout.setExpandCollapseLayout(moreInfoButton, infoPlayerLayout);
     }
 
     @NotNull
-    public static Button getPlayerButton(Context context, Player player) {
+    public static Button getPlayerShirtWithNumberButton(Context context, Player player) {
         final Button playerButton = new Button(context);
         playerButton.setText(player.getNumber());
         playerButton.setTextColor(player.getNumberColor());
@@ -62,6 +76,39 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         return playerButton;
     }
 
+    private LinearLayout getInfoLayout(Context context, Player player) {
+        LinearLayout infoLayout = new LinearLayout(context);
+        infoLayout.setOrientation(VERTICAL);
+        infoLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TextView playerCompleteName = new TextView(context);
+        String completeName = player.getName() + " " + player.getSurname();
+        playerCompleteName.setText(completeName);
+
+        TextView playerDateBirthAndNationality = new TextView(context);
+        String dateBirthAndNationality = player.getDateBirth() + " - " + player.getNationality();
+        playerDateBirthAndNationality.setText(dateBirthAndNationality);
+
+        TextView playerMeasures = new TextView(context);
+        String measures = player.getHeight() + " cm x " + player.getWeight() + " kg";
+        playerMeasures.setText(measures);
+
+        TextView playerTeam = new TextView(context);
+        String team = String.valueOf(player.getTeam());
+        playerTeam.setText(team);
+
+        TextView playerCost = new TextView(context);
+        String cost = "Cost: " + player.getCost() + " fm";
+        playerCost.setText(cost);
+
+        infoLayout.addView(playerCompleteName);
+        infoLayout.addView(playerDateBirthAndNationality);
+        infoLayout.addView(playerMeasures);
+        infoLayout.addView(playerTeam);
+        infoLayout.addView(playerCost);
+        return infoLayout;
+    }
+
     private static int getPixelsOfShirts(Context context) {
         final float scale = context.getResources().getDisplayMetrics().density;
         int dp = 58;
@@ -70,7 +117,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
 
     @SuppressLint("SetTextI18n")
     @NotNull
-    private LinearLayout getRightLinearLayout(Context context, Player player) {
+    private LinearLayout createAndGetRightLinearLayout(Context context, Player player) {
         LayoutParams subParam = new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         LinearLayout subLayout = new LinearLayout(context);
@@ -79,23 +126,33 @@ public class PlayerLayoutHorizontal extends LinearLayout {
 //        subLayout.setOnClickListener(view -> playerLayout.cli);
 
         TextView role = new TextView(context);
-        String roleText = player.getRole_1().name();
+        role.setPadding(15, 15, 15, 15);
+        String roleText = player.getRole_1().name().toLowerCase();
         if (player.getRole_2() != null) {
-            roleText = roleText + "/" + player.getRole_2().name();
+            roleText = roleText + "/" + player.getRole_2().name().toLowerCase();
         }
         role.setText(roleText);
         subLayout.addView(role);
+
+        moreInfoButton = new ImageButton(context);
+        moreInfoButton.setImageResource(R.drawable.ic_info_24);
+        subLayout.addView(moreInfoButton);
+
         return subLayout;
     }
 
     @Override
     public void setOnClickListener(@Nullable View.OnClickListener l) {
         super.setOnClickListener(l);
-        playerLayout.setOnClickListener(l);
+        headerLayout.setOnClickListener(l);
 //        playerButton.setOnClickListener(l);
     }
 
     public LinearLayout getPlayerLayout() {
         return playerLayout;
+    }
+
+    public LinearLayout getRightLinearLayout() {
+        return rightLinearLayout;
     }
 }

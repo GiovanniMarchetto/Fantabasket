@@ -192,7 +192,7 @@ public class DashboardFragment extends Fragment {
         //add remove button
         Player emptyPlayer = new Player();
         PlayerLayoutHorizontal emptyPlayerLayout = new PlayerLayoutHorizontal(context, emptyPlayer);
-        final LinearLayout subLayout = (LinearLayout) emptyPlayerLayout.getPlayerLayout().getChildAt(2);
+        final LinearLayout subLayout = emptyPlayerLayout.getRightLinearLayout();
         TextView textView = (TextView) subLayout.getChildAt(0);
         textView.setText("Libera posizione");
         emptyPlayerLayout.setOnClickListener(view -> {

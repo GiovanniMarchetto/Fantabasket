@@ -28,7 +28,7 @@ public class PlayerOnFieldLayout extends LinearLayout {
         playerLayout.setGravity(Gravity.CENTER_HORIZONTAL);
         playerLayout.setPadding(15, 0, 15, 0);
 
-        playerButton = PlayerLayoutHorizontal.getPlayerButton(context, player);
+        playerButton = PlayerLayoutHorizontal.getPlayerShirtWithNumberButton(context, player);
 
         playerTextView = new TextView(context);
         playerTextView.setLayoutParams(new LayoutParams(
