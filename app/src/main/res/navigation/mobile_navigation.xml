@@ -41,17 +41,17 @@
             android:label="@string/title_dashboard"
             tools:layout="@layout/fragment_dashboard">
         <action
-                android:id="@+id/action_DashboardFragment_to_PlayerListFragment"
+                android:id="@+id/action_DashboardFragment_to_RosterManagerFragment"
                 app:destination="@id/navigation_player_list"/>
     </fragment>
 
     <fragment
             android:id="@+id/navigation_player_list"
-            android:name="it.units.fantabasket.ui.PlayerListFragment"
+            android:name="it.units.fantabasket.ui.RosterManagerFragment"
             android:label="@string/title_player_list"
-            tools:layout="@layout/fragment_player_list">
+            tools:layout="@layout/fragment_roster_manager">
         <action
-                android:id="@+id/action_PlayerListFragment_to_DashboardFragment"
+                android:id="@+id/action_RosterManagerFragment_to_DashboardFragment"
                 app:destination="@id/navigation_dashboard"/>
     </fragment>
 

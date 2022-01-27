@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment {
 
         binding.changeRosterButton.setOnClickListener(view ->
                 NavHostFragment.findNavController(DashboardFragment.this)
-                        .navigate(R.id.action_DashboardFragment_to_PlayerListFragment)
+                        .navigate(R.id.action_DashboardFragment_to_RosterManagerFragment)
         );
 
 

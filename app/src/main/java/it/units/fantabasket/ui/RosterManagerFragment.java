@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import it.units.fantabasket.R;
-import it.units.fantabasket.databinding.FragmentPlayerListBinding;
+import it.units.fantabasket.databinding.FragmentRosterManagerBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static it.units.fantabasket.MainActivity.*;
 
-public class PlayerListFragment extends Fragment {
+public class RosterManagerFragment extends Fragment {
 
     public static List<String> newRoster;
     private static HashMap<String, LinearLayout> mapOfLayoutByPlayerId;
@@ -37,14 +37,14 @@ public class PlayerListFragment extends Fragment {
     private boolean orderByTeam = true;
     private int money;
     private int numberOfPlayersSelected;
-    private FragmentPlayerListBinding binding;
+    private FragmentRosterManagerBinding binding;
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentPlayerListBinding.inflate(inflater, container, false);
+        binding = FragmentRosterManagerBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         List<Player> playerList = new ArrayList<>();
@@ -73,8 +73,8 @@ public class PlayerListFragment extends Fragment {
                     } else {
                         roster = new ArrayList<>(newRoster);
                         userDataReference.child("roster").setValue(roster);
-                        NavHostFragment.findNavController(PlayerListFragment.this)
-                                .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
+                        NavHostFragment.findNavController(RosterManagerFragment.this)
+                                .navigate(R.id.action_RosterManagerFragment_to_DashboardFragment);
                     }
                 }
         );
