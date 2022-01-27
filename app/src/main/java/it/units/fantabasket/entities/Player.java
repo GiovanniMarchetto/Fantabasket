@@ -96,16 +96,32 @@ public class Player {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getDateBirth() {
+        return dateBirth;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
     public String getNumber() {
         return number;
-    }
-
-    public int getShirt() {
-        return shirt;
-    }
-
-    public int getNumberColor() {
-        return numberColor;
     }
 
     public Role getRole_1() {
@@ -114,6 +130,18 @@ public class Player {
 
     public Role getRole_2() {
         return role_2;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public int getShirt() {
+        return shirt;
+    }
+
+    public int getNumberColor() {
+        return numberColor;
     }
 
     public int getCost() {
