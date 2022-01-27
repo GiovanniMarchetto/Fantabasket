@@ -1,12 +1,12 @@
 package it.units.fantabasket.ui;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -14,10 +14,12 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentPlayerListBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
+import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.MainActivity.*;
@@ -25,13 +27,14 @@ import static it.units.fantabasket.MainActivity.*;
 public class PlayerListFragment extends Fragment {
 
     public static List<String> newRoster;
+    private static HashMap<String, LinearLayout> mapOfLayoutForPlayerId;
     private final int rosterSize = 16;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int moneySize = 150;
     private int money;
     private int numberOfPlayersSelected;
     private FragmentPlayerListBinding binding;
 
-    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,18 +52,19 @@ public class PlayerListFragment extends Fragment {
             money = money - getCostFromPlayerId(playerId, playerList);
         }
 
-        binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
-        binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
+        binding.moneyCount.setText(String.valueOf(money));
+        String rosterDescription = numberOfPlayersSelected + "/" + rosterSize;
+        binding.roster.setText(rosterDescription);
 
         if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
             binding.saveRosterButton.setEnabled(false);
         }
 
         binding.saveRosterButton.setOnClickListener(view -> {
-                    if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
-                        binding.saveRosterButton.setEnabled(false);//TODO:messaggino
-                    } else {
-                        roster = new ArrayList<>(newRoster);
+            if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+                binding.saveRosterButton.setEnabled(false);//TODO:messaggino
+            } else {
+                roster = new ArrayList<>(newRoster);
                         userDataReference.child("roster").setValue(roster);
                         NavHostFragment.findNavController(PlayerListFragment.this)
                                 .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
@@ -106,11 +110,13 @@ public class PlayerListFragment extends Fragment {
 //            Log.i("MIO","BANKS: "+playerList.stream().filter(player -> !Objects.equals(player.getId(), "BANKS")).count());
 //        }
 
+        mapOfLayoutForPlayerId = new HashMap<>();
         for (Player player : playerList) {
             PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
             TextView costView = new TextView(getContext());
-            costView.setText(player.getCost() + " fm");
+            String costOfPlayer = player.getCost() + " fm";
+            costView.setText(costOfPlayer);
             costView.setPadding(15, 0, 15, 0);
             playerLayout.getRightLinearLayout().addView(costView, 1);
 
@@ -137,15 +143,27 @@ public class PlayerListFragment extends Fragment {
                     newRoster.remove(player.getId());
                     border.setColor(colorFree);
                 }
-                binding.moneyCount.setText(getString(R.string.fantamilioni) + ": " + money);
-                binding.roster.setText(getString(R.string.roster) + ": " + numberOfPlayersSelected + "/" + rosterSize);
+                binding.moneyCount.setText(String.valueOf(money));
+                String rosterDescriptionUpdate = numberOfPlayersSelected + "/" + rosterSize;
+                binding.roster.setText(rosterDescriptionUpdate);
 
             });
             playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
+            mapOfLayoutForPlayerId.put(player.getId(), playerLayout.getPlayerLayout());
             binding.principalLinearLayout.addView(playerLayout.getPlayerLayout());
         }
 
+        binding.searchPlayer.addTextChangedListener((TextWatcherAfterChange) searchEditable -> {
+            String searchString = searchEditable.toString().toUpperCase();
+
+            for (String id : mapOfLayoutForPlayerId.keySet()) {
+                int visibility = (searchString.equals("") || id.contains(searchString)) ? View.VISIBLE : View.GONE;
+                //noinspection ConstantConditions
+                mapOfLayoutForPlayerId.get(id).setVisibility(visibility);
+            }
+
+        });
         return root;
     }
 
