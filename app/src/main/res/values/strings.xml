@@ -90,4 +90,5 @@
     <string name="cambia_lega">Cambia lega</string>
     <string name="last_game">Last game</string>
     <string name="search_player">search player</string>
+    <string name="order">Order</string>
 </resources>

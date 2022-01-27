@@ -21,20 +21,25 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static it.units.fantabasket.MainActivity.*;
 
 public class PlayerListFragment extends Fragment {
 
     public static List<String> newRoster;
-    private static HashMap<String, LinearLayout> mapOfLayoutForPlayerId;
+    private static HashMap<String, LinearLayout> mapOfLayoutByPlayerId;
+    private static List<LinearLayout> listOfLayoutOrderedByTeam;
+    private static List<LinearLayout> listOfLayoutOrderedByCost;
     private final int rosterSize = 16;
     @SuppressWarnings("FieldCanBeLocal")
-    private final int moneySize = 150;
+    private final int moneySize = 200;
+    private boolean orderByTeam = true;
     private int money;
     private int numberOfPlayersSelected;
     private FragmentPlayerListBinding binding;
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,10 +66,12 @@ public class PlayerListFragment extends Fragment {
         }
 
         binding.saveRosterButton.setOnClickListener(view -> {
-            if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
-                binding.saveRosterButton.setEnabled(false);//TODO:messaggino
-            } else {
-                roster = new ArrayList<>(newRoster);
+                    if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+                        Utils.showToast(getContext(), "È iniziata la giornata non puoi cambiare il roster", "error");
+                    } else if (numberOfPlayersSelected < 12) {
+                        Utils.showToast(getContext(), "Minimo 12 giocatori", "warning");
+                    } else {
+                        roster = new ArrayList<>(newRoster);
                         userDataReference.child("roster").setValue(roster);
                         NavHostFragment.findNavController(PlayerListFragment.this)
                                 .navigate(R.id.action_PlayerListFragment_to_DashboardFragment);
@@ -110,7 +117,13 @@ public class PlayerListFragment extends Fragment {
 //            Log.i("MIO","BANKS: "+playerList.stream().filter(player -> !Objects.equals(player.getId(), "BANKS")).count());
 //        }
 
-        mapOfLayoutForPlayerId = new HashMap<>();
+        HashMap<String, Integer> mapOfCostByPlayerId = new HashMap<>();
+        int maxCostOfAPlayer = 0;
+
+        mapOfLayoutByPlayerId = new HashMap<>();
+        listOfLayoutOrderedByTeam = new ArrayList<>();
+        listOfLayoutOrderedByCost = new ArrayList<>();
+
         for (Player player : playerList) {
             PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
@@ -121,7 +134,7 @@ public class PlayerListFragment extends Fragment {
             playerLayout.getRightLinearLayout().addView(costView, 1);
 
             int colorTake = Color.parseColor("#66BB6A");
-            int colorFree = Color.WHITE;//Color.parseColor(getResources().getString(R.color.white));
+            int colorFree = getContext().getColor(R.color.listPlayerBackGround);//Color.parseColor(getResources().getString(R.color.white));
 
             GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
             if (newRoster.contains(player.getId())) {
@@ -150,19 +163,57 @@ public class PlayerListFragment extends Fragment {
             });
             playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            mapOfLayoutForPlayerId.put(player.getId(), playerLayout.getPlayerLayout());
-            binding.principalLinearLayout.addView(playerLayout.getPlayerLayout());
+
+            LinearLayout finalLayout = playerLayout.getPlayerLayout();
+
+            mapOfLayoutByPlayerId.put(player.getId(), finalLayout);
+            mapOfCostByPlayerId.put(player.getId(), player.getCost());
+            listOfLayoutOrderedByTeam.add(finalLayout);
+
+            if (player.getCost() > maxCostOfAPlayer) maxCostOfAPlayer = player.getCost();
+
+            binding.principalLinearLayout.addView(finalLayout);
+        }
+
+        for (int cost = maxCostOfAPlayer; cost > 0; cost--) {
+            List<String> idToRemove = new ArrayList<>();
+            for (Map.Entry<String, Integer> entry : mapOfCostByPlayerId.entrySet()) {
+                if (entry.getValue() == cost) {
+                    listOfLayoutOrderedByCost.add(mapOfLayoutByPlayerId.get(entry.getKey()));
+                    idToRemove.add(entry.getKey());
+                }
+            }
+            for (String id : idToRemove) {
+                mapOfCostByPlayerId.remove(id);
+            }
         }
 
         binding.searchPlayer.addTextChangedListener((TextWatcherAfterChange) searchEditable -> {
             String searchString = searchEditable.toString().toUpperCase();
 
-            for (String id : mapOfLayoutForPlayerId.keySet()) {
+            for (String id : mapOfLayoutByPlayerId.keySet()) {
                 int visibility = (searchString.equals("") || id.contains(searchString)) ? View.VISIBLE : View.GONE;
                 //noinspection ConstantConditions
-                mapOfLayoutForPlayerId.get(id).setVisibility(visibility);
+                mapOfLayoutByPlayerId.get(id).setVisibility(visibility);
             }
+        });
 
+        binding.orderButton.setOnClickListener(view -> {
+            if (orderByTeam) {
+                binding.principalLinearLayout.removeAllViews();
+                for (LinearLayout linearLayout : listOfLayoutOrderedByCost) {
+                    binding.principalLinearLayout.addView(linearLayout);
+                }
+                Utils.showToast(getContext(), "order by cost");
+                orderByTeam = false;
+            } else {
+                binding.principalLinearLayout.removeAllViews();
+                for (LinearLayout linearLayout : listOfLayoutOrderedByTeam) {
+                    binding.principalLinearLayout.addView(linearLayout);
+                }
+                Utils.showToast(getContext(), "order by team");
+                orderByTeam = true;
+            }
         });
         return root;
     }

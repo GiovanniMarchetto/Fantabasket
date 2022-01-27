@@ -248,4 +248,8 @@ public class Utils {
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
+
+    public static void showToast(Context context, String message) {
+        showToast(context, message, "normal");
+    }
 }

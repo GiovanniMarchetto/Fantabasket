@@ -32,7 +32,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         headerLayout.setGravity(Gravity.CENTER_VERTICAL);
 
         GradientDrawable border = new GradientDrawable();
-        border.setColor(Color.WHITE);//Color.LTGRAY);
+        border.setColor(context.getColor(R.color.listPlayerBackGround));
         border.setStroke(1, Color.BLACK);
 
         Button playerButton = getPlayerShirtWithNumberButton(context, player);

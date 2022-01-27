@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="listPlayerBackGround">#FFFFFFFF</color>
     <color name="lightGrey">#878787</color>
     <color name="verdeAcqua">#A7FFEB</color>
     <color name="pannaOrange">#FFD180</color>
