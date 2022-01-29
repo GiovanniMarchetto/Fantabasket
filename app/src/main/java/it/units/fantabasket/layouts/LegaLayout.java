@@ -4,29 +4,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.utils.MyValueEventListener;
 
 import static it.units.fantabasket.layouts.ExpandCollapseLayout.setExpandCollapseLayout;
 
 public class LegaLayout {
-    final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+    final ViewGroup.LayoutParams linearLayoutParams = new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     private final LinearLayout legaHeaderLayout;
-    private final LinearLayout legaParamsLayout;
-    private final TextView admin;
     private final Button actionButton;
 
     @SuppressLint("SetTextI18n")
     public LegaLayout(Context context, Lega lega) {
         legaHeaderLayout = new LinearLayout(context);
         legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);
-        legaHeaderLayout.setLayoutParams(params);
+        legaHeaderLayout.setLayoutParams(linearLayoutParams);
         int paddingLati = 20;
         legaHeaderLayout.setPadding(paddingLati, 0, paddingLati, 0);
         GradientDrawable border = new GradientDrawable();
@@ -39,32 +36,16 @@ public class LegaLayout {
         name.setTextSize(20);
         legaHeaderLayout.addView(name);
 
-        legaParamsLayout = new LinearLayout(context);
+        LinearLayout legaParamsLayout = new LinearLayout(context);
         legaParamsLayout.setOrientation(LinearLayout.VERTICAL);
-        legaParamsLayout.setLayoutParams(params);
+        legaParamsLayout.setLayoutParams(linearLayoutParams);
         legaParamsLayout.setPadding(paddingLati * 2, 0, paddingLati * 2, paddingLati);
 
-
-        TextView location = new TextView(context);
-        location.setText("Location: " + lega.getLocation());
-        legaParamsLayout.addView(location);
-
-        admin = new TextView(context);
-        admin.setText("Admin: ");
-        getAdminName(lega.getAdmin());
-        legaParamsLayout.addView(admin);
-
-        TextView tipologia = new TextView(context);
-        tipologia.setText("Tipologia: " + lega.getTipologia().name());
-        legaParamsLayout.addView(tipologia);
-
-        TextView partecipanti = new TextView(context);
-        partecipanti.setText("Partecipanti: " + lega.getPartecipanti().size() + "/" + lega.getNumPartecipanti());
-        legaParamsLayout.addView(partecipanti);
-
-        TextView started = new TextView(context);
-        started.setText("Iniziata: " + lega.isStarted());
-        legaParamsLayout.addView(started);
+        legaParamsLayout.addView(getLeagueParamLayout(context, "Location", lega.getLocation()));
+        legaParamsLayout.addView(getLeagueParamLayout(context, "Type", lega.getTipologia().name()));
+        String numPartecipanti = lega.getPartecipanti().size() + "/" + lega.getNumPartecipanti();
+        legaParamsLayout.addView(getLeagueParamLayout(context, "Partecipanti", numPartecipanti));
+        legaParamsLayout.addView(getLeagueParamLayout(context, "Started", String.valueOf(lega.isStarted())));
 
         actionButton = new Button(context);
         final String colorBlueOpaqueString = "#133A53";
@@ -76,13 +57,22 @@ public class LegaLayout {
         setExpandCollapseLayout(legaHeaderLayout, legaParamsLayout);
     }
 
-    @SuppressLint("SetTextI18n")//TODO: remove this suppress lint
-    private void getAdminName(String userId) {
-        FirebaseDatabase.getInstance().getReference("users").child(userId).child("nickname")
-                .addListenerForSingleValueEvent((MyValueEventListener) dataSnapshot -> {
-                    String name = dataSnapshot.getValue(String.class);
-                    admin.setText("Admin: " + name);
-                });
+    private View getLeagueParamLayout(Context context, String nameOfParam, String param) {
+        LinearLayout paramLayout = new LinearLayout(context);
+        paramLayout.setOrientation(LinearLayout.HORIZONTAL);
+        paramLayout.setLayoutParams(linearLayoutParams);
+        paramLayout.setWeightSum(2);
+
+        TextView nameOfParamTextView = new TextView(context);
+        nameOfParamTextView.setText(nameOfParam);
+
+        TextView paramTextView = new TextView(context);
+        paramTextView.setText(param);
+
+        LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
+        paramLayout.addView(nameOfParamTextView, textViewParam);
+        paramLayout.addView(paramTextView, textViewParam);
+        return paramLayout;
     }
 
     public LinearLayout getLegaHeaderLayout() {
