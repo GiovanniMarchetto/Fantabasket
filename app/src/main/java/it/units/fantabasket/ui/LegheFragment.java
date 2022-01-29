@@ -1,15 +1,17 @@
 package it.units.fantabasket.ui;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ValueEventListener;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLegheBinding;
@@ -19,15 +21,16 @@ import it.units.fantabasket.utils.MyValueEventListener;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static it.units.fantabasket.MainActivity.*;
 
 public class LegheFragment extends Fragment {
 
     private FragmentLegheBinding binding;
+    private double lastLocationLatitude;
+    private double lastLocationLongitude;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -45,61 +48,124 @@ public class LegheFragment extends Fragment {
     }
 
     @SuppressWarnings("unchecked")
-    @SuppressLint("SetTextI18n")
     private ValueEventListener getLegheValueEventListener() {
         return (MyValueEventListener) dataSnapshot -> {
 
             Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
-            int numLeghePartecipate = 0;
-            int numLegheDisponibili = 0;
+            AtomicInteger numLeghePartecipate = new AtomicInteger();
+            AtomicInteger numLegheDisponibili = new AtomicInteger();
+            Context context = getContext();
 
             if (legheEsistenti != null && legheEsistenti.size() > 0) {
+
+                HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap = new HashMap<>();
+                List<Integer> distances = new ArrayList<>();
                 for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
                     String legaName = valueOfMap.getKey();
                     HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
                     Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
-                    Log.i("MIO", legaName + " --> " + lega.getPartecipanti().toString());
+                    LegaLayout legaLayout = new LegaLayout(context, lega);
+                    int idActionDescription;
 
-                    if (lega.getPartecipanti().contains(firebaseUser.getUid())) {
-                        numLeghePartecipate++;
-                        Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.leghePartecipate, lega);
-                        actionButton.setText("SELEZIONA");
-                        actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
+                    final boolean isUserInThisLeague = lega.getPartecipanti().contains(firebaseUser.getUid());
+
+                    if (isUserInThisLeague) {
+                        numLeghePartecipate.getAndIncrement();
+                        idActionDescription = R.string.seleziona_lega;
+
+                        binding.leghePartecipate.addView(legaLayout.getLegaHeaderLayout());
                     } else {
-                        //TODO: ordinale in base alla vicinanza
-                        numLegheDisponibili++;
-                        Button actionButton = createLegaLayoutAndAddToViewAndReturnActionButton(binding.legheDisponibili, lega);
-                        actionButton.setText("UNISCITI");
-                        actionButton.setOnClickListener(view -> {
-                            if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
-                                if (!lega.isStarted()) {
-                                    List<String> newPartecipanti = lega.getPartecipanti();
-                                    newPartecipanti.add(firebaseUser.getUid());
-                                    legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
-                                    setLegaSelezionataAndReturnToHome(legaName);
-                                } else {
-                                    Log.e("MIO", "È già iniziata");
-                                }
-                            } else {
-                                Log.e("MIO", "NON CI SONO POSTI");
-                            }
-                        });
+                        numLegheDisponibili.getAndIncrement();
+                        idActionDescription = R.string.unisciti_lega;
+                        updateVariablesForOrderLeagueByDistance(legaLayoutDistancesHashMap, distances, lega, legaLayout);
+                        binding.legheDisponibili.addView(legaLayout.getLegaHeaderLayout());
                     }
 
+                    Button actionButton = legaLayout.getActionButton();
+
+                    actionButton.setText(getResources().getString(idActionDescription));
+                    actionButton.setOnClickListener(view -> {
+                        if (isUserInThisLeague) {
+                            setLegaSelezionataAndReturnToHome(legaName);
+                        } else {
+                            joinTheLeagueIfPossible(context, legaName, lega);
+                        }
+                    });
+                }
+
+                final Task<Location> locationTask = Utils.getLastLocation(context, getActivity());
+                if (locationTask != null) {
+                    locationTask.addOnSuccessListener(location -> {
+                        if (location != null) {
+                            lastLocationLatitude = location.getLatitude();
+                            lastLocationLongitude = location.getLongitude();
+                            reorderOpenLeaguesByDistance(legaLayoutDistancesHashMap, distances);
+                        }
+                    });
                 }
             }
 
-            binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate > 0) ? View.GONE : View.VISIBLE);
-            binding.leghePartecipate.setBackgroundColor((numLeghePartecipate > 0) ? Color.WHITE : Color.RED);
-            binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili > 0) ? View.GONE : View.VISIBLE);
-            binding.legheDisponibili.setBackgroundColor((numLegheDisponibili > 0) ? Color.WHITE : Color.RED);
+            binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate.get() > 0) ? View.GONE : View.VISIBLE);
+            binding.leghePartecipate.setBackgroundColor((numLeghePartecipate.get() > 0) ? Color.WHITE : Color.RED);
+            binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili.get() > 0) ? View.GONE : View.VISIBLE);
+            binding.legheDisponibili.setBackgroundColor((numLegheDisponibili.get() > 0) ? Color.WHITE : Color.RED);
         };
     }
 
-    private Button createLegaLayoutAndAddToViewAndReturnActionButton(ViewGroup parent, Lega lega) {
-        LegaLayout legaLayout = new LegaLayout(getContext(), lega);
-        parent.addView(legaLayout.getLegaHeaderLayout());
-        return legaLayout.getActionButton();
+    private void reorderOpenLeaguesByDistance(HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap, List<Integer> distances) {
+        binding.legheDisponibili.removeAllViews();
+        Collections.sort(distances);
+        for (Integer distance : distances) {
+            List<LinearLayout> thisDistanceLeghe = legaLayoutDistancesHashMap.get(distance);
+            assert thisDistanceLeghe != null;
+            for (LinearLayout legaLayout : thisDistanceLeghe) {
+                binding.legheDisponibili.addView(legaLayout);
+            }
+        }
+    }
+
+    private void updateVariablesForOrderLeagueByDistance(
+            HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap,
+            List<Integer> distances, Lega lega, LegaLayout legaLayout) {
+
+        int distanceFromUser = getLegaDistance(lega.getLatitude(), lega.getLongitude());
+        distances.add(distanceFromUser);
+
+        List<LinearLayout> updateList = legaLayoutDistancesHashMap.get(distanceFromUser);
+        if (updateList == null) {
+            updateList = new ArrayList<>();
+        }
+        updateList.add(legaLayout.getLegaHeaderLayout());
+        legaLayoutDistancesHashMap.put(distanceFromUser, updateList);
+    }
+
+    private Integer getLegaDistance(double latitude, double longitude) {// Haversine formula
+        int R = 6371; // Radius of the earth in km
+        double dLat = deg2rad(latitude - lastLocationLatitude);  // deg2rad below
+        double dLon = deg2rad(longitude - lastLocationLongitude);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lastLocationLatitude)) * Math.cos(deg2rad(latitude)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return (int) (R * c);// Distance in km
+    }
+
+    private double deg2rad(double deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    private void joinTheLeagueIfPossible(Context context, String legaName, Lega lega) {
+        if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
+            if (!lega.isStarted()) {
+                List<String> newPartecipanti = lega.getPartecipanti();
+                newPartecipanti.add(firebaseUser.getUid());
+                legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
+            } else {
+                Utils.showToast(context, "È già iniziata", "error");
+            }
+        } else {
+            Utils.showToast(context, "NON CI SONO POSTI", "error");
+        }
     }
 
     private void setLegaSelezionataAndReturnToHome(String legaName) {

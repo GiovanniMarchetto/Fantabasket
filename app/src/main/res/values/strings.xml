@@ -91,4 +91,17 @@
     <string name="last_game">Last game</string>
     <string name="search_player">search player</string>
     <string name="order">Order</string>
+    <string name="seleziona_lega">SELEZIONA</string>
+    <string name="unisciti_lega">UNISCITI</string>
+    <string name="your_location">Your location</string>
+
+    <!--  CITTÀ  -->
+    <string name="roma">Roma (Italia)</string>
+    <string name="trieste">Trieste (Italia)</string>
+    <string name="bologna">Bologna (Italia)</string>
+    <string name="milano">Milano (Italia)</string>
+    <string name="napoli">Napoli (Italia)</string>
+    <string name="londra">Londra (UK)</string>
+    <string name="new_york">New York (USA)</string>
+    <string name="parigi">Parigi (Francia)</string>
 </resources>

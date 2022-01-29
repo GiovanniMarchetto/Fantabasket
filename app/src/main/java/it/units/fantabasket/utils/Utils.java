@@ -1,13 +1,16 @@
 package it.units.fantabasket.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ImageDecoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -18,8 +21,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+import androidx.core.app.ActivityCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.Player;
@@ -251,5 +258,27 @@ public class Utils {
 
     public static void showToast(Context context, String message) {
         showToast(context, message, "normal");
+    }
+
+    public static Task<Location> getLastLocation(Context context, Activity activity) {
+        if (activity == null || context == null) {
+            Log.e("MIO", "Something null: \n---> Activity-" + activity + "\n---> Context-" + context);
+            return null;
+        }
+
+        FusedLocationProviderClient fusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(activity);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PackageManager.PERMISSION_GRANTED
+            );
+            return null;
+        }
+
+        return fusedLocationProviderClient.getLastLocation();
     }
 }
