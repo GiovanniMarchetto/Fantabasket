@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         leagueOnListener = snapshot -> {
             HashMap<String, Object> legaHashMap = (HashMap<String, Object>) snapshot.getValue();
             assert legaHashMap != null;
+            leagueOn = new AtomicReference<>();
             leagueOn.set(Utils.getLegaFromHashMapOfDB(legaHashMap));
             isUserTheAdminOfLeague = leagueOn.get().getAdmin().equals(firebaseUser.getUid());
 
