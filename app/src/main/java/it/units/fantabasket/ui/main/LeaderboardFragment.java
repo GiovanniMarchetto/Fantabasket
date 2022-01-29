@@ -30,56 +30,56 @@ public class LeaderboardFragment extends Fragment {
     private FragmentLeaderboardBinding binding;
 
     @Override
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    @SuppressWarnings({"ConstantConditions"})
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLeaderboardBinding.inflate(inflater, container, false);
         Context context = getContext();
 
         if (legaSelezionata != null) {
-            legheReference.child(legaSelezionata).child("classifica").addValueEventListener(
-                    (MyValueEventListener) snapshot -> {
-                        List<HashMap<String, Object>> classifica = (List<HashMap<String, Object>>) snapshot.getValue();
+            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
-                        if (classifica != null) {
-                            long lastUpdate = (long) classifica.get(0).get("lastUpdate");
-                            Calendar orarioFineUltimaGiornataCalendar = orariInizioPartite.get(giornataCorrente - 2);
-                            orarioFineUltimaGiornataCalendar.add(Calendar.DATE, 2);
-                            long orarioFineUltimaGiornata = orarioFineUltimaGiornataCalendar.getTime().getTime();
-                            if (lastUpdate < orarioFineUltimaGiornata && isUserTheAdminOfLeague) {
-                                binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
-                                binding.updateLeaderboardButton.setEnabled(true);
-                            }
+            if (classifica != null) {
+                long lastUpdate = (long) classifica.get(0).get("lastUpdate");
+                Calendar orarioFineUltimaGiornataCalendar = orariInizioPartite.get(giornataCorrente - 2);
+                orarioFineUltimaGiornataCalendar.add(Calendar.DATE, 2);
+                long orarioFineUltimaGiornata = orarioFineUltimaGiornataCalendar.getTime().getTime();
+                if (lastUpdate < orarioFineUltimaGiornata && isUserTheAdminOfLeague) {
+                    binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
+                    binding.updateLeaderboardButton.setEnabled(true);
+                }
 
-                            for (int i = 1; i < classifica.size(); i++) {
-                                HashMap<String, Object> element = classifica.get(i);
-                                int totalPointsScored = (int) element.get("totalPointsScored");
-                                LeaderboardElementLayout elementLayout;
-                                if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
-                                    elementLayout = new LeaderboardElementLayout(context,
-                                            i, (String) element.get("teamName"), totalPointsScored);
-                                } else {
-                                    int totalPointsAllowed = (int) element.get("totalPointsAllowed");
-                                    int pointsOfVictories = (int) element.get("pointsOfVictories");
-                                    elementLayout = new LeaderboardElementLayout(context,
-                                            i, (String) element.get("teamName"), totalPointsScored,
-                                            totalPointsAllowed, pointsOfVictories);
-                                }
-                                binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
-                            }
-                        } else {
-                            TextView textView = new TextView(context);
-                            textView.setBackgroundColor(Color.LTGRAY);
-                            textView.setText(R.string.not_started_yet);
-                            binding.leaderboard.addView(textView);
-                        }
+                for (int i = 1; i < classifica.size(); i++) {
+                    HashMap<String, Object> element = classifica.get(i);
+                    int totalPointsScored = (int) element.get("totalPointsScored");
+                    LeaderboardElementLayout elementLayout;
+                    if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
+                        elementLayout = new LeaderboardElementLayout(context,
+                                i, (String) element.get("teamName"), totalPointsScored);
+                    } else {
+                        int totalPointsAllowed = (int) element.get("totalPointsAllowed");
+                        int pointsOfVictories = (int) element.get("pointsOfVictories");
+                        elementLayout = new LeaderboardElementLayout(context,
+                                i, (String) element.get("teamName"), totalPointsScored,
+                                totalPointsAllowed, pointsOfVictories);
                     }
-            );
+                    binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
+                }
+            } else {
+                binding.leaderboard.addView(getBaseTextView(context, R.string.not_started_yet));
+            }
+
+            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+                HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
+
+                if (calendario != null) {
+                    binding.calendarioContainer.setVisibility(View.VISIBLE);
+
+                    addToCalendarioViewAllRounds(context, calendario);
+                }
+            }
         } else {
-            TextView textView = new TextView(context);
-            textView.setBackgroundColor(Color.LTGRAY);
-            textView.setText(R.string.not_league_selected);
-            binding.leaderboard.addView(textView);
+            binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
         }
 
         if (isUserTheAdminOfLeague && leagueOn.get().getLastRoundCalculated() < giornataCorrente - 1) {
@@ -107,6 +107,31 @@ public class LeaderboardFragment extends Fragment {
             );
         }
         return binding.getRoot();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void addToCalendarioViewAllRounds(Context context, HashMap<String, List<Game>> calendario) {
+        for (String key : calendario.keySet()) {
+            TextView titleGiornata = new TextView(context);
+            titleGiornata.setBackgroundColor(getResources().getColor(R.color.esteco, context.getTheme()));
+            titleGiornata.setTextColor(Color.WHITE);
+            titleGiornata.setText(key);
+            binding.calendarioContainer.addView(titleGiornata);
+
+            for (Game game : calendario.get(key)) {
+                String gameString = game.homeUserId + " " + game.homePoints + " - " + game.awayPoints + " " + game.awayUserId;//TODO:da migliorare
+                TextView gameTextView = new TextView(context);
+                gameTextView.setText(gameString);
+                binding.calendarioContainer.addView(gameTextView);
+            }
+        }
+    }
+
+    private TextView getBaseTextView(Context context, int resIdString) {
+        TextView textView = new TextView(context);
+        textView.setBackgroundColor(Color.LTGRAY);
+        textView.setText(resIdString);
+        return textView;
     }
 
     private void updateClassificaLegaFormula1(List<HashMap<String, Object>> classifica, int roundToCalculate) {

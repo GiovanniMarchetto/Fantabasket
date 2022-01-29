@@ -1,6 +1,5 @@
 package it.units.fantabasket.ui;
 
-import android.annotation.SuppressLint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -42,7 +41,6 @@ public class LegaCreationFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,7 +89,8 @@ public class LegaCreationFragment extends Fragment {
                     }
                     if (addresses != null && addresses.size() > 0) {
                         final Address address = addresses.get(0);
-                        binding.yourLocationTextView.setText(address.getLocality() + " (" + address.getCountryName() + ")");
+                        String cityAndCountry = address.getLocality() + " (" + address.getCountryName() + ")";
+                        binding.yourLocationTextView.setText(cityAndCountry);
                     } else {
                         binding.yourLocationTextView.setError("No address");
                     }
