@@ -46,25 +46,9 @@ public class RegistrationFragment extends Fragment {
             registrationBinding.teamLogoImage.setVisibility(View.VISIBLE);
         });
 
-        registrationBinding.nickname.addTextChangedListener((TextWatcherAfterChange) var1 -> {
-            String nicknameChange = registrationBinding.nickname.getText().toString();
-            final int limitNicknameLength = 16;
-            if (nicknameChange.length() > limitNicknameLength) {
-                nicknameChange = nicknameChange.substring(0, limitNicknameLength);
-                registrationBinding.nickname.setText(nicknameChange);
-            }
-            nickname = nicknameChange;
-        });
+        registrationBinding.nickname.addTextChangedListener((TextWatcherAfterChange) var -> nickname = var.toString());
 
-        registrationBinding.teamName.addTextChangedListener((TextWatcherAfterChange) var1 -> {
-            String teamNameChange = registrationBinding.teamName.getText().toString();
-            final int limitTeamNameLength = 20;
-            if (teamNameChange.length() > limitTeamNameLength) {
-                teamNameChange = teamNameChange.substring(0, limitTeamNameLength);
-                registrationBinding.teamName.setText(teamNameChange);
-            }
-            teamName = teamNameChange;
-        });
+        registrationBinding.teamName.addTextChangedListener((TextWatcherAfterChange) var -> teamName = var.toString());
     }
 
     @Override

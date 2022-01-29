@@ -23,6 +23,7 @@
             android:layout_height="@dimen/min_touch_48dp"
             android:inputType="textPersonName"
             android:ems="10"
+            android:maxLength="16"
             android:hint="@string/nickname"
             tools:ignore="Autofill"/>
 
@@ -32,6 +33,7 @@
             android:layout_height="@dimen/min_touch_48dp"
             android:inputType="textPersonName"
             android:ems="10"
+            android:maxLength="20"
             android:hint="@string/team_name"
             tools:ignore="Autofill"/>
 
