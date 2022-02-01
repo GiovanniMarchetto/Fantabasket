@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.ProfileFragment">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/basic_margin_16dp"
+            android:padding="@dimen/padding_8dp"
+            android:id="@+id/linearLayout">
+
+        <TextView
+                android:text="@string/league"
+                android:textSize="@dimen/text_size_20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_anchorGravity="top|center"
+                app:layout_anchor="@+id/linearLayout"
+                android:id="@+id/title_league"/>
+
+        <LinearLayout
+                android:id="@+id/leagueParams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+        <Button
+                android:id="@+id/changeLegaButton"
+                android:text="@string/cambia_lega"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text"
+                app:layout_constraintBottom_toTopOf="@+id/exitButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+        <!--TEAM-->
+        <TextView
+                android:text="@string/team"
+                android:textSize="@dimen/text_size_20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/teamNameProfile"
+                    android:textSize="@dimen/text_size_20"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    android:ems="10"
+                    android:maxLength="20"
+                    tools:ignore="Autofill,LabelFor"/>
+
+            <Button
+                    android:id="@+id/teamNameChangeButton"
+                    android:text="@string/change_team_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <ImageView
+                    android:id="@+id/teamLogoProfile"
+                    android:layout_width="@dimen/logo_dimension"
+                    android:layout_height="@dimen/logo_dimension"
+                    android:contentDescription="@string/team_logo"/>
+
+            <Button
+                    android:id="@+id/logoChangeButton"
+                    android:text="@string/change_team_logo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_touch_48dp"
+                    android:layout_marginStart="@dimen/basic_margin_16dp"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+
+
+        <TextView
+                android:text="@string/profile"
+                android:textSize="@dimen/text_size_20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_anchorGravity="top|center"
+                app:layout_anchor="@+id/linearLayout"
+                android:id="@+id/textView"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/emailProfile"
+                    android:textSize="@dimen/text_size_20"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textEmailAddress"
+                    android:ems="10"
+                    tools:ignore="Autofill,LabelFor"/>
+
+            <Button
+                    android:id="@+id/emailChangeButton"
+                    android:text="@string/change_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/passwordChangeButton"
+                android:text="@string/send_email_to_change_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:id="@+id/exitButton"
+                android:text="@string/disconnect"
+                android:layout_marginTop="@dimen/basic_margin_16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_touch_48dp"
+                android:backgroundTint="#FF0000"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

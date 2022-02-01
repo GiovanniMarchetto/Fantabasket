@@ -10,7 +10,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Profile</string>
     <string name="team_logo">Team logo</string>
     <string name="team_name">Team name</string>
     <string name="lega">Lega</string>
@@ -107,4 +107,10 @@
     <string name="league_creation_fragment_label">League Creation</string>
     <string name="create_league_button">Create league button</string>
     <string name="refresh">REFRESH</string>
+    <string name="league">League</string>
+    <string name="change_team_name">Change Team Name</string>
+    <string name="profile">Profile</string>
+    <string name="change_team_logo">Change team logo</string>
+    <string name="change_email">Change email</string>
+    <string name="send_email_to_change_password">Send email to change password</string>
 </resources>
