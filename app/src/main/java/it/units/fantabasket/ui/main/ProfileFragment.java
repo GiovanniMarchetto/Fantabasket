@@ -54,6 +54,20 @@ public class ProfileFragment extends Fragment {
 
         //TEAM params
 
+        binding.nicknameProfile.setText(user.nickname);
+
+        binding.nicknameProfile.addTextChangedListener((TextWatcherAfterChange) editable -> {
+            if (editable.toString().equals("")) {
+                binding.nicknameProfile.setError("Invalid Nickname");
+            }
+        });
+
+        binding.nicknameChangeButton.setOnClickListener(viewListener -> {
+            if (binding.nicknameProfile.getError() == null) {
+                userDataReference.child("nickname").setValue(binding.nicknameProfile.getText().toString());
+            }
+        });
+
         binding.teamNameProfile.setText(user.teamName);
 
         binding.teamNameChangeButton.setOnClickListener(viewListener -> {
