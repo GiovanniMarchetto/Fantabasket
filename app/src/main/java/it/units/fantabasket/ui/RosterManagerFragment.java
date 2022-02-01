@@ -74,7 +74,7 @@ public class RosterManagerFragment extends Fragment {
                         roster = new ArrayList<>(newRoster);
                         userDataReference.child("roster").setValue(roster);
                         NavHostFragment.findNavController(RosterManagerFragment.this)
-                                .navigate(R.id.action_RosterManagerFragment_to_DashboardFragment);
+                                .navigate(R.id.action_RosterManagerFragment_to_LineupFragment);
                     }
                 }
         );

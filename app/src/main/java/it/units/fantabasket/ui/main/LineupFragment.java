@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import it.units.fantabasket.R;
-import it.units.fantabasket.databinding.FragmentDashboardBinding;
+import it.units.fantabasket.databinding.FragmentLineupBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.Role;
@@ -32,19 +32,19 @@ import static it.units.fantabasket.MainActivity.*;
 import static it.units.fantabasket.enums.FieldPositions.*;
 
 @SuppressWarnings("ConstantConditions")
-public class DashboardFragment extends Fragment {
+public class LineupFragment extends Fragment {
 
     private static List<Player> rosterOfPlayers;
     private static HashMap<FieldPositions, Player> formazione;
     private static HashMap<FieldPositions, PlayerOnFieldLayout> playerOnFieldLayoutHashMap;
     private static FieldPositions selectedRole;
     private final int formazioneSize = 12;
-    private FragmentDashboardBinding binding;
+    private FragmentLineupBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentLineupBinding.inflate(inflater, container, false);
 
         setTimeForSetLineup();
 
@@ -53,8 +53,8 @@ public class DashboardFragment extends Fragment {
         setRoster();
 
         binding.changeRosterButton.setOnClickListener(view ->
-                NavHostFragment.findNavController(DashboardFragment.this)
-                        .navigate(R.id.action_DashboardFragment_to_RosterManagerFragment)
+                NavHostFragment.findNavController(LineupFragment.this)
+                        .navigate(R.id.action_LineupFragment_to_RosterManagerFragment)
         );
 
 

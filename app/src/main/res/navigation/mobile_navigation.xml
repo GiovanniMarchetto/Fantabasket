@@ -13,12 +13,12 @@
     </fragment>
 
     <fragment
-            android:id="@+id/navigation_dashboard"
-            android:name="it.units.fantabasket.ui.main.DashboardFragment"
-            android:label="@string/title_dashboard"
-            tools:layout="@layout/fragment_dashboard">
+            android:id="@+id/navigation_lineup"
+            android:name="it.units.fantabasket.ui.main.LineupFragment"
+            android:label="@string/title_lineup"
+            tools:layout="@layout/fragment_lineup">
         <action
-                android:id="@+id/action_DashboardFragment_to_RosterManagerFragment"
+                android:id="@+id/action_LineupFragment_to_RosterManagerFragment"
                 app:destination="@id/navigation_roster_manager"/>
     </fragment>
 
@@ -28,8 +28,8 @@
             android:label="@string/title_roster_manager"
             tools:layout="@layout/fragment_roster_manager">
         <action
-                android:id="@+id/action_RosterManagerFragment_to_DashboardFragment"
-                app:destination="@id/navigation_dashboard"/>
+                android:id="@+id/action_RosterManagerFragment_to_LineupFragment"
+                app:destination="@id/navigation_lineup"/>
     </fragment>
 
     <fragment
