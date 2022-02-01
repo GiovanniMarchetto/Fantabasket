@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        tools:context=".ui.leagues.LeagueChoiceFragment">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/title_leghe_partecipate"
+                    android:text="@string/leghe_a_cui_partecipi"
+                    android:textSize="@dimen/text_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                    android:id="@+id/leghePartecipate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_8dp"
+                    android:background="@color/darkRed"
+                    android:layout_marginBottom="@dimen/basic_margin_16dp">
+
+                <TextView
+                        android:id="@+id/nessunaLegaPartecipata"
+                        android:text="@string/nessuna_lega_partecipata"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/title_leghe_disponibili"
+                    android:text="@string/leghe_disponibili"
+                    android:textSize="@dimen/text_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                    android:id="@+id/legheDisponibili"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_8dp"
+                    android:background="@color/darkRed">
+
+                <TextView
+                        android:id="@+id/nessunaLegaDisponibile"
+                        android:text="@string/nessuna_lega_presente"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/createLeagueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/add_margin"
+            android:layout_marginBottom="16dp"
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:contentDescription="@string/create_league_button"
+            />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

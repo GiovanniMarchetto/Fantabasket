@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
@@ -27,6 +28,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.Player;
@@ -151,6 +153,7 @@ public class Utils {
                 if (indexArray.contains(i)) {
                     HashMap<String, String> stringHashMap = formazioniRawMap.get(String.valueOf(i));
                     HashMap<FieldPositions, String> correctHashMap = new HashMap<>();
+                    assert stringHashMap != null;
                     for (String key : stringHashMap.keySet()) {
                         correctHashMap.put(FieldPositions.valueOf(key), stringHashMap.get(key));
                     }
@@ -167,9 +170,12 @@ public class Utils {
     public static List<Game> getGamesFromHashmap(List<HashMap<String, Object>> hashMapsList) {
         List<Game> gameList = new ArrayList<>(hashMapsList.size());
         for (HashMap<String, Object> hashMap : hashMapsList) {
+            Object homePoints = hashMap.get("homePoints");
+            Object awayPoints = hashMap.get("awayPoints");
             gameList.add(
                     new Game((String) hashMap.get("homeUserId"), (String) hashMap.get("awayUserId"),
-                            (Integer) hashMap.get("homePoints"), (Integer) hashMap.get("awayPoints")));
+                            homePoints != null ? (int) homePoints : 0,
+                            awayPoints != null ? (int) awayPoints : 0));
         }
         return gameList;
     }
@@ -228,6 +234,33 @@ public class Utils {
                 ee.printStackTrace();
             }
         }
+    }
+
+    public static void showSnackbar(View view, String message, String type) {
+        String textColor;
+        String backgroundColor;
+        switch (type) {
+            case "good":
+                textColor = "#FF000000";
+                backgroundColor = "#FFCCFF90";
+                break;
+            case "warning":
+                textColor = "#FF000000";
+                backgroundColor = "#FFFFFF8D";
+                break;
+            case "error":
+                textColor = "#FF000000";
+                backgroundColor = "#FFD32F2F";
+                break;
+            default:
+                textColor = "#FF000000";
+                backgroundColor = "#FFB1B1B1";
+        }
+        Snackbar snackbar = Snackbar.make(view, "<font color='" + textColor + "' ><b>" + message + "</b></font>", Snackbar.LENGTH_LONG)
+                .setAction("Action", null);
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(Color.parseColor(backgroundColor));
+        snackbar.show();
     }
 
     public static void showToast(Context context, String message, String type) {

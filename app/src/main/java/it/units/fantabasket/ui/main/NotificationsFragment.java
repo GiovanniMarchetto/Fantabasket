@@ -1,5 +1,6 @@
 package it.units.fantabasket.ui.main;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,10 +10,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.AccessActivity;
-import it.units.fantabasket.R;
+import it.units.fantabasket.LeaguesActivity;
 import it.units.fantabasket.databinding.FragmentNotificationsBinding;
 import it.units.fantabasket.utils.Utils;
 
@@ -45,8 +45,16 @@ public class NotificationsFragment extends Fragment {
         });
 
         binding.changeLegaButton.setOnClickListener(view ->
-                NavHostFragment.findNavController(NotificationsFragment.this)
-                        .navigate(R.id.action_NotificationFragment_to_LegheFragment)
+                {
+                    Activity activity = getActivity();
+                    if (activity != null) {
+                        Intent intent = new Intent(activity, LeaguesActivity.class);
+                        startActivity(intent);
+                        activity.finish();
+                    } else {
+                        Utils.showSnackbar(getView(), "Activity is null", "error");
+                    }
+                }
         );
         return root;
     }

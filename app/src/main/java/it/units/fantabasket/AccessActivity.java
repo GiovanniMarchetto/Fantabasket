@@ -26,7 +26,7 @@ public class AccessActivity extends AppCompatActivity {
     private FragmentTransaction transaction;
 
     @Override
-    public void onStart() {
+    public void onStart() {//TODO: add check of connection
         super.onStart();
         mAuth = FirebaseAuth.getInstance();//inizializzo
         passToMainActivityIfUserNotNull();

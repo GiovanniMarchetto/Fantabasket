@@ -14,7 +14,7 @@
     <string name="team_logo">Team logo</string>
     <string name="team_name">Team name</string>
     <string name="lega">Lega</string>
-    <string name="title_player_list">Player List</string>
+    <string name="title_roster_manager">Roster manager</string>
     <string name="fantamilioni">Fantamilioni (fm)</string>
     <string name="roster">Roster</string>
     <string name="salva">Salva</string>
@@ -77,12 +77,8 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="registration_arrow"><![CDATA[Registration ->]]></string>
     <string name="login">Login</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_leaderboard">Leaderboard</string>
     <string name="update_leaderboard">Update leaderboard</string>
     <string name="not_started_yet">Non è ancora iniziata la competizione</string>
@@ -104,4 +100,10 @@
     <string name="londra">Londra (UK)</string>
     <string name="new_york">New York (USA)</string>
     <string name="parigi">Parigi (Francia)</string>
+
+
+    <string name="title_activity_leagues">LeaguesActivity</string>
+    <string name="league_choice_fragment_label">League Choice</string>
+    <string name="league_creation_fragment_label">League Creation</string>
+    <string name="create_league_button">Create league button</string>
 </resources>

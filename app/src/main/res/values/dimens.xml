@@ -8,4 +8,5 @@
     <dimen name="logo_dimension">160dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="shirts_58dp">58dp</dimen>
+    <dimen name="add_margin">16dp</dimen>
 </resources>

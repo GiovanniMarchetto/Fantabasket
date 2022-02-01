@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.leagues;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,12 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ValueEventListener;
+import it.units.fantabasket.LeaguesActivity;
 import it.units.fantabasket.R;
-import it.units.fantabasket.databinding.FragmentLegheBinding;
+import it.units.fantabasket.databinding.FragmentLeagueChoiceBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
 import it.units.fantabasket.utils.MyValueEventListener;
@@ -24,27 +28,35 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static it.units.fantabasket.MainActivity.*;
+import static it.units.fantabasket.MainActivity.firebaseUser;
+import static it.units.fantabasket.MainActivity.legheReference;
 
-public class LegheFragment extends Fragment {
+public class LeagueChoiceFragment extends Fragment {
 
-    private FragmentLegheBinding binding;
+    private FragmentLeagueChoiceBinding binding;
     private double lastLocationLatitude;
     private double lastLocationLongitude;
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentLegheBinding.inflate(inflater, container, false);
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentLeagueChoiceBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+
+    }
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         legheReference.addValueEventListener(getLegheValueEventListener());
 
-        binding.creaLegaButton.setOnClickListener(view ->
-                NavHostFragment.findNavController(LegheFragment.this)
-                        .navigate(R.id.action_LegheFragment_to_LegaCreationFragment)
-        );
+        TextView textView = new TextView(getContext());
+        textView.setText(String.valueOf(getId()));
+        binding.leghePartecipate.addView(textView);
 
-        return binding.getRoot();
+        binding.createLeagueButton.setOnClickListener(viewListener ->
+                NavHostFragment.findNavController(LeagueChoiceFragment.this)
+                        .navigate(R.id.action_LeagueChoiceFragment_to_LeagueCreationFragment)
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -84,13 +96,11 @@ public class LegheFragment extends Fragment {
                     Button actionButton = legaLayout.getActionButton();
 
                     actionButton.setText(getResources().getString(idActionDescription));
-                    actionButton.setOnClickListener(view -> {
-                        if (isUserInThisLeague) {
-                            setLegaSelezionataAndReturnToHome(legaName);
-                        } else {
-                            joinTheLeagueIfPossible(context, legaName, lega);
-                        }
-                    });
+                    if (isUserInThisLeague) {
+                        actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
+                    } else {
+                        actionButton.setOnClickListener(view -> joinTheLeagueIfPossible(context, legaName, lega));
+                    }
                 }
 
                 final Task<Location> locationTask = Utils.getLastLocation(context, getActivity());
@@ -168,10 +178,17 @@ public class LegheFragment extends Fragment {
         }
     }
 
+
     private void setLegaSelezionataAndReturnToHome(String legaName) {
-        userDataReference.child("legaSelezionata").setValue(legaName);
-//        NavHostFragment.findNavController(LegheFragment.this).popBackStack();//generate an error (quando elimina diventa contesto nullo e impazzisce...)
-        NavHostFragment.findNavController(LegheFragment.this)
-                .navigate(R.id.action_LegheFragment_to_HomeFragment);
+        DialogFragment selectLeagueDialogFragment = LeaguesActivity.SelectLeagueDialogFragment.newInstance(legaName);
+        selectLeagueDialogFragment.show(getChildFragmentManager(), "Selected league");
     }
+
+//    private void setLegaSelezionataAndReturnToHome(String legaName) {
+//        userDataReference.child("legaSelezionata").setValue(legaName);
+////        NavHostFragment.findNavController(LegheFragment.this).popBackStack();//generate an error (quando elimina diventa contesto nullo e impazzisce...)
+//        NavHostFragment.findNavController(LegheFragment.this)
+//                .navigate(R.id.action_LegheFragment_to_HomeFragment);
+//    }
+
 }

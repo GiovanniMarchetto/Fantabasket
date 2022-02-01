@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@id/LeagueChoiceFragment">
+
+    <fragment
+            android:id="@+id/LeagueChoiceFragment"
+            android:name="it.units.fantabasket.ui.leagues.LeagueChoiceFragment"
+            android:label="@string/league_choice_fragment_label"
+            tools:layout="@layout/fragment_league_choice">
+
+        <action
+                android:id="@+id/action_LeagueChoiceFragment_to_LeagueCreationFragment"
+                app:destination="@id/LeagueCreationFragment"/>
+    </fragment>
+    <fragment
+            android:id="@+id/LeagueCreationFragment"
+            android:name="it.units.fantabasket.ui.leagues.LeagueCreationFragment"
+            android:label="@string/league_creation_fragment_label"
+            tools:layout="@layout/fragment_league_creation">
+
+        <action
+                android:id="@+id/action_LeagueCreationFragment_to_LeagueChoiceFragment"
+                app:destination="@id/LeagueChoiceFragment"/>
+    </fragment>
+</navigation>

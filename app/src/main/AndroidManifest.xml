@@ -35,6 +35,11 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".MainActivity"/>
         </activity>
+        <activity
+                android:name=".LeaguesActivity"
+                android:exported="true"
+                android:label="@string/title_activity_leagues"
+                android:theme="@style/Theme.Fantabasket.NoActionBar"/>
     </application>
 
 </manifest>
