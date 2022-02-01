@@ -46,6 +46,8 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
 
+        setTimeForSetLineup();
+
         setPlayerButtons();
 
         setRoster();
@@ -83,6 +85,32 @@ public class DashboardFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    private void setTimeForSetLineup() {
+        String timeRestString = "time is up!";
+        long endTime = orarioInizioPrimaPartitaDellaGiornataCorrente.getTimeInMillis();
+        long currentTime = Utils.getCalendarNow().getTimeInMillis();
+        int restTimeInSeconds = (int) Math.floor((endTime - currentTime) / 1000.0);
+
+        if (restTimeInSeconds > 0) {
+            double secondsInAMMinute = 60;
+            double secondsInAHour = 60 * secondsInAMMinute;
+            double secondsInADay = 24 * secondsInAHour;
+
+            int days = (int) Math.floor(restTimeInSeconds / secondsInADay);
+            restTimeInSeconds = (int) (restTimeInSeconds - days * secondsInADay);
+
+            int hours = (int) Math.floor(restTimeInSeconds / secondsInAHour);
+            restTimeInSeconds = (int) (restTimeInSeconds - hours * secondsInAHour);
+
+            int minutes = (int) Math.floor(restTimeInSeconds / secondsInAMMinute);
+            restTimeInSeconds = (int) (restTimeInSeconds - minutes * secondsInAMMinute);
+
+            timeRestString = days + "d " + hours + "h " + minutes + "m " + restTimeInSeconds + "s";
+        }
+
+        binding.timeRest.setText(timeRestString);
     }
 
     private void setPlayerButtons() {
@@ -124,12 +152,6 @@ public class DashboardFragment extends Fragment {
         } else {
             binding.panchinaThirdSection.addView(playerLayout);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 
     private void setRoster() {

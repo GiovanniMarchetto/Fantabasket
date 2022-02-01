@@ -9,4 +9,5 @@
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="shirts_58dp">58dp</dimen>
     <dimen name="add_margin">16dp</dimen>
+    <dimen name="text_mediumSize_17">17sp</dimen>
 </resources>

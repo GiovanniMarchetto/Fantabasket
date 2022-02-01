@@ -9,10 +9,33 @@
         android:background="@drawable/parquet_dark">
 
     <LinearLayout
+            android:layout_marginTop="@dimen/basic_margin_16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/padding_8dp"
+                android:background="@color/verdeAcqua">
+
+            <TextView
+                    android:text="@string/tempo_rimanente"
+                    android:textSize="@dimen/text_mediumSize_17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_hourglass"/>
+
+            <TextView
+                    android:id="@+id/timeRest"
+                    android:textSize="@dimen/text_mediumSize_17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -22,7 +45,7 @@
                     android:id="@+id/basketField"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/basic_margin_16dp"
                     app:srcCompat="@drawable/ic_half_basketball_field"
                     android:contentDescription="@string/basketball_field"
                     app:layout_constraintTop_toTopOf="parent"
