@@ -33,14 +33,15 @@ import static it.units.fantabasket.MainActivity.legheReference;
 public class LeagueChoiceFragment extends Fragment {
 
     private FragmentLeagueChoiceBinding binding;
+    private Context context;
     private double lastLocationLatitude;
     private double lastLocationLongitude;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLeagueChoiceBinding.inflate(inflater, container, false);
+        context = getContext();
         return binding.getRoot();
-
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -61,12 +62,11 @@ public class LeagueChoiceFragment extends Fragment {
             Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
             AtomicInteger numLeghePartecipate = new AtomicInteger();
             AtomicInteger numLegheDisponibili = new AtomicInteger();
-            Context context = getContext();
 
             if (legheEsistenti != null && legheEsistenti.size() > 0) {
 
-                HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap = new HashMap<>();
-                List<Integer> distances = new ArrayList<>();
+                HashMap<Lega, LegaLayout> legaLinearLayoutHashMap = new HashMap<>();
+
                 for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
                     String legaName = valueOfMap.getKey();
                     HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
@@ -79,13 +79,12 @@ public class LeagueChoiceFragment extends Fragment {
                     if (isUserInThisLeague) {
                         numLeghePartecipate.getAndIncrement();
                         idActionDescription = R.string.seleziona_lega;
-
                         binding.leghePartecipate.addView(legaLayout.getLegaHeaderLayout());
                     } else {
                         numLegheDisponibili.getAndIncrement();
                         idActionDescription = R.string.unisciti_lega;
-                        updateVariablesForOrderLeagueByDistance(legaLayoutDistancesHashMap, distances, lega, legaLayout);
                         binding.legheDisponibili.addView(legaLayout.getLegaHeaderLayout());
+                        legaLinearLayoutHashMap.put(lega, legaLayout);
                     }
 
                     Button actionButton = legaLayout.getActionButton();
@@ -104,7 +103,7 @@ public class LeagueChoiceFragment extends Fragment {
                         if (location != null) {
                             lastLocationLatitude = location.getLatitude();
                             lastLocationLongitude = location.getLongitude();
-                            reorderOpenLeaguesByDistance(legaLayoutDistancesHashMap, distances);
+                            reorderOpenLeaguesByDistance(legaLinearLayoutHashMap);
                         }
                     });
                 }
@@ -117,7 +116,14 @@ public class LeagueChoiceFragment extends Fragment {
         };
     }
 
-    private void reorderOpenLeaguesByDistance(HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap, List<Integer> distances) {
+    private void reorderOpenLeaguesByDistance(HashMap<Lega, LegaLayout> legaLinearLayoutHashMap) {
+        HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap = new HashMap<>();
+        List<Integer> distances = new ArrayList<>();
+
+        for (Lega lega : legaLinearLayoutHashMap.keySet()) {
+            calculateDistances(legaLayoutDistancesHashMap, distances, lega, legaLinearLayoutHashMap.get(lega));
+        }
+
         binding.legheDisponibili.removeAllViews();
         Collections.sort(distances);
         for (Integer distance : distances) {
@@ -129,7 +135,7 @@ public class LeagueChoiceFragment extends Fragment {
         }
     }
 
-    private void updateVariablesForOrderLeagueByDistance(
+    private void calculateDistances(
             HashMap<Integer, List<LinearLayout>> legaLayoutDistancesHashMap,
             List<Integer> distances, Lega lega, LegaLayout legaLayout) {
 
@@ -178,12 +184,4 @@ public class LeagueChoiceFragment extends Fragment {
         DialogFragment selectLeagueDialogFragment = LeaguesActivity.SelectLeagueDialogFragment.newInstance(legaName);
         selectLeagueDialogFragment.show(getChildFragmentManager(), "Selected league");
     }
-
-//    private void setLegaSelezionataAndReturnToHome(String legaName) {
-//        userDataReference.child("legaSelezionata").setValue(legaName);
-////        NavHostFragment.findNavController(LegheFragment.this).popBackStack();//generate an error (quando elimina diventa contesto nullo e impazzisce...)
-//        NavHostFragment.findNavController(LegheFragment.this)
-//                .navigate(R.id.action_LegheFragment_to_HomeFragment);
-//    }
-
 }

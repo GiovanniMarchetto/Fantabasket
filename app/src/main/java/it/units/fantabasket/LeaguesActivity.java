@@ -71,14 +71,14 @@ public class LeaguesActivity extends AppCompatActivity {
 
             assert activity != null;
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(R.string.seleziona_lega)
-                    .setPositiveButton(R.string.salva, (dialog, id) -> {
+            builder.setMessage("Selezionare " + legaName + "?")
+                    .setPositiveButton("Yes", (dialog, id) -> {
                         FirebaseDatabase.getInstance().getReference("users").child(firebaseUserLeagues.getUid()).child("legaSelezionata").setValue(legaName);
                         Intent intent = new Intent(activity, MainActivity.class);
                         startActivity(intent);
                         activity.finish();
                     })
-                    .setNegativeButton("cancel", (dialog, id) -> {
+                    .setNegativeButton("No", (dialog, id) -> {
 
                     });
             return builder.create();
