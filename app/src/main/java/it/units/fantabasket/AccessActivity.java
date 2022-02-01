@@ -53,8 +53,8 @@ public class AccessActivity extends AppCompatActivity {
 
         accessBinding.userEmail.addTextChangedListener(
                 (TextWatcherAfterChange) editable -> {
-                    if (!editable.toString().contains("@")) {
-                        accessBinding.userEmail.setError("Not an email");
+                    if (!editable.toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) {
+                        accessBinding.userEmail.setError("Invalid Email Address");
                     }
                 });
 
