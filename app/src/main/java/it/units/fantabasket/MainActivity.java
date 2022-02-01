@@ -141,14 +141,14 @@ public class MainActivity extends AppCompatActivity {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                int giornata = Integer.parseInt(values[0]);
+                int giornata = Integer.parseInt(values[0]) - 1;
                 int year = Integer.parseInt(values[1]);
-                int month = Integer.parseInt(values[2]);
+                int month = Integer.parseInt(values[2]) - 1;
                 int day = Integer.parseInt(values[3]);
                 int hour = Integer.parseInt(values[4]);
                 int minute = Integer.parseInt(values[5]);
                 Calendar orario = new GregorianCalendar(year, month, day, hour, minute, 0);
-                orariInizioPartite.add(orario);
+                orariInizioPartite.add(giornata, orario);
                 //siccome va in ordine di giornata la prima che non è già passata è la giornata corrente
             }
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (int i = 0; i < orariInizioPartite.size(); i++) {//sono in ordine
-            Calendar g = orariInizioPartite.get(i);
+            Calendar g = (Calendar) orariInizioPartite.get(i).clone();
             g.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
             if (currentCal.before(g)) {
                 giornataCorrente = i + 1;
