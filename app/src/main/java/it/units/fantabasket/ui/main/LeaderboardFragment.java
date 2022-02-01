@@ -78,7 +78,7 @@ public class LeaderboardFragment extends Fragment {
                     addToCalendarioViewAllRounds(context, calendario);
                 }
             } else {
-                binding.calendarioContainer.setVisibility(View.GONE);
+                binding.calendarShortcut.setVisibility(View.GONE);
             }
         } else {
             binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
