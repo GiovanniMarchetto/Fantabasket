@@ -112,7 +112,7 @@ public class LeagueCreationFragment extends Fragment {
                 }
                 if (addresses != null && addresses.size() > 0) {
                     final Address address = addresses.get(0);
-                    String cityAndCountry = address.getLocality() + " (" + address.getCountryName() + ")";
+                    String cityAndCountry = "(" + address.getCountryCode() + ") " + address.getLocality();
                     binding.yourLocationTextView.setText(cityAndCountry);
                     binding.yourLocationTextView.setError(null);
                 } else {

@@ -9,14 +9,22 @@
         android:padding="10dp"
         tools:context=".ui.leagues.LeagueChoiceFragment">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+            <Button
+                    android:text="@string/refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_anchorGravity="top|center"
+                    app:layout_anchor="@+id/button"
+                    android:id="@+id/refreshButton"/>
 
             <TextView
                     android:id="@+id/title_leghe_partecipate"
@@ -69,7 +77,7 @@
 
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/createLeagueButton"

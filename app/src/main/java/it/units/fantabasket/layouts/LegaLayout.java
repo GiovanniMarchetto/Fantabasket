@@ -68,6 +68,7 @@ public class LegaLayout {
 
         TextView paramTextView = new TextView(context);
         paramTextView.setText(param);
+        paramTextView.setMaxLines(1);
 
         LinearLayout.LayoutParams textViewParam = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
         paramLayout.addView(nameOfParamTextView, textViewParam);

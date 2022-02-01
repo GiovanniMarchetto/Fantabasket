@@ -47,7 +47,11 @@ public class LeagueChoiceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        legheReference.addValueEventListener(getLegheValueEventListener());
+        binding.refreshButton.setOnClickListener(view1 -> {
+            this.getParentFragmentManager().beginTransaction().replace(this.getId(), new LeagueChoiceFragment()).commit();
+        });
+
+        legheReference.addListenerForSingleValueEvent(getLegheValueEventListener());
 
         binding.createLeagueButton.setOnClickListener(viewListener ->
                 NavHostFragment.findNavController(LeagueChoiceFragment.this)
@@ -64,6 +68,8 @@ public class LeagueChoiceFragment extends Fragment {
             AtomicInteger numLegheDisponibili = new AtomicInteger();
 
             if (legheEsistenti != null && legheEsistenti.size() > 0) {
+                binding.leghePartecipate.removeAllViews();
+                binding.legheDisponibili.removeAllViews();
 
                 HashMap<Lega, LegaLayout> legaLinearLayoutHashMap = new HashMap<>();
 

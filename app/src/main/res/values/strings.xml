@@ -92,18 +92,19 @@
     <string name="your_location">Your location</string>
 
     <!--  CITTÀ  -->
-    <string name="roma">Roma (Italia)</string>
-    <string name="trieste">Trieste (Italia)</string>
-    <string name="bologna">Bologna (Italia)</string>
-    <string name="milano">Milano (Italia)</string>
-    <string name="napoli">Napoli (Italia)</string>
-    <string name="londra">Londra (UK)</string>
-    <string name="new_york">New York (USA)</string>
-    <string name="parigi">Parigi (Francia)</string>
+    <string name="roma">(IT) Roma</string>
+    <string name="trieste">(IT) Trieste</string>
+    <string name="bologna">(IT) Bologna</string>
+    <string name="milano">(IT) Milano</string>
+    <string name="napoli">(IT) Napoli</string>
+    <string name="londra">(UK) Londra</string>
+    <string name="new_york">(US) New York</string>
+    <string name="parigi">(FR) Parigi</string>
 
 
     <string name="title_activity_leagues">LeaguesActivity</string>
     <string name="league_choice_fragment_label">League Choice</string>
     <string name="league_creation_fragment_label">League Creation</string>
     <string name="create_league_button">Create league button</string>
+    <string name="refresh">REFRESH</string>
 </resources>
