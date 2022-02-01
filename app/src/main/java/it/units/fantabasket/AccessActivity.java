@@ -35,7 +35,6 @@ public class AccessActivity extends AppCompatActivity {
     private void passToMainActivityIfUserNotNull() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            Log.i("MIO", "not null user: " + user.getDisplayName());
             Intent intent = new Intent(AccessActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

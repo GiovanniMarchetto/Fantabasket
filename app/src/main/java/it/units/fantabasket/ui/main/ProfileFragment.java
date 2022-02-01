@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -17,12 +16,12 @@ import it.units.fantabasket.AccessActivity;
 import it.units.fantabasket.LeaguesActivity;
 import it.units.fantabasket.databinding.FragmentProfileBinding;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.layouts.LegaLayout;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import static it.units.fantabasket.MainActivity.*;
+import static it.units.fantabasket.layouts.LegaLayout.addLegaParamsAtView;
 
 public class ProfileFragment extends Fragment {
 
@@ -42,9 +41,7 @@ public class ProfileFragment extends Fragment {
 
         Lega actualLega = leagueOn.get();
         if (actualLega != null) {
-            LegaLayout legaLayout = new LegaLayout(activity, actualLega);
-            LinearLayout legaLinearLayout = legaLayout.getLegaHeaderLayout();
-            binding.leagueParams.addView(legaLinearLayout);
+            addLegaParamsAtView(activity, actualLega, binding.leagueParams);
         }
 
         binding.changeLegaButton.setOnClickListener(viewListener -> {
