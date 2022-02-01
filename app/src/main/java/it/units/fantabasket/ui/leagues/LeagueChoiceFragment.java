@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -48,10 +47,6 @@ public class LeagueChoiceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         legheReference.addValueEventListener(getLegheValueEventListener());
-
-        TextView textView = new TextView(getContext());
-        textView.setText(String.valueOf(getId()));
-        binding.leghePartecipate.addView(textView);
 
         binding.createLeagueButton.setOnClickListener(viewListener ->
                 NavHostFragment.findNavController(LeagueChoiceFragment.this)
