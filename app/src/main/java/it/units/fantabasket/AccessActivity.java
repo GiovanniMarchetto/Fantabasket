@@ -14,6 +14,7 @@ import it.units.fantabasket.databinding.ActivityAccessBinding;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.ui.access.LoginFragment;
 import it.units.fantabasket.ui.access.RegistrationFragment;
+import it.units.fantabasket.utils.NetworkChangeReceiver;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 
@@ -26,10 +27,19 @@ public class AccessActivity extends AppCompatActivity {
     private FragmentTransaction transaction;
 
     @Override
-    public void onStart() {//TODO: add check of connection
+    public void onStart() {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();//inizializzo
-        passToMainActivityIfUserNotNull();
+
+        boolean connessione = NetworkChangeReceiver.isNetworkAvailable(getApplicationContext());
+        Log.i("MIO", "Connessione: " + connessione);
+
+        if (connessione) {
+            passToMainActivityIfUserNotNull();
+        } else {
+            Intent intent = new Intent(this, NoConnectionActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void passToMainActivityIfUserNotNull() {

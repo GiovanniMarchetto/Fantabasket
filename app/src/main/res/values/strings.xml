@@ -115,4 +115,6 @@
     <string name="send_email_to_change_password">Send email to change password</string>
     <string name="tempo_rimanente">Tempo rimanente</string>
     <string name="change_nickname">Change nickname</string>
+    <string name="no_connection">NO CONNECTION</string>
+    <string name="reload">Reload</string>
 </resources>
