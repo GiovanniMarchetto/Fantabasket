@@ -67,9 +67,9 @@ public class RosterManagerFragment extends Fragment {
 
         binding.saveRosterButton.setOnClickListener(view -> {
                     if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
-                        Utils.showToast(getContext(), "È iniziata la giornata non puoi cambiare il roster", "error");
+                        Utils.showSnackbar(view, "È iniziata la giornata non puoi cambiare il roster", "error");
                     } else if (numberOfPlayersSelected < 12) {
-                        Utils.showToast(getContext(), "Minimo 12 giocatori", "warning");
+                        Utils.showSnackbar(view, "Minimo 12 giocatori", "warning");
                     } else {
                         roster = new ArrayList<>(newRoster);
                         userDataReference.child("roster").setValue(roster);
@@ -204,14 +204,14 @@ public class RosterManagerFragment extends Fragment {
                 for (LinearLayout linearLayout : listOfLayoutOrderedByCost) {
                     binding.principalLinearLayout.addView(linearLayout);
                 }
-                Utils.showToast(getContext(), "order by cost");
+                Utils.showSnackbar(view, "order by cost");
                 orderByTeam = false;
             } else {
                 binding.principalLinearLayout.removeAllViews();
                 for (LinearLayout linearLayout : listOfLayoutOrderedByTeam) {
                     binding.principalLinearLayout.addView(linearLayout);
                 }
-                Utils.showToast(getContext(), "order by team");
+                Utils.showSnackbar(view, "order by team");
                 orderByTeam = true;
             }
         });

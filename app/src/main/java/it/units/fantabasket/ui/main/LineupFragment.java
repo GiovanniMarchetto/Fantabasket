@@ -66,13 +66,13 @@ public class LineupFragment extends Fragment {
                         formazioneDBFormat.put(key.name(), formazione.get(key).getId());
                     }
                     userDataReference.child("formazioniPerGiornata").child(String.valueOf(giornataCorrente)).setValue(formazioneDBFormat);
-                    Utils.showToast(getContext(), "Salvata!", "good");
+                    Utils.showSnackbar(view, "Salvata!", "good");
                 } else {
-                    Utils.showToast(getContext(), "Formazione non completa", "error");
+                    Utils.showSnackbar(view, "Formazione non completa", "error");
                     Log.i("MIO", "Formazione non completa");
                 }
             } else {
-                Utils.showToast(getContext(), "Tempo scaduto", "error");
+                Utils.showSnackbar(view, "Tempo scaduto", "error");
                 Log.i("MIO", "Tempo scaduto");
             }
         });

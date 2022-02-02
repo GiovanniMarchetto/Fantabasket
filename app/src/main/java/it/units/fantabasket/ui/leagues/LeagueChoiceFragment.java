@@ -32,6 +32,8 @@ import static it.units.fantabasket.MainActivity.legheReference;
 
 public class LeagueChoiceFragment extends Fragment {
 
+    public static Map<String, Object> legheEsistenti;
+
     private FragmentLeagueChoiceBinding binding;
     private Context context;
     private double lastLocationLatitude;
@@ -63,7 +65,7 @@ public class LeagueChoiceFragment extends Fragment {
     private ValueEventListener getLegheValueEventListener() {
         return (MyValueEventListener) dataSnapshot -> {
 
-            Map<String, Object> legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
+            legheEsistenti = (Map<String, Object>) dataSnapshot.getValue();
             AtomicInteger numLeghePartecipate = new AtomicInteger();
             AtomicInteger numLegheDisponibili = new AtomicInteger();
 
@@ -99,7 +101,7 @@ public class LeagueChoiceFragment extends Fragment {
                     if (isUserInThisLeague) {
                         actionButton.setOnClickListener(view -> setLegaSelezionataAndReturnToHome(legaName));
                     } else {
-                        actionButton.setOnClickListener(view -> joinTheLeagueIfPossible(context, legaName, lega));
+                        actionButton.setOnClickListener(view -> joinTheLeagueIfPossible(view, legaName, lega));
                     }
                 }
 
@@ -171,17 +173,17 @@ public class LeagueChoiceFragment extends Fragment {
         return deg * (Math.PI / 180);
     }
 
-    private void joinTheLeagueIfPossible(Context context, String legaName, Lega lega) {
+    private void joinTheLeagueIfPossible(View view, String legaName, Lega lega) {
         if (lega.getPartecipanti().size() < lega.getNumPartecipanti()) {
             if (!lega.isStarted()) {
                 List<String> newPartecipanti = lega.getPartecipanti();
                 newPartecipanti.add(firebaseUser.getUid());
                 legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
             } else {
-                Utils.showToast(context, "È già iniziata", "error");
+                Utils.showSnackbar(view, "È già iniziata", "error");
             }
         } else {
-            Utils.showToast(context, "NON CI SONO POSTI", "error");
+            Utils.showSnackbar(view, "NON CI SONO POSTI", "error");
         }
     }
 

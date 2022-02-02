@@ -62,6 +62,11 @@ public class LeagueCreationFragment extends Fragment {
         binding.creaLegaButton.setOnClickListener(viewListener -> {
             String legaName = binding.legaName.getText().toString();
 
+            if (LeagueChoiceFragment.legheEsistenti.containsKey(legaName)) {
+                Utils.showSnackbar(viewListener, "A league with this name already exist", "error");
+                return;
+            }
+
             String location;
             if (binding.mainLocationRadioButton.isChecked()) {
                 location = binding.locationSpinner.getSelectedItem().toString();

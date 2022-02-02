@@ -16,14 +16,11 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.core.app.ActivityCompat;
-import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,7 +48,8 @@ public class Utils {
 
     public static String teamLogoBase64;
 
-    public static ActivityResultCallback<ActivityResult> getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(ContentResolver contentResolver, ImageView imageView, boolean saveInDB) {
+    public static ActivityResultCallback<ActivityResult> getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(
+            ContentResolver contentResolver, ImageView imageView, boolean saveInDB) {
         return result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
                 Intent data = result.getData();
@@ -79,7 +77,8 @@ public class Utils {
                             }
 
                             imageView.setImageBitmap(bitmap);
-                            Log.i("MIO", "LOGO-- prima: " + original.getByteCount() + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
+                            Log.i("MIO", "LOGO-- prima: " + original.getByteCount()
+                                    + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -256,41 +255,16 @@ public class Utils {
                 textColor = "#FF000000";
                 backgroundColor = "#FFB1B1B1";
         }
-        Snackbar snackbar = Snackbar.make(view, "<font color='" + textColor + "' ><b>" + message + "</b></font>", Snackbar.LENGTH_LONG)
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction("Action", null);
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(Color.parseColor(backgroundColor));
+        snackbar.setTextColor(Color.parseColor(textColor));
         snackbar.show();
     }
 
-    public static void showToast(Context context, String message, String type) {
-        String textColor;
-        String backgroundColor;
-        switch (type) {
-            case "good":
-                textColor = "#FF000000";
-                backgroundColor = "#FFCCFF90";
-                break;
-            case "warning":
-                textColor = "#FF000000";
-                backgroundColor = "#FFFFFF8D";
-                break;
-            case "error":
-                textColor = "#FF000000";
-                backgroundColor = "#FFD32F2F";
-                break;
-            default:
-                textColor = "#FF000000";
-                backgroundColor = "#FFB1B1B1";
-        }
-        Toast toast = Toast.makeText(context, HtmlCompat.fromHtml("<font color='" + textColor + "' ><b>" + message + "</b></font>", 0), Toast.LENGTH_LONG);
-        toast.getView().setBackgroundColor(Color.parseColor(backgroundColor));
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
-    public static void showToast(Context context, String message) {
-        showToast(context, message, "normal");
+    public static void showSnackbar(View view, String message) {
+        showSnackbar(view, message, "normal");
     }
 
     public static Task<Location> getLastLocation(Context context, Activity activity) {
