@@ -44,9 +44,12 @@ public class LeaderboardFragment extends Fragment {
                 Calendar orarioFineUltimaGiornataCalendar = orariInizioPartite.get(giornataCorrente - 2);
                 orarioFineUltimaGiornataCalendar.add(Calendar.DATE, 2);
                 long orarioFineUltimaGiornata = orarioFineUltimaGiornataCalendar.getTime().getTime();
-                if (lastUpdate < orarioFineUltimaGiornata && isUserTheAdminOfLeague) {
+
+                if (isUserTheAdminOfLeague) {
                     binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
-                    binding.updateLeaderboardButton.setEnabled(true);
+                    if (lastUpdate < orarioFineUltimaGiornata) {
+                        binding.updateLeaderboardButton.setEnabled(true);
+                    }
                 }
 
                 for (int i = 1; i < classifica.size(); i++) {
@@ -84,31 +87,40 @@ public class LeaderboardFragment extends Fragment {
             binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
         }
 
-        if (isUserTheAdminOfLeague && leagueOn.get().getLastRoundCalculated() < giornataCorrente - 1) {
-            binding.updateLeaderboardButton.setOnClickListener(view -> {
-                        for (int roundToCalculate = leagueOn.get().getLastRoundCalculated() + 1; roundToCalculate < giornataCorrente; roundToCalculate++) {
-
-                            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
-
-                            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-                                List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get("giornata_" + roundToCalculate);
-                                calcoloGiornataCalendario(roundToCalculate, gameListOfRoundToCalculate);
-                                legheReference.child(legaSelezionata).child("calendario").child("giornata_" + roundToCalculate).setValue(gameListOfRoundToCalculate);
-
-                                updateClassificaLegaCalendario(classifica, gameListOfRoundToCalculate);
-
-                            } else {
-                                updateClassificaLegaFormula1(classifica, roundToCalculate);
-                            }
-
-                            List<HashMap<String, Object>> orderClassifica = reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
-                            legheReference.child(legaSelezionata).child("classifica").setValue(orderClassifica);
-                            legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(roundToCalculate);
-                        }
-                    }
-            );
+        if (isUserTheAdminOfLeague) {
+            if (leagueOn.get().getLastRoundCalculated() < giornataCorrente - 1) {
+                binding.updateLeaderboardButton.setOnClickListener(view ->
+                        calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
+            } else if (leagueOn.get().getLastRoundCalculated() == orariInizioPartite.size()) {
+                binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
+                binding.updateLeaderboardButton.setOnClickListener(view ->
+                        calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated()));
+            }
         }
         return binding.getRoot();
+    }
+
+    @SuppressWarnings({"ConstantConditions"})
+    private void calcolaGiornateDaUnCertoRound(int firstRoundToCalculate) {
+        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < giornataCorrente; roundToCalculate++) {
+
+            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
+
+            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+                List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get("giornata_" + roundToCalculate);
+                calcoloGiornataCalendario(roundToCalculate, gameListOfRoundToCalculate);
+                legheReference.child(legaSelezionata).child("calendario").child("giornata_" + roundToCalculate).setValue(gameListOfRoundToCalculate);
+
+                updateClassificaLegaCalendario(classifica, gameListOfRoundToCalculate);
+
+            } else {
+                updateClassificaLegaFormula1(classifica, roundToCalculate);
+            }
+
+            List<HashMap<String, Object>> orderClassifica = reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
+            legheReference.child(legaSelezionata).child("classifica").setValue(orderClassifica);
+            legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(roundToCalculate);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -140,7 +152,10 @@ public class LeaderboardFragment extends Fragment {
         for (HashMap<String, Object> elementoClassifica : classifica) {
             String elId = (String) elementoClassifica.get("userId");
             int pointsScoredThisRound = calcolaPuntiGiornataFromUserId(roundToCalculate, elId);
-            int totalPointsScored = (int) elementoClassifica.get("totalPointsScored");
+
+            Object objTotalPointScored = elementoClassifica.get("totalPointsScored");
+            int totalPointsScored = (objTotalPointScored != null) ? (int) objTotalPointScored : 0;
+
             elementoClassifica.put("totalPointsScored", totalPointsScored + pointsScoredThisRound);
         }
     }

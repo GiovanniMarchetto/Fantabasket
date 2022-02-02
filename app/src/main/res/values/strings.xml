@@ -117,4 +117,5 @@
     <string name="change_nickname">Change nickname</string>
     <string name="no_connection">NO CONNECTION</string>
     <string name="reload">Reload</string>
+    <string name="ricalcola_tutte_le_giornate">Ricalcola tutte le giornate</string>
 </resources>
