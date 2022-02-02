@@ -12,16 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
-import it.units.fantabasket.AccessActivity;
-import it.units.fantabasket.LeaguesActivity;
 import it.units.fantabasket.databinding.FragmentProfileBinding;
 import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.ui.AccessActivity;
+import it.units.fantabasket.ui.LeaguesActivity;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import static it.units.fantabasket.MainActivity.*;
 import static it.units.fantabasket.layouts.LegaLayout.addLegaParamsAtView;
+import static it.units.fantabasket.ui.MainActivity.*;
 
 public class ProfileFragment extends Fragment {
 

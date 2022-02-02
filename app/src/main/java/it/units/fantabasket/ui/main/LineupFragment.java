@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static it.units.fantabasket.MainActivity.*;
 import static it.units.fantabasket.enums.FieldPositions.*;
+import static it.units.fantabasket.ui.MainActivity.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LineupFragment extends Fragment {

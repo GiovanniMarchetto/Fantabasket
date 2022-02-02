@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityMainBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.User;

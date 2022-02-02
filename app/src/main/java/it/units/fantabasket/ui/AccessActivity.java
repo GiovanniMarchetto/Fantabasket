@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityAccessBinding;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.ui.access.LoginFragment;

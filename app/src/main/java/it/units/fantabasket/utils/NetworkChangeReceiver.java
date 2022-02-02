@@ -8,7 +8,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.util.Log;
-import it.units.fantabasket.NoConnectionActivity;
+import it.units.fantabasket.ui.NoConnectionActivity;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
 

@@ -49,7 +49,7 @@
     <ImageView
             android:id="@+id/teamLogoImage"
             android:layout_gravity="center"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="@dimen/logo_dimension"
+            android:layout_height="@dimen/logo_dimension"
             android:contentDescription="@string/team_logo_image"/>
 </LinearLayout>

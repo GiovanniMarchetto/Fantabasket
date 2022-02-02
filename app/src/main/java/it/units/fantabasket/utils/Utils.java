@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import static it.units.fantabasket.MainActivity.orariInizioPartite;
-import static it.units.fantabasket.MainActivity.userDataReference;
+import static it.units.fantabasket.ui.MainActivity.orariInizioPartite;
+import static it.units.fantabasket.ui.MainActivity.userDataReference;
 
 public class Utils {
 

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static it.units.fantabasket.LeaguesActivity.*;
+import static it.units.fantabasket.ui.LeaguesActivity.*;
 
 public class LeagueCreationFragment extends Fragment {
 

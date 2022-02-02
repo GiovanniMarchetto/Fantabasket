@@ -15,11 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ValueEventListener;
-import it.units.fantabasket.LeaguesActivity;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLeagueChoiceBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
+import it.units.fantabasket.ui.LeaguesActivity;
 import it.units.fantabasket.utils.MyValueEventListener;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static it.units.fantabasket.MainActivity.firebaseUser;
-import static it.units.fantabasket.MainActivity.legheReference;
+import static it.units.fantabasket.ui.MainActivity.firebaseUser;
+import static it.units.fantabasket.ui.MainActivity.legheReference;
 
 public class LeagueChoiceFragment extends Fragment {
 

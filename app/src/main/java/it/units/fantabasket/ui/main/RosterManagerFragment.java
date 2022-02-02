@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.main;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.units.fantabasket.MainActivity.*;
+import static it.units.fantabasket.ui.MainActivity.*;
 
 public class RosterManagerFragment extends Fragment {
 

@@ -24,7 +24,7 @@
 
     <fragment
             android:id="@+id/navigation_roster_manager"
-            android:name="it.units.fantabasket.ui.RosterManagerFragment"
+            android:name="it.units.fantabasket.ui.main.RosterManagerFragment"
             android:label="@string/title_roster_manager"
             tools:layout="@layout/fragment_roster_manager">
         <action

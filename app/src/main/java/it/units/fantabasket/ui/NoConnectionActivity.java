@@ -1,4 +1,4 @@
-package it.units.fantabasket;
+package it.units.fantabasket.ui;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

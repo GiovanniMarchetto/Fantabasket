@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static it.units.fantabasket.MainActivity.*;
+import static it.units.fantabasket.ui.MainActivity.*;
 
 public class LeaderboardFragment extends Fragment {
 

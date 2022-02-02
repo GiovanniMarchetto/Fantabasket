@@ -16,7 +16,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Fantabasket">
         <activity
-                android:name=".NoConnectionActivity"
+                android:name=".ui.NoConnectionActivity"
                 android:exported="true"/>
 
         <receiver
@@ -33,7 +33,7 @@
         </receiver>
 
         <activity
-                android:name=".AccessActivity"
+                android:name=".ui.AccessActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -42,21 +42,21 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".MainActivity"
+                android:name=".ui.MainActivity"
                 android:exported="true"
                 android:label="@string/title_activity_main"
                 android:launchMode="singleTop"/>
         <activity
-                android:name=".SettingsActivity"
+                android:name=".ui.SettingsActivity"
                 android:exported="true"
                 android:label="@string/title_activity_settings"
-                android:parentActivityName=".MainActivity">
+                android:parentActivityName=".ui.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".MainActivity"/>
+                    android:value=".ui.MainActivity"/>
         </activity>
         <activity
-                android:name=".LeaguesActivity"
+                android:name=".ui.LeaguesActivity"
                 android:exported="true"
                 android:label="@string/title_activity_leagues"
                 android:theme="@style/Theme.Fantabasket.NoActionBar"/>
