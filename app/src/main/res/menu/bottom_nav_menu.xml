@@ -8,7 +8,7 @@
 
     <item
             android:id="@+id/navigation_lineup"
-            android:icon="@drawable/ic_basketball_jersey"
+            android:icon="@drawable/ic_clipboard"
             android:title="@string/title_lineup"/>
 
     <item

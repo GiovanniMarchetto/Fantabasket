@@ -176,7 +176,7 @@
                     app:backgroundTint="@color/darkRed"
                     android:textColor="@color/white"
                     android:layout_weight="1"
-                    android:drawableTop=""
+                    android:drawableTop="@drawable/ic_garbage"
                     style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
@@ -188,7 +188,7 @@
                     android:layout_weight="1"
                     app:backgroundTint="@color/verdeAcqua"
                     android:textColor="@color/black"
-                    android:drawableTop="@drawable/ic_strategy"
+                    android:drawableTop="@drawable/ic_save_file"
                     style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
@@ -198,7 +198,7 @@
                     android:layout_height="wrap_content"
                     app:backgroundTint="@color/pannaOrange"
                     android:textColor="@color/black"
-                    android:drawableTop="@drawable/ic_edit"
+                    android:drawableTop="@drawable/ic_shopping_cart"
                     android:layout_weight="1"
                     style="?android:attr/buttonBarButtonStyle"/>
 

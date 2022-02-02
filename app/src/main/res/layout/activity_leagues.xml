@@ -36,7 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:defaultNavHost="true"
-                app:navGraph="@navigation/nav_graph"/>
+                app:navGraph="@navigation/nav_leagues"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
