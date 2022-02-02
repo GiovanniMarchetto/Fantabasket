@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static it.units.fantabasket.ui.main.HomeFragment.homeFragment;
 import static it.units.fantabasket.utils.Utils.getUserFromHashMapOfDB;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
+    public static AtomicReference<Boolean> loadLeagueData;
     public static boolean isUserTheAdminOfLeague;
     public static HashMap<String, User> membersLeagueOn;
     public static List<String> roster;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadLeagueData = new AtomicReference<>(false);
 
         super.onCreate(savedInstanceState);
 
@@ -113,6 +116,29 @@ public class MainActivity extends AppCompatActivity {
         legheReference = FirebaseDatabase.getInstance().getReference("leghe");
         roster = new ArrayList<>(16);
         loadCurrentRoster();
+
+
+        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
+            @SuppressWarnings("unchecked") HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
+            //noinspection ConstantConditions
+            user = getUserFromHashMapOfDB(hashMap);
+        });
+
+        //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
+        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
+            legaSelezionata = snapshotLega.getValue(String.class);
+            if (legaSelezionata != null && !legaSelezionata.equals("")) {
+                if (leagueOnListener != null) {
+                    legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
+                }
+
+                setLeagueOnListener();
+
+                legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
+            }
+
+            loadLeagueData.set(true);
+        });
 
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -174,26 +200,6 @@ public class MainActivity extends AppCompatActivity {
             setTheme(PreferenceManager.getDefaultSharedPreferences(this));
             preferencesChanged = false;
         }
-
-        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
-            @SuppressWarnings("unchecked") HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
-            //noinspection ConstantConditions
-            user = getUserFromHashMapOfDB(hashMap);
-        });
-
-        //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
-        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
-            legaSelezionata = snapshotLega.getValue(String.class);
-            if (legaSelezionata != null && !legaSelezionata.equals("")) {
-                if (leagueOnListener != null) {
-                    legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
-                }
-
-                setLeagueOnListener();
-
-                legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
-            }
-        });
     }
 
     @SuppressWarnings({"ConstantConditions", "unchecked"})
@@ -223,6 +229,9 @@ public class MainActivity extends AppCompatActivity {
                 membersLeagueOnListenerList.put(memberId, memberListener);
             }
 
+            if (homeFragment != null) {
+                homeFragment.onStart();
+            }
         };
     }
 

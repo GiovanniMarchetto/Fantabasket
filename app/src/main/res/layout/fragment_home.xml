@@ -42,12 +42,12 @@
                         android:text="@string/start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/basic_margin_16dp"
                         android:enabled="false"
                         android:visibility="gone"/>
 
                 <TextView
                         android:id="@+id/legaName"
-                        android:text="@string/lega"
                         android:textSize="25sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -80,7 +80,6 @@
 
                     <TextView
                             android:id="@+id/posizioneInClassifica"
-                            android:text="@string/primo_posto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="20sp"/>

@@ -27,23 +27,33 @@ import static it.units.fantabasket.MainActivity.*;
 
 public class HomeFragment extends Fragment {
 
+    public static Fragment homeFragment;
     private FragmentHomeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        homeFragment = this;
         super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        return binding.getRoot();
+    }
 
-        if (leagueOn == null) {
-            binding.noLeagueSelected.setVisibility(View.VISIBLE);
-            binding.infoAboutLeague.setVisibility(View.GONE);
-        } else {
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (user != null) {
             binding.teamName.setText(user.teamName);
 
             Bitmap decodedByte = Utils.getBitmapFromBase64(user.teamLogo);
             binding.teamLogo.setImageBitmap(decodedByte);
+        }
 
+        binding.infoAboutLeague.setVisibility((leagueOn != null) ? View.VISIBLE : View.GONE);
+        binding.noLeagueSelected.setVisibility((leagueOn == null) ? View.VISIBLE : View.GONE);
+
+        if (leagueOn != null) {
+            binding.noLeagueSelected.setVisibility(View.GONE);
+            binding.infoAboutLeague.setVisibility(View.VISIBLE);
             binding.legaName.setText(leagueOn.get().getName());
             if (leagueOn.get().isStarted()) {
                 showInfoAboutLeagueForThisUser();
@@ -55,13 +65,11 @@ public class HomeFragment extends Fragment {
                                 && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
                         || (leagueOn.get().getTipologia() == LegaType.FORMULA1 && leagueOn.get().getPartecipanti().size() > 1)) {
 
-                    startLeagueButton.setOnClickListener(view -> initializeAndStartLeague());
+                    startLeagueButton.setOnClickListener(viewListener -> initializeAndStartLeague());
                     startLeagueButton.setEnabled(true);
                 }
             }
         }
-
-        return root;
     }
 
     @SuppressLint("SetTextI18n")
@@ -210,9 +218,4 @@ public class HomeFragment extends Fragment {
         return campionato;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 }

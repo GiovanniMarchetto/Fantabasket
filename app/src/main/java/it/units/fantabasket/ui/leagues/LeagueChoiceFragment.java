@@ -47,9 +47,9 @@ public class LeagueChoiceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.refreshButton.setOnClickListener(view1 -> {
-            this.getParentFragmentManager().beginTransaction().replace(this.getId(), new LeagueChoiceFragment()).commit();
-        });
+        binding.refreshButton.setOnClickListener(view1 ->
+                this.getParentFragmentManager().beginTransaction()
+                        .replace(this.getId(), new LeagueChoiceFragment()).commit());
 
         legheReference.addListenerForSingleValueEvent(getLegheValueEventListener());
 
