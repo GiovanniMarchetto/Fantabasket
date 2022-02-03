@@ -16,6 +16,7 @@ import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.enums.Team;
+import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.Utils;
 
 import java.util.ArrayList;
@@ -80,16 +81,16 @@ public class HomeFragment extends Fragment {
 
             HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
 
-            if (giornataCorrente > 0 && giornataCorrente <= orariInizioPartite.size()) {
+            if (AssetDecoderUtil.currentRound > 0 && AssetDecoderUtil.currentRound <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
                 binding.nextGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get("giornata_" + giornataCorrente);
+                List<Game> partiteDellaGiornata = calendario.get("giornata_" + AssetDecoderUtil.currentRound);
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeNextGame, binding.teamHomeNextGame, binding.pointsHomeNextGame,
                         binding.logoAwayNextGame, binding.teamAwayNextGame, binding.pointsAwayNextGame);
             }
-            if (giornataCorrente - 1 > 0 && giornataCorrente - 1 <= orariInizioPartite.size()) {
+            if (AssetDecoderUtil.currentRound - 1 > 0 && AssetDecoderUtil.currentRound - 1 <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
                 binding.lastGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get("giornata_" + (giornataCorrente - 1));
+                List<Game> partiteDellaGiornata = calendario.get("giornata_" + (AssetDecoderUtil.currentRound - 1));
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeLastGame, binding.teamHomeLastGame, binding.pointsHomeLastGame,
                         binding.logoAwayLastGame, binding.teamAwayLastGame, binding.pointsAwayLastGame);
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment {
 
         Calendar nowCalendarPlusTwoHours = Utils.getCalendarNow();
         nowCalendarPlusTwoHours.add(Calendar.HOUR, 2);
-        int giornataInizioLega = nowCalendarPlusTwoHours.before(orarioInizioPrimaPartitaDellaGiornataCorrente) ? giornataCorrente : giornataCorrente + 1;
+        int giornataInizioLega = nowCalendarPlusTwoHours.before(AssetDecoderUtil.calendarOfCurrentRoundStart) ? AssetDecoderUtil.currentRound : AssetDecoderUtil.currentRound + 1;
         legheReference.child(legaSelezionata).child("giornataInizio").setValue(giornataInizioLega);
         legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(giornataInizioLega - 1);
 

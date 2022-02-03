@@ -1,17 +1,11 @@
 package it.units.fantabasket.ui;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,17 +19,17 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityMainBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.User;
+import it.units.fantabasket.utils.AssetDecoderUtil;
+import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
 import it.units.fantabasket.utils.Utils;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static it.units.fantabasket.ui.main.HomeFragment.homeFragment;
-import static it.units.fantabasket.utils.Utils.getUserFromHashMapOfDB;
+import static it.units.fantabasket.utils.DecoderUtil.getUserFromHashMapOfDB;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,107 +39,59 @@ public class MainActivity extends AppCompatActivity {
     public static DatabaseReference usersReference;
     public static DatabaseReference legheReference;
 
-    public static int giornataCorrente;
-    public static Calendar orarioInizioPrimaPartitaDellaGiornataCorrente;
-    public static List<Calendar> orariInizioPartite;
-
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
-    public static AtomicReference<Boolean> loadLeagueData;
     public static boolean isUserTheAdminOfLeague;
     public static HashMap<String, User> membersLeagueOn;
-    public static List<String> roster;
+
     private MyValueEventListener leagueOnListener;
     private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
     private boolean preferencesChanged = true;
-    // called when the user changes the app's preferences
-    private final SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
-            (sharedPreferences, key) -> {
-                preferencesChanged = true;
 
-                if (key.equals("theme")) {
-                    String theme = setTheme(sharedPreferences);
-                    Toast.makeText(MainActivity.this, theme, Toast.LENGTH_SHORT).show();
-                }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-            };
-
-    @NotNull
-    private String setTheme(SharedPreferences sharedPreferences) {
-        String theme = sharedPreferences.getString("theme", null);
-
-        switch (theme) {
-            case "light":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-            case "dark":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
+        if (preferencesChanged) {
+            Utils.setTheme(PreferenceManager.getDefaultSharedPreferences(this));
+            preferencesChanged = false;
         }
-        return theme;
-    }
-
-    private void loadCurrentRoster() {
-        Log.i("MIO", ".............sto caricando i giocatori");
-        userDataReference.child("roster").addValueEventListener((MyValueEventListener) dataSnapshot -> {
-            @SuppressWarnings("unchecked")
-            List<String> currentRoster = (List<String>) dataSnapshot.getValue();
-            if (currentRoster != null) {
-                roster = currentRoster;
-            }
-        });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        loadLeagueData = new AtomicReference<>(false);
-
         super.onCreate(savedInstanceState);
-
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                PackageManager.PERMISSION_GRANTED
-        );
-
-        //dati fissi
-        setOrariPartite();
-
-        //dati dinamici
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        usersReference = FirebaseDatabase.getInstance().getReference("users");
-        userDataReference = FirebaseDatabase.getInstance().getReference("users").child(firebaseUser.getUid());
-        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
-        roster = new ArrayList<>(16);
-        loadCurrentRoster();
-
-
-        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
-            @SuppressWarnings("unchecked") HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
-            //noinspection ConstantConditions
-            user = getUserFromHashMapOfDB(hashMap);
-        });
-
-        //quando si aggiorna la lega selezionata si aggiornano anche la legaOn e i membri e i loro listener
-        userDataReference.child("legaSelezionata").addValueEventListener((MyValueEventListener) snapshotLega -> {
-            legaSelezionata = snapshotLega.getValue(String.class);
-            if (legaSelezionata != null && !legaSelezionata.equals("")) {
-                if (leagueOnListener != null) {
-                    legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
-                }
-
-                setLeagueOnListener();
-
-                legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
-            }
-
-            loadLeagueData.set(true);
-        });
-
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //load round info
+        AssetDecoderUtil.loadRoundInfos(getApplicationContext());
+        AssetDecoderUtil.loadAllPlayersInfos(getApplicationContext());
+
+        //reference at db
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        usersReference = FirebaseDatabase.getInstance().getReference("users");
+        userDataReference = usersReference.child(firebaseUser.getUid());
+        legheReference = FirebaseDatabase.getInstance().getReference("leghe");
+
+        userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
+            @SuppressWarnings("unchecked")
+            HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
+            if (hashMap != null) {
+                user = getUserFromHashMapOfDB(hashMap);
+
+                if (!Objects.equals(legaSelezionata, user.legaSelezionata)) {
+                    if (leagueOnListener != null) {
+                        legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
+                    }
+                    setLeagueOnListener();
+                    legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
+                }
+            }
+        });
+
+        //nav nad app-bar
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
@@ -161,80 +107,31 @@ public class MainActivity extends AppCompatActivity {
 
         PreferenceManager.getDefaultSharedPreferences(this).
                 registerOnSharedPreferenceChangeListener(
-                        preferencesChangeListener);
+                        (sharedPreferences, key) -> {
+                            preferencesChanged = true;
+
+                            if (key.equals("theme")) {
+                                String theme = Utils.setTheme(sharedPreferences);
+                                Toast.makeText(this, theme + " theme", Toast.LENGTH_SHORT).show();
+                            }
+
+                        });
     }
 
-    private void setOrariPartite() {
-        Calendar currentCal = Utils.getCalendarNow();
-        orariInizioPartite = new ArrayList<>();
-
-        try {
-            InputStreamReader is = new InputStreamReader(getAssets().open("orariInizio.csv"));
-            BufferedReader reader = new BufferedReader(is);
-            reader.readLine();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int giornata = Integer.parseInt(values[0]) - 1;
-                int year = Integer.parseInt(values[1]);
-                int month = Integer.parseInt(values[2]) - 1;
-                int day = Integer.parseInt(values[3]);
-                int hour = Integer.parseInt(values[4]);
-                int minute = Integer.parseInt(values[5]);
-                Calendar orario = new GregorianCalendar(year, month, day, hour, minute, 0);
-                orariInizioPartite.add(giornata, orario);
-                //siccome va in ordine di giornata la prima che non è già passata è la giornata corrente
-            }
-        } catch (Exception e) {
-            Log.e("MIO", "Error loading asset files --> " + e.getMessage(), e);
-        }
-
-        for (int i = 0; i < orariInizioPartite.size(); i++) {//sono in ordine
-            Calendar g = (Calendar) orariInizioPartite.get(i).clone();
-            g.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
-            if (currentCal.before(g)) {
-                giornataCorrente = i + 1;
-                orarioInizioPrimaPartitaDellaGiornataCorrente = orariInizioPartite.get(i);
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (preferencesChanged) {
-            setTheme(PreferenceManager.getDefaultSharedPreferences(this));
-            preferencesChanged = false;
-        }
-    }
-
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
     private void setLeagueOnListener() {
-        leagueOnListener = snapshot -> {
-            HashMap<String, Object> legaHashMap = (HashMap<String, Object>) snapshot.getValue();
-            assert legaHashMap != null;
+        leagueOnListener = snapshotLeague -> {
+
             leagueOn = new AtomicReference<>();
-            leagueOn.set(Utils.getLegaFromHashMapOfDB(legaHashMap));
+            leagueOn.set(DecoderUtil.getLegaFromHashMapOfDB(snapshotLeague.getValue()));
             isUserTheAdminOfLeague = leagueOn.get().getAdmin().equals(firebaseUser.getUid());
 
-
-            if (membersLeagueOnListenerList != null) {
-                for (String memberId : membersLeagueOnListenerList.keySet()) {
-                    usersReference.child(memberId).removeEventListener(membersLeagueOnListenerList.get(memberId));
-                }
-            }
+            removeOldMemberListener();
 
             membersLeagueOn = new HashMap<>();
             membersLeagueOnListenerList = new HashMap<>();
+
             for (String memberId : leagueOn.get().getPartecipanti()) {
-                MyValueEventListener memberListener = snapshotMember -> {
-                    HashMap<String, Object> userHashMap = (HashMap<String, Object>) snapshotMember.getValue();
-                    membersLeagueOn.put(memberId, getUserFromHashMapOfDB(userHashMap));
-                };
-                usersReference.child(memberId).addValueEventListener(memberListener);
-                membersLeagueOnListenerList.put(memberId, memberListener);
+                addMemberListener(memberId);
             }
 
             if (homeFragment != null) {
@@ -243,9 +140,26 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void addMemberListener(String memberId) {
+        MyValueEventListener memberListener = snapshotMember ->
+                membersLeagueOn.put(memberId, getUserFromHashMapOfDB(snapshotMember.getValue()));
+        usersReference.child(memberId).addValueEventListener(memberListener);
+        membersLeagueOnListenerList.put(memberId, memberListener);
+    }
+
+    private void removeOldMemberListener() {
+        if (membersLeagueOnListenerList != null) {
+            for (String memberId : membersLeagueOnListenerList.keySet()) {
+                MyValueEventListener oldMemberListener = membersLeagueOnListenerList.get(memberId);
+                if (oldMemberListener != null) {
+                    usersReference.child(memberId).removeEventListener(oldMemberListener);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.top_main_menu, menu);
         return true;
     }

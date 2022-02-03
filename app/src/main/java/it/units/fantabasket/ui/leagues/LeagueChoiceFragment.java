@@ -20,6 +20,7 @@ import it.units.fantabasket.databinding.FragmentLeagueChoiceBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
 import it.units.fantabasket.ui.LeaguesActivity;
+import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +79,7 @@ public class LeagueChoiceFragment extends Fragment {
                 for (Map.Entry<String, Object> valueOfMap : legheEsistenti.entrySet()) {
                     String legaName = valueOfMap.getKey();
                     HashMap<String, Object> legaParams = (HashMap<String, Object>) valueOfMap.getValue();
-                    Lega lega = Utils.getLegaFromHashMapOfDB(legaParams);
+                    Lega lega = DecoderUtil.getLegaFromHashMapOfDB(legaParams);
                     LegaLayout legaLayout = new LegaLayout(context, lega);
                     int idActionDescription;
 

@@ -14,6 +14,7 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentRosterManagerBinding;
 import it.units.fantabasket.entities.Player;
 import it.units.fantabasket.layouts.PlayerLayoutHorizontal;
+import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.ui.MainActivity.user;
+import static it.units.fantabasket.ui.MainActivity.userDataReference;
+import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
 
 public class RosterManagerFragment extends Fragment {
 
@@ -47,32 +50,29 @@ public class RosterManagerFragment extends Fragment {
         binding = FragmentRosterManagerBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        List<Player> playerList = new ArrayList<>();
-        Utils.setCompletePlayerList(getActivity(), playerList);
-
-        newRoster = new ArrayList<>(roster);
+        newRoster = new ArrayList<>(user.roster);
         money = moneySize;
         numberOfPlayersSelected = newRoster.size();
-        for (String playerId : roster) {
-            money = money - getCostFromPlayerId(playerId, playerList);
+        for (String playerId : user.roster) {
+            money = money - getCostFromPlayerId(playerId, completePlayersList);
         }
 
         binding.moneyCount.setText(String.valueOf(money));
         String rosterDescription = numberOfPlayersSelected + "/" + rosterSize;
         binding.roster.setText(rosterDescription);
 
-        if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+        if (Utils.getCalendarNow().after(AssetDecoderUtil.calendarOfCurrentRoundStart)) {
             binding.saveRosterButton.setEnabled(false);
         }
 
         binding.saveRosterButton.setOnClickListener(view -> {
-                    if (Utils.getCalendarNow().after(orarioInizioPrimaPartitaDellaGiornataCorrente)) {
+                    if (Utils.getCalendarNow().after(AssetDecoderUtil.calendarOfCurrentRoundStart)) {
                         Utils.showSnackbar(view, "È iniziata la giornata non puoi cambiare il roster", "error");
                     } else if (numberOfPlayersSelected < 12) {
                         Utils.showSnackbar(view, "Minimo 12 giocatori", "warning");
                     } else {
-                        roster = new ArrayList<>(newRoster);
-                        userDataReference.child("roster").setValue(roster);
+                        user.roster = new ArrayList<>(newRoster);
+                        userDataReference.child("roster").setValue(user.roster);
                         NavHostFragment.findNavController(RosterManagerFragment.this)
                                 .navigate(R.id.action_RosterManagerFragment_to_LineupFragment);
                     }
@@ -86,7 +86,7 @@ public class RosterManagerFragment extends Fragment {
         listOfLayoutOrderedByTeam = new ArrayList<>();
         listOfLayoutOrderedByCost = new ArrayList<>();
 
-        for (Player player : playerList) {
+        for (Player player : completePlayersList) {
             PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
             TextView costView = new TextView(getContext());

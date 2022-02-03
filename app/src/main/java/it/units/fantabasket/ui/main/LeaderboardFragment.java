@@ -15,6 +15,7 @@ import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.layouts.LeaderboardElementLayout;
+import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +42,7 @@ public class LeaderboardFragment extends Fragment {
 
             if (classifica != null) {
                 long lastUpdate = (long) classifica.get(0).get("lastUpdate");
-                Calendar orarioFineUltimaGiornataCalendar = orariInizioPartite.get(giornataCorrente - 2);
+                Calendar orarioFineUltimaGiornataCalendar = AssetDecoderUtil.calendarListOfRoundStart.get(AssetDecoderUtil.currentRound - 2);
                 orarioFineUltimaGiornataCalendar.add(Calendar.DATE, 2);
                 long orarioFineUltimaGiornata = orarioFineUltimaGiornataCalendar.getTime().getTime();
 
@@ -88,10 +89,10 @@ public class LeaderboardFragment extends Fragment {
         }
 
         if (isUserTheAdminOfLeague) {
-            if (leagueOn.get().getLastRoundCalculated() < giornataCorrente - 1) {
+            if (leagueOn.get().getLastRoundCalculated() < AssetDecoderUtil.currentRound - 1) {
                 binding.updateLeaderboardButton.setOnClickListener(view ->
                         calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
-            } else if (leagueOn.get().getLastRoundCalculated() == orariInizioPartite.size()) {
+            } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.calendarListOfRoundStart.size()) {
                 binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
                 binding.updateLeaderboardButton.setOnClickListener(view ->
                         calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated()));
@@ -102,7 +103,7 @@ public class LeaderboardFragment extends Fragment {
 
     @SuppressWarnings({"ConstantConditions"})
     private void calcolaGiornateDaUnCertoRound(int firstRoundToCalculate) {
-        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < giornataCorrente; roundToCalculate++) {
+        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
 
             List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
