@@ -202,34 +202,49 @@ public class LineupFragment extends Fragment {
 
         for (Player player : rosterOfPlayers) {
             if (!lineup.containsValue(player) && isPlayerAdaptForThisPosition(player)) {
-                PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(context, player);
-                playerLayout.setOnClickListener(view -> {
-                    occupyPositionField(playerOnFieldLayout, player);
-                    lineup.put(selectedRole, player);
-                    bottomSheetDialog.dismiss();
-                });
-                playerLayout.setLayoutParams(LAYOUT_PARAMS);
-                playersLayout.addView(playerLayout.getPlayerLayout());
+                playersLayout.addView(
+                        getPlayerView(playerOnFieldLayout, context, bottomSheetDialog, player));
             }
         }
 
-        //add remove button
+        playersLayout.addView(getFreePositionView(context, playerOnFieldLayout, bottomSheetDialog));
+
+        scrollView.addView(playersLayout);
+        bottomSheetDialog.setContentView(scrollView);
+        bottomSheetDialog.show();
+    }
+
+    @NotNull
+    private View getPlayerView(
+            PlayerOnFieldLayout playerOnFieldLayout, Context context,
+            BottomSheetDialog bottomSheetDialog, Player player) {
+
+        PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(context, player);
+        playerLayout.setOnClickListener(view -> {
+            occupyPositionField(playerOnFieldLayout, player);
+            lineup.put(selectedRole, player);
+            bottomSheetDialog.dismiss();
+        });
+        playerLayout.setLayoutParams(LAYOUT_PARAMS);
+        return playerLayout.getPlayerLayout();
+    }
+
+    private View getFreePositionView(Context context, PlayerOnFieldLayout playerOnFieldLayout,
+                                     BottomSheetDialog bottomSheetDialog) {
         Player emptyPlayer = new Player();
         PlayerLayoutHorizontal emptyPlayerLayout = new PlayerLayoutHorizontal(context, emptyPlayer);
+
         final LinearLayout subLayout = emptyPlayerLayout.getRightLinearLayout();
         TextView textView = (TextView) subLayout.getChildAt(0);
         textView.setText(R.string.libera_posizione);
+
         emptyPlayerLayout.setOnClickListener(view -> {
             occupyPositionField(playerOnFieldLayout, emptyPlayer);
             lineup.put(selectedRole, null);
             bottomSheetDialog.dismiss();
         });
         emptyPlayerLayout.setLayoutParams(LAYOUT_PARAMS);
-        playersLayout.addView(emptyPlayerLayout.getPlayerLayout());
-
-        scrollView.addView(playersLayout);
-        bottomSheetDialog.setContentView(scrollView);
-        bottomSheetDialog.show();
+        return emptyPlayerLayout.getPlayerLayout();
     }
 
     private boolean isPlayerAdaptForThisPosition(Player player) {
