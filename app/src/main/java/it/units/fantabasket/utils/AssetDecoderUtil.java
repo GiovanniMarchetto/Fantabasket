@@ -9,17 +9,14 @@ import it.units.fantabasket.enums.Team;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class AssetDecoderUtil {
     public static int currentRound;
     public static Calendar calendarOfCurrentRoundStart;
     public static List<Calendar> calendarListOfRoundStart;
 
-    public static List<Player> completePlayersList;
+    public static HashMap<String, Player> completePlayersList;
 
     public static void loadRoundInfos(Context context) {
         Calendar currentCal = Utils.getCalendarNow();
@@ -58,8 +55,7 @@ public class AssetDecoderUtil {
     }
 
     public static void loadAllPlayersInfos(Context applicationContext) {
-        completePlayersList = new ArrayList<>();
-        List<String> playersId = new ArrayList<>();
+        completePlayersList = new HashMap<>();
 
         for (Team team : Team.values()) {
             try {
@@ -86,13 +82,12 @@ public class AssetDecoderUtil {
                     //id's must be all distinct
                     String id = surname;
                     int posName = 0;
-                    while (playersId.contains(id)) {
+                    while (completePlayersList.containsKey(id)) {
                         if (posName == 0) id = id + " ";
                         char nameChar = name.charAt(posName);
                         id = id + nameChar;
                         posName++;
                     }
-                    playersId.add(id);
 
                     Role role_1;
                     Role role_2 = null;
@@ -104,11 +99,12 @@ public class AssetDecoderUtil {
                         role_1 = Role.valueOf(roles.toUpperCase());
                     }
 
-                    completePlayersList.add(
-                            new Player(id, numberOfPlayer, name, surname,
-                                    role_1, role_2,
-                                    dateBirth, heightOfPlayer, weightOfPlayer,
-                                    nationality, team, cost));
+                    Player player = new Player(
+                            id, numberOfPlayer, name, surname,
+                            role_1, role_2, dateBirth, heightOfPlayer, weightOfPlayer,
+                            nationality, team, cost);
+
+                    completePlayersList.put(id, player);
                 }
             } catch (IOException e) {
                 Log.e("MIO", "Error loading asset files", e);

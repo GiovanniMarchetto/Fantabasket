@@ -174,12 +174,11 @@ public class LineupFragment extends Fragment {
             HashMap<FieldPositions, String> formazioneSalvata = user.formazioniPerGiornata.get(AssetDecoderUtil.currentRound);
 
             for (FieldPositions position : formazioneSalvata.keySet()) {
-                for (Player player : completePlayersList) {
-                    if (formazioneSalvata.get(position).equals(player.getId())) {
-                        lineup.put(position, player);
-                        occupyPositionField(playerOnFieldLayoutHashMap.get(position), player);
-                    }
-                }
+                String playerId = formazioneSalvata.get(position);
+                Player player = completePlayersList.get(playerId);
+
+                lineup.put(position, player);
+                occupyPositionField(playerOnFieldLayoutHashMap.get(position), player);
             }
         } else {
             for (FieldPositions position : FieldPositions.values()) {
@@ -187,10 +186,8 @@ public class LineupFragment extends Fragment {
             }
         }
 
-        for (Player player : completePlayersList) {
-            if (user.roster.contains(player.getId())) {
-                rosterOfPlayers.add(player);
-            }
+        for (String playerId : user.roster) {
+            rosterOfPlayers.add(completePlayersList.get(playerId));
         }
     }
 

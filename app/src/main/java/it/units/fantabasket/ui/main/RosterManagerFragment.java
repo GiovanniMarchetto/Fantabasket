@@ -54,7 +54,7 @@ public class RosterManagerFragment extends Fragment {
         money = moneySize;
         numberOfPlayersSelected = newRoster.size();
         for (String playerId : user.roster) {
-            money = money - getCostFromPlayerId(playerId, completePlayersList);
+            money = money - completePlayersList.get(playerId).getCost();
         }
 
         binding.moneyCount.setText(String.valueOf(money));
@@ -86,7 +86,7 @@ public class RosterManagerFragment extends Fragment {
         listOfLayoutOrderedByTeam = new ArrayList<>();
         listOfLayoutOrderedByCost = new ArrayList<>();
 
-        for (Player player : completePlayersList) {
+        for (Player player : completePlayersList.values()) {
             PlayerLayoutHorizontal playerLayout = new PlayerLayoutHorizontal(getContext(), player);
 
             TextView costView = new TextView(getContext());
@@ -179,14 +179,4 @@ public class RosterManagerFragment extends Fragment {
         });
         return root;
     }
-
-    private int getCostFromPlayerId(String playerID, List<Player> playerList) {
-        for (Player player : playerList) {
-            if (player.getId().equals(playerID)) {
-                return player.getCost();
-            }
-        }
-        return 0;
-    }
-
 }
