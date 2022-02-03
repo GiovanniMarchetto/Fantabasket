@@ -36,7 +36,7 @@
     <string name="location">Location</string>
     <string name="tipologia">Tipologia</string>
     <string name="crea">Crea</string>
-    <string name="nickname">Nickname</string>
+    <string name="nickname_president">Nickname president</string>
     <string name="team">Team</string>
     <string name="user_data">User Data</string>
     <string name="team_logo_image">Team logo image</string>
@@ -118,4 +118,10 @@
     <string name="no_connection">NO CONNECTION</string>
     <string name="reload">Reload</string>
     <string name="ricalcola_tutte_le_giornate">Ricalcola tutte le giornate</string>
+    <string name="at_least_6_chars">At least of 6</string>
+    <string name="input_fields_are_not_valid">Input are not valid</string>
+    <string name="invalid_email_address">Invalid Email Address</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="registration_failed">Registration failed</string>
+    <string name="team_data">Team Data</string>
 </resources>

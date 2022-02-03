@@ -43,7 +43,6 @@ public class RegistrationFragment extends Fragment {
             teamLogoIntent.setType("image/*");
             teamLogoIntent.setAction(Intent.ACTION_GET_CONTENT);
             teamLogoLoaderLauncher.launch(teamLogoIntent);
-            registrationBinding.teamLogoImage.setVisibility(View.VISIBLE);
         });
 
         registrationBinding.nickname.addTextChangedListener((TextWatcherAfterChange) var -> nickname = var.toString());

@@ -33,7 +33,7 @@
         </receiver>
 
         <activity
-                android:name=".ui.AccessActivity"
+                android:name=".ui.access.AccessActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

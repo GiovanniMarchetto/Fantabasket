@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.databinding.FragmentProfileBinding;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.ui.AccessActivity;
 import it.units.fantabasket.ui.LeaguesActivity;
+import it.units.fantabasket.ui.access.AccessActivity;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -94,11 +94,7 @@ public class ProfileFragment extends Fragment {
 
         binding.emailProfile.setText(firebaseUser.getEmail());
 
-        binding.emailProfile.addTextChangedListener((TextWatcherAfterChange) editable -> {
-            if (!editable.toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) {
-                binding.emailProfile.setError("Invalid Email Address");
-            }
-        });
+        binding.emailProfile.addTextChangedListener(AccessActivity.getTextWatcherForValidateEmailField(binding.emailProfile));
 
         binding.emailChangeButton.setOnClickListener(viewListener -> {
             String emailUpdate = binding.emailProfile.getText().toString();
