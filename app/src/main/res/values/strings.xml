@@ -125,4 +125,6 @@
     <string name="registration_failed">Registration failed</string>
     <string name="team_data">Team Data</string>
     <string name="libera_posizione">Libera posizione</string>
+    <string name="round_started_yet">È iniziata la giornata non puoi cambiare il roster</string>
+    <string name="at_least_12_players">Minimo 12 giocatori</string>
 </resources>

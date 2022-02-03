@@ -17,6 +17,7 @@ public class AssetDecoderUtil {
     public static List<Calendar> calendarListOfRoundStart;
 
     public static HashMap<String, Player> completePlayersList;
+    public static int maxCostOfAPlayer;
 
     public static void loadRoundInfos(Context context) {
         Calendar currentCal = Utils.getCalendarNow();
@@ -56,6 +57,7 @@ public class AssetDecoderUtil {
 
     public static void loadAllPlayersInfos(Context applicationContext) {
         completePlayersList = new HashMap<>();
+        maxCostOfAPlayer = 0;
 
         for (Team team : Team.values()) {
             try {
@@ -78,6 +80,7 @@ public class AssetDecoderUtil {
                     final String weightOfPlayer = values[6];
                     final String nationality = values[7];
                     final int cost = Integer.parseInt(values[8]);
+                    if (cost > maxCostOfAPlayer) maxCostOfAPlayer = cost;
 
                     //id's must be all distinct
                     String id = surname;
