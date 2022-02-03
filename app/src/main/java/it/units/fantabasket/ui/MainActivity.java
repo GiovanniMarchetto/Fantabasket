@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -147,6 +148,12 @@ public class MainActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_lineup, R.id.navigation_roster_manager,
+                R.id.navigation_leaderboard, R.id.navigation_profile)
+                .build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
 
         //preferences
