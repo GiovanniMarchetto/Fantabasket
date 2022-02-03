@@ -5,17 +5,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import it.units.fantabasket.entities.Lega;
 
 import static it.units.fantabasket.layouts.ExpandCollapseLayout.setExpandCollapseLayout;
+import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 public class LegaLayout {
-    final ViewGroup.LayoutParams linearLayoutParams = new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     private final LinearLayout legaHeaderLayout;
     private final Button actionButton;
 
@@ -23,7 +21,7 @@ public class LegaLayout {
     public LegaLayout(Context context, Lega lega) {
         legaHeaderLayout = new LinearLayout(context);
         legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);
-        legaHeaderLayout.setLayoutParams(linearLayoutParams);
+        legaHeaderLayout.setLayoutParams(LAYOUT_PARAMS);
         int paddingLati = 20;
         legaHeaderLayout.setPadding(paddingLati, 0, paddingLati, 0);
         GradientDrawable border = new GradientDrawable();
@@ -38,7 +36,7 @@ public class LegaLayout {
 
         LinearLayout legaParamsLayout = new LinearLayout(context);
         legaParamsLayout.setOrientation(LinearLayout.VERTICAL);
-        legaParamsLayout.setLayoutParams(linearLayoutParams);
+        legaParamsLayout.setLayoutParams(LAYOUT_PARAMS);
         legaParamsLayout.setPadding(paddingLati * 2, 0, paddingLati * 2, paddingLati);
 
         addLegaParamsAtView(context, lega, legaParamsLayout);
@@ -68,8 +66,7 @@ public class LegaLayout {
     public static View getLeagueParamLayout(Context context, String nameOfParam, String param) {
         LinearLayout paramLayout = new LinearLayout(context);
         paramLayout.setOrientation(LinearLayout.HORIZONTAL);
-        paramLayout.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        paramLayout.setLayoutParams(LAYOUT_PARAMS);
         paramLayout.setWeightSum(2);
 
         TextView nameOfParamTextView = new TextView(context);

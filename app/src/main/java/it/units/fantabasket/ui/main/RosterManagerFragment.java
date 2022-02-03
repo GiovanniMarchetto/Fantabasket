@@ -27,6 +27,7 @@ import java.util.Map;
 import static it.units.fantabasket.ui.MainActivity.user;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
+import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 public class RosterManagerFragment extends Fragment {
 
@@ -123,8 +124,7 @@ public class RosterManagerFragment extends Fragment {
                 binding.roster.setText(rosterDescriptionUpdate);
 
             });
-            playerLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            playerLayout.setLayoutParams(LAYOUT_PARAMS);
 
             LinearLayout finalLayout = playerLayout.getPlayerLayout();
 

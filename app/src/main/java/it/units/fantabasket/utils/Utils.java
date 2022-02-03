@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -37,6 +38,9 @@ import java.util.TimeZone;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 
 public class Utils {
+
+    public static final ViewGroup.LayoutParams LAYOUT_PARAMS =
+            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     public static String teamLogoBase64;
 

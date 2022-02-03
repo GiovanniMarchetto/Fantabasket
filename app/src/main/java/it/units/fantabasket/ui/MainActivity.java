@@ -85,8 +85,12 @@ public class MainActivity extends AppCompatActivity {
                     if (leagueOnListener != null) {
                         legheReference.child(leagueOn.get().getName()).removeEventListener(leagueOnListener);
                     }
-                    setLeagueOnListener();
-                    legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
+
+                    legaSelezionata = user.legaSelezionata;
+                    if (legaSelezionata != null) {
+                        setLeagueOnListener();
+                        legheReference.child(legaSelezionata).addValueEventListener(leagueOnListener);
+                    }
                 }
             }
         });

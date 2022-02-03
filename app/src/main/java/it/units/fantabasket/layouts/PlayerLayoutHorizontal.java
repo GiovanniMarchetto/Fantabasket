@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -15,6 +14,8 @@ import androidx.annotation.Nullable;
 import it.units.fantabasket.R;
 import it.units.fantabasket.entities.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 @SuppressLint("ViewConstructor")
 public class PlayerLayoutHorizontal extends LinearLayout {
@@ -79,7 +80,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
     private LinearLayout getInfoLayout(Context context, Player player) {
         LinearLayout infoLayout = new LinearLayout(context);
         infoLayout.setOrientation(VERTICAL);
-        infoLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        infoLayout.setLayoutParams(LAYOUT_PARAMS);
 
         TextView playerCompleteName = new TextView(context);
         String completeName = player.getName() + " " + player.getSurname();

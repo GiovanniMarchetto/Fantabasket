@@ -124,4 +124,5 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="registration_failed">Registration failed</string>
     <string name="team_data">Team Data</string>
+    <string name="libera_posizione">Libera posizione</string>
 </resources>

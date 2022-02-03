@@ -1,9 +1,10 @@
 package it.units.fantabasket.layouts;
 
 import android.content.Context;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 public class LeaderboardElementLayout {
 
@@ -12,8 +13,7 @@ public class LeaderboardElementLayout {
     public LeaderboardElementLayout(Context context, int position, String teamName, int totalPointsScored) {
         this.leaderboardElementLayout = new LinearLayout(context);
         leaderboardElementLayout.setOrientation(LinearLayout.HORIZONTAL);
-        leaderboardElementLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        leaderboardElementLayout.setLayoutParams(LAYOUT_PARAMS);
 
         TextView positionTextView = new TextView(context);
         positionTextView.setText(String.valueOf(position));

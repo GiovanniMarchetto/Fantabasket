@@ -1,6 +1,5 @@
 package it.units.fantabasket.ui.main;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +33,7 @@ import java.util.List;
 import static it.units.fantabasket.ui.MainActivity.user;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
+import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 @SuppressWarnings("ConstantConditions")
 public class LineupFragment extends Fragment {
@@ -191,16 +191,13 @@ public class LineupFragment extends Fragment {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void showBottomSheet(PlayerOnFieldLayout playerOnFieldLayout) {
         Context context = getContext();
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
 
         ScrollView scrollView = new ScrollView(context);
         LinearLayout playersLayout = new LinearLayout(context);
-        final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        playersLayout.setLayoutParams(params);
+        playersLayout.setLayoutParams(LAYOUT_PARAMS);
         playersLayout.setOrientation(LinearLayout.VERTICAL);
 
         for (Player player : rosterOfPlayers) {
@@ -211,7 +208,7 @@ public class LineupFragment extends Fragment {
                     lineup.put(selectedRole, player);
                     bottomSheetDialog.dismiss();
                 });
-                playerLayout.setLayoutParams(params);
+                playerLayout.setLayoutParams(LAYOUT_PARAMS);
                 playersLayout.addView(playerLayout.getPlayerLayout());
             }
         }
@@ -221,13 +218,13 @@ public class LineupFragment extends Fragment {
         PlayerLayoutHorizontal emptyPlayerLayout = new PlayerLayoutHorizontal(context, emptyPlayer);
         final LinearLayout subLayout = emptyPlayerLayout.getRightLinearLayout();
         TextView textView = (TextView) subLayout.getChildAt(0);
-        textView.setText("Libera posizione");
+        textView.setText(R.string.libera_posizione);
         emptyPlayerLayout.setOnClickListener(view -> {
             occupyPositionField(playerOnFieldLayout, emptyPlayer);
             lineup.put(selectedRole, null);
             bottomSheetDialog.dismiss();
         });
-        emptyPlayerLayout.setLayoutParams(params);
+        emptyPlayerLayout.setLayoutParams(LAYOUT_PARAMS);
         playersLayout.addView(emptyPlayerLayout.getPlayerLayout());
 
         scrollView.addView(playersLayout);
@@ -255,9 +252,11 @@ public class LineupFragment extends Fragment {
     private void occupyPositionField(PlayerOnFieldLayout playerOnFieldLayout, Player player) {
         Button playerButton = playerOnFieldLayout.getPlayerButton();
         TextView playerName = playerOnFieldLayout.getPlayerTextView();
+
         playerButton.setText(player.getNumber());
         playerButton.setTextColor(player.getNumberColor());
         playerButton.setBackground(getContext().getDrawable(player.getShirt()));
+
         playerName.setText(player.getId());
     }
 }
