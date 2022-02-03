@@ -136,4 +136,9 @@
     <string name="email_of_user_account_null">Email of your account is null</string>
     <string name="zero">0</string>
     <string name="display">Schermo</string>
+    <string name="no_location">No location</string>
+    <string name="no_address">No address</string>
+    <string name="league_with_same_name">A league with this name already exist</string>
+    <string name="started_yet">È già iniziata</string>
+    <string name="no_more_space">NON CI SONO POSTI</string>
 </resources>

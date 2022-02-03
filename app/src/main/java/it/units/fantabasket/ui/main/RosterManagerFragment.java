@@ -31,7 +31,7 @@ import static it.units.fantabasket.ui.MainActivity.user;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
 import static it.units.fantabasket.utils.AssetDecoderUtil.maxCostOfAPlayer;
-import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
+import static it.units.fantabasket.utils.Utils.*;
 
 @SuppressWarnings("ConstantConditions")
 public class RosterManagerFragment extends Fragment {
@@ -120,9 +120,9 @@ public class RosterManagerFragment extends Fragment {
 
         binding.saveRosterButton.setOnClickListener(viewListener -> {
             if (Utils.getCalendarNow().after(AssetDecoderUtil.calendarOfCurrentRoundStart)) {
-                Utils.showSnackbar(viewListener, getString(R.string.round_started_yet), "error");
+                Utils.showSnackbar(viewListener, getString(R.string.round_started_yet), ERROR);
             } else if (numberOfPlayersSelected < 12) {
-                Utils.showSnackbar(viewListener, getString(R.string.at_least_12_players), "warning");
+                Utils.showSnackbar(viewListener, getString(R.string.at_least_12_players), WARNING);
             } else {
                 user.roster = new ArrayList<>(newRoster);
                 userDataReference.child("roster").setValue(user.roster);

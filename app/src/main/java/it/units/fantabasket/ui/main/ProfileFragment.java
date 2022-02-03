@@ -103,9 +103,9 @@ public class ProfileFragment extends Fragment {
                 firebaseUser.updateEmail(emailUpdate)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, getString(R.string.email_changed), "good");
+                                Utils.showSnackbar(view, getString(R.string.email_changed), Utils.GOOD);
                             } else {
-                                Utils.showSnackbar(view, getString(R.string.email_not_changed), "error");
+                                Utils.showSnackbar(view, getString(R.string.email_not_changed), Utils.ERROR);
                             }
                         });
             }
@@ -117,13 +117,13 @@ public class ProfileFragment extends Fragment {
                 FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, getString(R.string.email_for_password_reset_sent), "good");
+                                Utils.showSnackbar(view, getString(R.string.email_for_password_reset_sent), Utils.GOOD);
                             } else {
-                                Utils.showSnackbar(view, getString(R.string.email_for_reset_password_not_sent), "error");
+                                Utils.showSnackbar(view, getString(R.string.email_for_reset_password_not_sent), Utils.ERROR);
                             }
                         });
             } else {
-                Utils.showSnackbar(view, getString(R.string.email_of_user_account_null), "error");
+                Utils.showSnackbar(view, getString(R.string.email_of_user_account_null), Utils.ERROR);
             }
         });
 

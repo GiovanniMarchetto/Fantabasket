@@ -181,13 +181,12 @@ public class LeagueChoiceFragment extends Fragment {
                 newPartecipanti.add(firebaseUser.getUid());
                 legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
             } else {
-                Utils.showSnackbar(view, "È già iniziata", "error");
+                Utils.showSnackbar(view, getString(R.string.started_yet), Utils.ERROR);
             }
         } else {
-            Utils.showSnackbar(view, "NON CI SONO POSTI", "error");
+            Utils.showSnackbar(view, getString(R.string.no_more_space), Utils.ERROR);
         }
     }
-
 
     private void setLegaSelezionataAndReturnToHome(String legaName) {
         DialogFragment selectLeagueDialogFragment = LeaguesActivity.SelectLeagueDialogFragment.newInstance(legaName);

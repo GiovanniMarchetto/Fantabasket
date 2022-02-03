@@ -39,6 +39,11 @@ import static it.units.fantabasket.ui.MainActivity.userDataReference;
 
 public class Utils {
 
+    public static final String MIO_TAG = "MIO";
+    public static final String GOOD = "good";
+    public static final String WARNING = "warning";
+    public static final String ERROR = "error";
+
     public static final ViewGroup.LayoutParams LAYOUT_PARAMS =
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -73,7 +78,7 @@ public class Utils {
                             }
 
                             imageView.setImageBitmap(bitmap);
-                            Log.i("MIO", "LOGO-- prima: " + original.getByteCount()
+                            Log.i(MIO_TAG, "LOGO-- prima: " + original.getByteCount()
                                     + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -95,30 +100,25 @@ public class Utils {
     }
 
     public static void showSnackbar(View view, String message, String type) {
-        String textColor;
         String backgroundColor;
         switch (type) {
-            case "good":
-                textColor = "#FF000000";
+            case GOOD:
                 backgroundColor = "#FFCCFF90";
                 break;
-            case "warning":
-                textColor = "#FF000000";
+            case WARNING:
                 backgroundColor = "#FFFFFF8D";
                 break;
-            case "error":
-                textColor = "#FF000000";
+            case ERROR:
                 backgroundColor = "#FFD32F2F";
                 break;
             default:
-                textColor = "#FF000000";
                 backgroundColor = "#FFB1B1B1";
         }
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction("Action", null);
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(Color.parseColor(backgroundColor));
-        snackbar.setTextColor(Color.parseColor(textColor));
+        snackbar.setTextColor(Color.WHITE);
         snackbar.show();
     }
 
@@ -128,7 +128,7 @@ public class Utils {
 
     public static Task<Location> getLastLocation(Context context, Activity activity) {
         if (activity == null || context == null) {
-            Log.e("MIO", "Something null: \n---> Activity-" + activity + "\n---> Context-" + context);
+            Log.e(MIO_TAG, "Something null: \n---> Activity-" + activity + "\n---> Context-" + context);
             return null;
         }
 

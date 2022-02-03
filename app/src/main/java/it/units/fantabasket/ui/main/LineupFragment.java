@@ -33,7 +33,7 @@ import java.util.List;
 import static it.units.fantabasket.ui.MainActivity.user;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
-import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
+import static it.units.fantabasket.utils.Utils.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LineupFragment extends Fragment {
@@ -77,14 +77,14 @@ public class LineupFragment extends Fragment {
                         formazioneDBFormat.put(key.name(), lineup.get(key).getId());
                     }
                     userDataReference.child("formazioniPerGiornata").child(String.valueOf(AssetDecoderUtil.currentRound)).setValue(formazioneDBFormat);
-                    Utils.showSnackbar(view, "Salvata!", "good");
+                    Utils.showSnackbar(view, "Salvata!", GOOD);
                 } else {
-                    Utils.showSnackbar(view, "Formazione non completa", "error");
-                    Log.i("MIO", "Formazione non completa");
+                    Utils.showSnackbar(view, "Formazione non completa", ERROR);
+                    Log.i(MIO_TAG, "Formazione non completa");
                 }
             } else {
-                Utils.showSnackbar(view, "Tempo scaduto", "error");
-                Log.i("MIO", "Tempo scaduto");
+                Utils.showSnackbar(view, "Tempo scaduto", ERROR);
+                Log.i(MIO_TAG, "Tempo scaduto");
             }
         });
 

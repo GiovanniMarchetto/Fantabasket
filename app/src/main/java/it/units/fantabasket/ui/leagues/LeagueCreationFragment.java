@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static it.units.fantabasket.ui.LeaguesActivity.*;
+import static it.units.fantabasket.utils.Utils.ERROR;
+import static it.units.fantabasket.utils.Utils.MIO_TAG;
 
 public class LeagueCreationFragment extends Fragment {
 
@@ -63,7 +65,7 @@ public class LeagueCreationFragment extends Fragment {
             String legaName = binding.legaName.getText().toString();
 
             if (LeagueChoiceFragment.legheEsistenti.containsKey(legaName)) {
-                Utils.showSnackbar(viewListener, "A league with this name already exist", "error");
+                Utils.showSnackbar(viewListener, getString(R.string.league_with_same_name), ERROR);
                 return;
             }
 
@@ -76,7 +78,7 @@ public class LeagueCreationFragment extends Fragment {
                 latitude = lastLocationLatitude;
                 longitude = lastLocationLongitude;
             } else {
-                Utils.showSnackbar(binding.leagueCreationFragmentView, "No location found", "error");
+                Utils.showSnackbar(binding.leagueCreationFragmentView, getString(R.string.no_location), ERROR);
                 return;
             }
 
@@ -97,7 +99,7 @@ public class LeagueCreationFragment extends Fragment {
     private void retriveLastLocationAndSetParameters() {
         final Task<Location> locationTask = Utils.getLastLocation(getContext(), getActivity());
         if (locationTask == null) {
-            binding.yourLocationTextView.setError("No location");
+            binding.yourLocationTextView.setError(getString(R.string.no_location));
             return;
         }
 
@@ -106,7 +108,7 @@ public class LeagueCreationFragment extends Fragment {
                 lastLocationLatitude = location.getLatitude();
                 lastLocationLongitude = location.getLongitude();
 
-                Log.i("MIO",
+                Log.i(MIO_TAG,
                         "Latitude: " + location.getLatitude() +
                                 " - Longitude: " + location.getLongitude());
                 Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
@@ -121,10 +123,10 @@ public class LeagueCreationFragment extends Fragment {
                     binding.yourLocationTextView.setText(cityAndCountry);
                     binding.yourLocationTextView.setError(null);
                 } else {
-                    binding.yourLocationTextView.setError("No address");
+                    binding.yourLocationTextView.setError(getString(R.string.no_address));
                 }
             } else {
-                binding.yourLocationTextView.setError("No location");
+                binding.yourLocationTextView.setError(getString(R.string.no_location));
             }
         });
     }

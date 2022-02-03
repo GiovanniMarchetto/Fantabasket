@@ -10,6 +10,8 @@ import android.net.NetworkRequest;
 import android.util.Log;
 import it.units.fantabasket.ui.NoConnectionActivity;
 
+import static it.units.fantabasket.utils.Utils.MIO_TAG;
+
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
     public static Boolean isNetworkAvailable(Context context) {
@@ -33,7 +35,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                 @Override
                 public void onAvailable(Network network) {
                     super.onAvailable(network);
-                    Log.w("MIO", "active connection --> " + isNetworkAvailable(context));
+                    Log.w(MIO_TAG, "active connection --> " + isNetworkAvailable(context));
                 }
 
                 @Override
@@ -42,7 +44,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     Intent intentNew = new Intent(context, NoConnectionActivity.class);
                     intentNew.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intentNew);
-                    Log.e("MIO", "losing active connection --> " + isNetworkAvailable(context));
+                    Log.e(MIO_TAG, "losing active connection --> " + isNetworkAvailable(context));
                 }
             });
         }

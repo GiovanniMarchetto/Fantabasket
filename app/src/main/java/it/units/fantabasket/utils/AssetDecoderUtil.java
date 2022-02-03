@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static it.units.fantabasket.utils.Utils.MIO_TAG;
+
 public class AssetDecoderUtil {
     public static int currentRound;
     public static Calendar calendarOfCurrentRoundStart;
@@ -42,7 +44,7 @@ public class AssetDecoderUtil {
                 //siccome va in ordine di giornata la prima che non è già passata è la giornata corrente
             }
         } catch (Exception e) {
-            Log.e("MIO", "Error loading asset files --> " + e.getMessage(), e);
+            Log.e(MIO_TAG, "Error loading asset files --> " + e.getMessage(), e);
         }
 
         for (int i = 0; i < calendarListOfRoundStart.size(); i++) {//sono in ordine
@@ -118,9 +120,9 @@ public class AssetDecoderUtil {
                     completePlayersList.put(id, player);
                 }
             } catch (IOException e) {
-                Log.e("MIO", "Error loading asset files", e);
+                Log.e(MIO_TAG, "Error loading asset files", e);
             } catch (Exception ee) {
-                Log.e("MIO", ee.getMessage());
+                Log.e(MIO_TAG, ee.getMessage());
                 ee.printStackTrace();
             }
         }

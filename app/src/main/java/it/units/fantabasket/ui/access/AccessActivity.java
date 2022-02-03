@@ -20,6 +20,8 @@ import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
+import static it.units.fantabasket.utils.Utils.ERROR;
+
 public class AccessActivity extends AppCompatActivity {
 
     private ActivityAccessBinding accessBinding;
@@ -63,7 +65,7 @@ public class AccessActivity extends AppCompatActivity {
 
         accessBinding.actionButton.setOnClickListener(view -> {
             if (!areFieldsValid()) {
-                Utils.showSnackbar(view, getString(R.string.input_fields_are_not_valid), "error");
+                Utils.showSnackbar(view, getString(R.string.input_fields_are_not_valid), ERROR);
                 return;
             }
 
@@ -140,7 +142,7 @@ public class AccessActivity extends AppCompatActivity {
                         passToMainActivityIfUserNotNull();
                     } else {
                         Utils.showSnackbar(accessBinding.accessActivityLayout,
-                                getString(R.string.authentication_failed), "error");
+                                getString(R.string.authentication_failed), ERROR);
                     }
                 });
     }
@@ -159,7 +161,7 @@ public class AccessActivity extends AppCompatActivity {
                         passToMainActivityIfUserNotNull();
                     } else {
                         Utils.showSnackbar(accessBinding.accessActivityLayout,
-                                getString(R.string.registration_failed), "error");
+                                getString(R.string.registration_failed), ERROR);
                     }
                 });
     }
