@@ -2,9 +2,7 @@ package it.units.fantabasket.ui.main;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentRosterManagerBinding;
 import it.units.fantabasket.entities.Player;
@@ -22,7 +18,10 @@ import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static it.units.fantabasket.ui.MainActivity.*;
 
@@ -79,9 +78,6 @@ public class RosterManagerFragment extends Fragment {
                     }
                 }
         );
-
-
-        scriptPerStatisticheGiocatori(playerList);
 
         HashMap<String, Integer> mapOfCostByPlayerId = new HashMap<>();
         int maxCostOfAPlayer = 0;
@@ -182,90 +178,6 @@ public class RosterManagerFragment extends Fragment {
             }
         });
         return root;
-    }
-
-    private void scriptPerStatisticheGiocatori(List<Player> playerList) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-            Random random = new Random();
-
-
-            DatabaseReference playerStatisticsRef = FirebaseDatabase.getInstance().getReference("playersStatistics");
-
-            playerList.forEach(player -> {
-                        HashMap<String, Object> playerStatistics = new HashMap<>();
-
-                        int costo = player.getCost();
-                        int fattoreCosto = 0;
-                        for (int i = 0; i < 50; i = i + 5) {
-                            if (costo > i) {
-                                fattoreCosto++;
-                            }
-                        }
-
-                        int maxReb = 0;
-                        int maxRecover = 0;
-                        int maxLost = 0;
-                        switch (player.getRole_1()) {
-                            case PLAYMAKER:
-                                maxReb = fattoreCosto;
-                                maxRecover = 5;
-                                maxLost = 5;
-                                break;
-                            case GUARDIA:
-                                maxReb = 3 + fattoreCosto;
-                                maxRecover = 5 + fattoreCosto / 2;
-                                maxLost = 5 - fattoreCosto / 2;
-                                break;
-                            case ALA:
-                                maxReb = 4 + fattoreCosto;
-                                maxRecover = 2 + fattoreCosto / 2;
-                                maxLost = 3;
-                                break;
-                            case CENTRO:
-                                maxReb = 5 + fattoreCosto;
-                                maxRecover = fattoreCosto;
-                                maxLost = 4;
-                                break;
-                        }
-
-
-                        List<Integer> listOfPoints = new ArrayList<>();
-                        List<Integer> listOfFouls = new ArrayList<>();
-                        List<Integer> listOfRebounds = new ArrayList<>();
-                        List<Integer> listOfRecoverBalls = new ArrayList<>();
-                        List<Integer> listOfLostBalls = new ArrayList<>();
-                        for (int i = 0; i < giornataCorrente; i++) {
-                            listOfPoints.add(random.nextInt(costo) + random.nextInt(fattoreCosto));
-                            listOfFouls.add(random.nextInt(6));
-                            listOfRebounds.add(random.nextInt(maxReb));
-                            listOfRecoverBalls.add(random.nextInt(maxRecover));
-                            listOfLostBalls.add(random.nextInt(maxLost));
-                        }
-
-
-                        playerStatistics.put("id", player.getId());
-                        playerStatistics.put("points", listOfPoints);
-                        playerStatistics.put("fouls", listOfFouls);
-                        playerStatistics.put("rebounds", listOfRebounds);
-                        playerStatistics.put("recoverBalls", listOfRecoverBalls);
-                        playerStatistics.put("lostBalls", listOfLostBalls);
-                        playerStatisticsRef.child(player.getId()).setValue(playerStatistics);
-                    }
-            );
-
-            int size = playerList.size();
-            Log.e("MIO", "dim " + size);
-            int sizeD = (int) playerList.stream().distinct().count();
-            if (size != sizeD) {
-                Log.e("MIO", "NON SONO IDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-            } else {
-                Log.e("MIO", "Tutti cognomi diversi");
-            }
-
-            Log.i("MIO", "MANNION: " + playerList.stream().filter(player -> !Objects.equals(player.getId(), "MANNION")).count());
-            Log.i("MIO", "BANKS: " + playerList.stream().filter(player -> !Objects.equals(player.getId(), "BANKS")).count());
-        }
     }
 
     private int getCostFromPlayerId(String playerID, List<Player> playerList) {
