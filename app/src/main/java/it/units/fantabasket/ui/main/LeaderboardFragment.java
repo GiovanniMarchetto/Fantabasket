@@ -20,111 +20,99 @@ import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.utils.DecoderUtil.*;
 
+@SuppressWarnings({"ConstantConditions", "unchecked"})
 public class LeaderboardFragment extends Fragment {
 
     private FragmentLeaderboardBinding binding;
 
     @Override
-    @SuppressWarnings({"ConstantConditions"})
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLeaderboardBinding.inflate(inflater, container, false);
         Context context = getContext();
 
         if (legaSelezionata != null) {
-            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
-
-            if (classifica != null) {
-                long lastUpdate = (long) classifica.get(0).get("lastUpdate");
-                Calendar orarioFineUltimaGiornataCalendar = AssetDecoderUtil.calendarListOfRoundStart.get(AssetDecoderUtil.currentRound - 2);
-                orarioFineUltimaGiornataCalendar.add(Calendar.DATE, 2);
-                long orarioFineUltimaGiornata = orarioFineUltimaGiornataCalendar.getTime().getTime();
-
-                if (isUserTheAdminOfLeague) {
-                    binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
-                    if (lastUpdate < orarioFineUltimaGiornata) {
-                        binding.updateLeaderboardButton.setEnabled(true);
-                    }
-                }
-
-                for (int i = 1; i < classifica.size(); i++) {
-                    HashMap<String, Object> element = classifica.get(i);
-                    int totalPointsScored = (int) element.get("totalPointsScored");
-                    LeaderboardElementLayout elementLayout;
-                    if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
-                        elementLayout = new LeaderboardElementLayout(context,
-                                i, (String) element.get("teamName"), totalPointsScored);
-                    } else {
-                        int totalPointsAllowed = (int) element.get("totalPointsAllowed");
-                        int pointsOfVictories = (int) element.get("pointsOfVictories");
-                        elementLayout = new LeaderboardElementLayout(context,
-                                i, (String) element.get("teamName"), totalPointsScored,
-                                totalPointsAllowed, pointsOfVictories);
-                    }
-                    binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
-                }
-            } else {
-                binding.leaderboard.addView(getBaseTextView(context, R.string.not_started_yet));
-            }
+            showClassifica(context);
 
             if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-                HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
-
-                if (calendario != null) {
-                    binding.calendarioContainer.setVisibility(View.VISIBLE);
-
-                    addToCalendarioViewAllRounds(context, calendario);
-                }
+                showCalendario(context);
             } else {
                 binding.calendarShortcut.setVisibility(View.GONE);
             }
+
         } else {
             binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
         }
 
         if (isUserTheAdminOfLeague) {
-            if (leagueOn.get().getLastRoundCalculated() < AssetDecoderUtil.currentRound - 1) {
-                binding.updateLeaderboardButton.setOnClickListener(view ->
-                        calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
-            } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.calendarListOfRoundStart.size()) {
-                binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
-                binding.updateLeaderboardButton.setOnClickListener(view ->
-                        calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated()));
-            }
+            binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
+            setUpdateLeaderboardButton();
         }
         return binding.getRoot();
     }
 
-    @SuppressWarnings({"ConstantConditions"})
-    private void calcolaGiornateDaUnCertoRound(int firstRoundToCalculate) {
-        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
+    private void setUpdateLeaderboardButton() {
+        boolean isEnable = false;
+        if (leagueOn.get().getLastRoundCalculated() < AssetDecoderUtil.currentRound - 1) {
+            isEnable = true;
+            binding.updateLeaderboardButton.setOnClickListener(view ->
+                    calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
+        } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.calendarListOfRoundStart.size()) {
+            isEnable = true;
+            binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
+            binding.updateLeaderboardButton.setOnClickListener(view -> calcolaGiornateDaUnCertoRound(0));
+        }
+        binding.updateLeaderboardButton.setEnabled(isEnable);
+    }
 
-            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
+    private void showClassifica(Context context) {
+        List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
-            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-                List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get("giornata_" + roundToCalculate);
-                calcoloGiornataCalendario(roundToCalculate, gameListOfRoundToCalculate);
-                legheReference.child(legaSelezionata).child("calendario").child("giornata_" + roundToCalculate).setValue(gameListOfRoundToCalculate);
-
-                updateClassificaLegaCalendario(classifica, gameListOfRoundToCalculate);
-
-            } else {
-                updateClassificaLegaFormula1(classifica, roundToCalculate);
+        if (classifica != null) {
+            for (int i = 1; i < classifica.size(); i++) {
+                HashMap<String, Object> element = classifica.get(i);
+                int totalPointsScored = (int) element.get(TOTAL_POINTS_SCORED);
+                LeaderboardElementLayout elementLayout = getLeaderboardElementLayout(context, i, element, totalPointsScored);
+                binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
             }
-
-            List<HashMap<String, Object>> orderClassifica = reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
-            legheReference.child(legaSelezionata).child("classifica").setValue(orderClassifica);
-            legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(roundToCalculate);
+        } else {
+            binding.leaderboard.addView(getBaseTextView(context, R.string.not_started_yet));
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    private LeaderboardElementLayout getLeaderboardElementLayout(
+            Context context, int i, HashMap<String, Object> element, int totalPointsScored) {
+        LeaderboardElementLayout elementLayout;
+        if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
+            elementLayout = new LeaderboardElementLayout(context,
+                    i, (String) element.get(TEAM_NAME), totalPointsScored);
+        } else {
+            int totalPointsAllowed = (int) element.get(TOTAL_POINTS_ALLOWED);
+            int pointsOfVictories = (int) element.get(POINTS_OF_VICTORIES);
+            elementLayout = new LeaderboardElementLayout(context,
+                    i, (String) element.get(TEAM_NAME), totalPointsScored,
+                    totalPointsAllowed, pointsOfVictories);
+        }
+        return elementLayout;
+    }
+
+    private void showCalendario(Context context) {
+        HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
+
+        if (calendario != null) {
+            binding.calendarioContainer.setVisibility(View.VISIBLE);
+            addToCalendarioViewAllRounds(context, calendario);
+        }
+    }
+
+
     private void addToCalendarioViewAllRounds(Context context, HashMap<String, List<Game>> calendario) {
         for (String key : calendario.keySet()) {
             TextView titleGiornata = new TextView(context);
@@ -134,11 +122,34 @@ public class LeaderboardFragment extends Fragment {
             binding.calendarioContainer.addView(titleGiornata);
 
             for (Game game : calendario.get(key)) {
-                String gameString = game.homeUserId + " " + game.homePoints + " - " + game.awayPoints + " " + game.awayUserId;//TODO:da migliorare
+                String gameString = game.homeUserId + " " + game.homePoints + " - " + game.awayPoints + " " + game.awayUserId;
                 TextView gameTextView = new TextView(context);
                 gameTextView.setText(gameString);
+                gameTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 binding.calendarioContainer.addView(gameTextView);
             }
+        }
+    }
+
+    private void calcolaGiornateDaUnCertoRound(int firstRoundToCalculate) {
+        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
+
+            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
+
+            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+                List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get(GIORNATA_ + roundToCalculate);
+                calcoloGiornataCalendario(roundToCalculate, gameListOfRoundToCalculate);
+                legheReference.child(legaSelezionata).child(CALENDARIO).child(GIORNATA_ + roundToCalculate).setValue(gameListOfRoundToCalculate);
+
+                updateClassificaLegaCalendario(classifica, gameListOfRoundToCalculate);
+
+            } else {
+                updateClassificaLegaFormula1(classifica, roundToCalculate);
+            }
+
+            List<HashMap<String, Object>> orderClassifica = reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
+            legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(orderClassifica);
+            legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(roundToCalculate);
         }
     }
 
@@ -154,10 +165,10 @@ public class LeaderboardFragment extends Fragment {
             String elId = (String) elementoClassifica.get("userId");
             int pointsScoredThisRound = calcolaPuntiGiornataFromUserId(roundToCalculate, elId);
 
-            Object objTotalPointScored = elementoClassifica.get("totalPointsScored");
+            Object objTotalPointScored = elementoClassifica.get(TOTAL_POINTS_SCORED);
             int totalPointsScored = (objTotalPointScored != null) ? (int) objTotalPointScored : 0;
 
-            elementoClassifica.put("totalPointsScored", totalPointsScored + pointsScoredThisRound);
+            elementoClassifica.put(TOTAL_POINTS_SCORED, totalPointsScored + pointsScoredThisRound);
         }
     }
 
@@ -170,13 +181,13 @@ public class LeaderboardFragment extends Fragment {
             for (HashMap<String, Object> hashMap : classifica) {
                 if (!classificaUpdate.contains(hashMap)) {
                     if (legaType == LegaType.CALENDARIO) {
-                        if ((int) hashMap.get("pointsOfVictories") > (int) max.get("pointsOfVictories") ||
-                                ((int) hashMap.get("pointsOfVictories") == (int) max.get("pointsOfVictories") &&
-                                        (int) hashMap.get("totalPointsScored") == (int) max.get("totalPointsScored"))) {
+                        if ((int) hashMap.get(POINTS_OF_VICTORIES) > (int) max.get(POINTS_OF_VICTORIES) ||
+                                ((int) hashMap.get(POINTS_OF_VICTORIES) == (int) max.get(POINTS_OF_VICTORIES) &&
+                                        (int) hashMap.get(TOTAL_POINTS_SCORED) == (int) max.get(TOTAL_POINTS_SCORED))) {
                             max = hashMap;
                         }
                     } else {
-                        if ((int) hashMap.get("totalPointsScored") > (int) max.get("totalPointsScored")) {
+                        if ((int) hashMap.get(TOTAL_POINTS_SCORED) > (int) max.get(TOTAL_POINTS_SCORED)) {
                             max = hashMap;
                         }
                     }
@@ -192,22 +203,22 @@ public class LeaderboardFragment extends Fragment {
     private void updateClassificaLegaCalendario(List<HashMap<String, Object>> classifica, List<Game> gameList) {
         for (HashMap<String, Object> elementoClassifica : classifica) {
             String elId = (String) elementoClassifica.get("userId");
-            int totalPointsScored = (int) elementoClassifica.get("totalPointsScored");
-            int totalPointsAllowed = (int) elementoClassifica.get("totalPointsAllowed");
-            int pointsOfVictories = (int) elementoClassifica.get("pointsOfVictories");
+            int totalPointsScored = (int) elementoClassifica.get(TOTAL_POINTS_SCORED);
+            int totalPointsAllowed = (int) elementoClassifica.get(TOTAL_POINTS_ALLOWED);
+            int pointsOfVictories = (int) elementoClassifica.get(POINTS_OF_VICTORIES);
             for (Game game : gameList) {
                 if (elId.equals(game.homeUserId)) {
-                    elementoClassifica.put("totalPointsScored", totalPointsScored + game.homePoints);
-                    elementoClassifica.put("totalPointsAllowed", totalPointsAllowed + game.awayPoints);
+                    elementoClassifica.put(TOTAL_POINTS_SCORED, totalPointsScored + game.homePoints);
+                    elementoClassifica.put(TOTAL_POINTS_ALLOWED, totalPointsAllowed + game.awayPoints);
                     if (game.homePoints > game.awayPoints) {
-                        elementoClassifica.put("pointsOfVictories", pointsOfVictories + 2);
+                        elementoClassifica.put(POINTS_OF_VICTORIES, pointsOfVictories + 2);
                     }
                     break;
                 } else if (elId.equals(game.awayUserId)) {
-                    elementoClassifica.put("totalPointsScored", totalPointsScored + game.awayPoints);
-                    elementoClassifica.put("totalPointsAllowed", totalPointsAllowed + game.homePoints);
+                    elementoClassifica.put(TOTAL_POINTS_SCORED, totalPointsScored + game.awayPoints);
+                    elementoClassifica.put(TOTAL_POINTS_ALLOWED, totalPointsAllowed + game.homePoints);
                     if (game.awayPoints > game.homePoints) {
-                        elementoClassifica.put("pointsOfVictories", pointsOfVictories + 2);
+                        elementoClassifica.put(POINTS_OF_VICTORIES, pointsOfVictories + 2);
                     }
                     break;
                 }
@@ -229,7 +240,6 @@ public class LeaderboardFragment extends Fragment {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private int calcolaPuntiGiornataFromUserId(int giornata, String userId) {
         HashMap<FieldPositions, String> formazione = membersLeagueOn.get(userId).formazioniPerGiornata.get(giornata - 1);
         int pointsScored = 0;
@@ -254,9 +264,7 @@ public class LeaderboardFragment extends Fragment {
         return pointsScored;
     }
 
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
     private int getPointsFromPlayerIdAndGiornata(String playerId, int giornata) {
-        //TODO: forse da mettere un unico listener globale per le statistiche
         final int[] vote = {0};
         FirebaseDatabase.getInstance().getReference("playersStatistics").child(playerId).addListenerForSingleValueEvent(
                 (MyValueEventListener) snapshot -> {

@@ -12,16 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
+import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentProfileBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.ui.LeaguesActivity;
 import it.units.fantabasket.ui.access.AccessActivity;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
-import org.jetbrains.annotations.NotNull;
 
 import static it.units.fantabasket.layouts.LegaLayout.addLegaParamsAtView;
 import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.utils.DecoderUtil.TEAM_NAME;
 
 public class ProfileFragment extends Fragment {
 
@@ -36,7 +37,7 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Lega actualLega = leagueOn.get();
@@ -55,7 +56,7 @@ public class ProfileFragment extends Fragment {
 
         binding.nicknameProfile.addTextChangedListener((TextWatcherAfterChange) editable -> {
             if (editable.toString().equals("")) {
-                binding.nicknameProfile.setError("Invalid Nickname");
+                binding.nicknameProfile.setError(getString(R.string.invalid_nickname));
             }
         });
 
@@ -70,7 +71,7 @@ public class ProfileFragment extends Fragment {
         binding.teamNameChangeButton.setOnClickListener(viewListener -> {
             String teamNameUpdate = binding.teamNameProfile.getText().toString();
             if (!teamNameUpdate.equals("")) {
-                userDataReference.child("teamName").setValue(teamNameUpdate);
+                userDataReference.child(TEAM_NAME).setValue(teamNameUpdate);
             }
         });
 
@@ -102,9 +103,9 @@ public class ProfileFragment extends Fragment {
                 firebaseUser.updateEmail(emailUpdate)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, "Email changed", "good");
+                                Utils.showSnackbar(view, getString(R.string.email_changed), "good");
                             } else {
-                                Utils.showSnackbar(view, "Email NOT changed", "error");
+                                Utils.showSnackbar(view, getString(R.string.email_not_changed), "error");
                             }
                         });
             }
@@ -116,13 +117,13 @@ public class ProfileFragment extends Fragment {
                 FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, "Email for password reset sent", "good");
+                                Utils.showSnackbar(view, getString(R.string.email_for_password_reset_sent), "good");
                             } else {
-                                Utils.showSnackbar(view, "It's not possible to sent email for reset password", "error");
+                                Utils.showSnackbar(view, getString(R.string.email_for_reset_password_not_sent), "error");
                             }
                         });
             } else {
-                Utils.showSnackbar(view, "Email of your account is null", "error");
+                Utils.showSnackbar(view, getString(R.string.email_of_user_account_null), "error");
             }
         });
 

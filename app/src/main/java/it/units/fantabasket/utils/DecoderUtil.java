@@ -12,14 +12,25 @@ import java.util.List;
 
 import static it.units.fantabasket.utils.AssetDecoderUtil.calendarListOfRoundStart;
 
+@SuppressWarnings("unchecked")
 public class DecoderUtil {
-    @SuppressWarnings("unchecked")
+
+    public static final String GIORNATA_ = "giornata_";
+    public static final String CALENDARIO = "calendario";
+    public static final String CLASSIFICA = "classifica";
+    public static final String TEAM_NAME = "teamName";
+    public static final String GIORNATA_INIZIO = "giornataInizio";
+    public static final String LAST_ROUND_CALCULATED = "lastRoundCalculated";
+    public static final String TOTAL_POINTS_SCORED = "totalPointsScored";
+    public static final String TOTAL_POINTS_ALLOWED = "totalPointsAllowed";
+    public static final String POINTS_OF_VICTORIES = "pointsOfVictories";
+
     public static Lega getLegaFromHashMapOfDB(Object snapshot) {
         HashMap<String, Object> legaParams = (HashMap<String, Object>) snapshot;
 
         Object numPartecipanti = legaParams.get("numPartecipanti");
-        Object giornataInizio = legaParams.get("giornataInizio");
-        Object lastRoundCalculated = legaParams.get("lastRoundCalculated");
+        Object giornataInizio = legaParams.get(GIORNATA_INIZIO);
+        Object lastRoundCalculated = legaParams.get(LAST_ROUND_CALCULATED);
         Object startedObject = legaParams.get("started");
         boolean started = (startedObject != null) && (boolean) startedObject;
         LegaType legaType = LegaType.valueOf((String) legaParams.get("tipologia"));
@@ -29,10 +40,10 @@ public class DecoderUtil {
         List<HashMap<String, Object>> classifica = null;
         HashMap<String, List<Game>> calendario = null;
         if (started) {
-            classifica = (List<HashMap<String, Object>>) legaParams.get("classifica");
+            classifica = (List<HashMap<String, Object>>) legaParams.get(CLASSIFICA);
         }
         if (legaType == LegaType.CALENDARIO && started) {
-            calendario = (HashMap<String, List<Game>>) legaParams.get("calendario");
+            calendario = (HashMap<String, List<Game>>) legaParams.get(CALENDARIO);
         }
 
         return new Lega(
@@ -52,7 +63,6 @@ public class DecoderUtil {
         );
     }
 
-    @SuppressWarnings("unchecked")
     public static User getUserFromHashMapOfDB(Object snapshotOfUser) {
         HashMap<String, Object> userParams = (HashMap<String, Object>) snapshotOfUser;
 

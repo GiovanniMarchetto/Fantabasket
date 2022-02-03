@@ -1,6 +1,5 @@
 package it.units.fantabasket.ui.main;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.utils.DecoderUtil.*;
 
 public class HomeFragment extends Fragment {
 
@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     @SuppressWarnings("ConstantConditions")
     private void showInfoAboutLeagueForThisUser() {
         if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
@@ -83,14 +82,14 @@ public class HomeFragment extends Fragment {
 
             if (AssetDecoderUtil.currentRound > 0 && AssetDecoderUtil.currentRound <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
                 binding.nextGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get("giornata_" + AssetDecoderUtil.currentRound);
+                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + AssetDecoderUtil.currentRound);
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeNextGame, binding.teamHomeNextGame, binding.pointsHomeNextGame,
                         binding.logoAwayNextGame, binding.teamAwayNextGame, binding.pointsAwayNextGame);
             }
             if (AssetDecoderUtil.currentRound - 1 > 0 && AssetDecoderUtil.currentRound - 1 <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
                 binding.lastGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get("giornata_" + (AssetDecoderUtil.currentRound - 1));
+                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + (AssetDecoderUtil.currentRound - 1));
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeLastGame, binding.teamHomeLastGame, binding.pointsHomeLastGame,
                         binding.logoAwayLastGame, binding.teamAwayLastGame, binding.pointsAwayLastGame);
@@ -100,10 +99,13 @@ public class HomeFragment extends Fragment {
         List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
         for (int posizione = 0; posizione < classifica.size(); posizione++) {
             if (classifica.get(posizione).get("userId").equals(user.id)) {
-                binding.posizioneInClassifica.setText((posizione + 1) + "º");
+
+                String posizioneInClassifica = (posizione + 1) + "º";
+                binding.posizioneInClassifica.setText(posizioneInClassifica);
+
                 String parametro = (leagueOn.get().getTipologia() == LegaType.CALENDARIO)
-                        ? "pointsOfVictories" : "totalPointsScored";
-                binding.totalePunti.setText(classifica.get(posizione).get(parametro) + " punti");
+                        ? POINTS_OF_VICTORIES : TOTAL_POINTS_SCORED;
+                binding.totalePunti.setText((String) classifica.get(posizione).get(parametro));
                 break;
             }
         }
@@ -134,28 +136,28 @@ public class HomeFragment extends Fragment {
         Calendar nowCalendarPlusTwoHours = Utils.getCalendarNow();
         nowCalendarPlusTwoHours.add(Calendar.HOUR, 2);
         int giornataInizioLega = nowCalendarPlusTwoHours.before(AssetDecoderUtil.calendarOfCurrentRoundStart) ? AssetDecoderUtil.currentRound : AssetDecoderUtil.currentRound + 1;
-        legheReference.child(legaSelezionata).child("giornataInizio").setValue(giornataInizioLega);
-        legheReference.child(legaSelezionata).child("lastRoundCalculated").setValue(giornataInizioLega - 1);
+        legheReference.child(legaSelezionata).child(GIORNATA_INIZIO).setValue(giornataInizioLega);
+        legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(giornataInizioLega - 1);
 
         List<HashMap<String, Object>> classifica = new ArrayList<>();
         for (User member : membersLeagueOn.values()) {
             HashMap<String, Object> elementOfClassifica = new HashMap<>();
             elementOfClassifica.put("userId", member.id);
-            elementOfClassifica.put("teamName", member.teamName);
-            elementOfClassifica.put("totalPointsScored", 0);
+            elementOfClassifica.put(TEAM_NAME, member.teamName);
+            elementOfClassifica.put(TOTAL_POINTS_SCORED, 0);
 
             if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-                elementOfClassifica.put("totalPointsAllowed", 0);
-                elementOfClassifica.put("pointsOfVictories", 0);
+                elementOfClassifica.put(TOTAL_POINTS_ALLOWED, 0);
+                elementOfClassifica.put(POINTS_OF_VICTORIES, 0);
             }
 
             classifica.add(elementOfClassifica);
         }
-        legheReference.child(legaSelezionata).child("classifica").setValue(classifica);
+        legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(classifica);
 
         if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
             HashMap<String, List<Game>> campionato = createCalendario(leagueOn.get().getPartecipanti());
-            legheReference.child(legaSelezionata).child("calendario").setValue(campionato);
+            legheReference.child(legaSelezionata).child(CALENDARIO).setValue(campionato);
         }
 
         legheReference.child(legaSelezionata).child("started").setValue(true);
@@ -163,8 +165,8 @@ public class HomeFragment extends Fragment {
         refreshFragment();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void refreshFragment() {
-        //noinspection ConstantConditions
         getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
     }
 
@@ -201,20 +203,13 @@ public class HomeFragment extends Fragment {
             allCouples.removeAll(partiteAndata);
 
             if (Math.random() < 0.5) {
-                campionato.put("giornata_" + i, partiteAndata);
-                campionato.put("giornata_" + j, partiteRitorno);
+                campionato.put(GIORNATA_ + i, partiteAndata);
+                campionato.put(GIORNATA_ + j, partiteRitorno);
             } else {
-                campionato.put("giornata_" + i, partiteRitorno);
-                campionato.put("giornata_" + j, partiteAndata);
+                campionato.put(GIORNATA_ + i, partiteRitorno);
+                campionato.put(GIORNATA_ + j, partiteAndata);
             }
         }
-
-//        for (String key:campionato.keySet()) {
-//            Log.i("MIO", key);
-//            for (Game partita:campionato.get(key)) {
-//                Log.i("MIO", "               " + partita.homeUserId + " - " + partita.awayUserId);
-//            }
-//        }
 
         return campionato;
     }

@@ -14,6 +14,7 @@ import java.util.*;
 public class AssetDecoderUtil {
     public static int currentRound;
     public static Calendar calendarOfCurrentRoundStart;
+    public static long previousRoundEndTimeInMillis;
     public static List<Calendar> calendarListOfRoundStart;
 
     public static HashMap<String, Player> completePlayersList;
@@ -49,7 +50,14 @@ public class AssetDecoderUtil {
             cloneOfCalendar.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
             if (currentCal.before(cloneOfCalendar)) {
                 currentRound = i + 1;
-                calendarOfCurrentRoundStart = calendarListOfRoundStart.get(i);
+                calendarOfCurrentRoundStart = (Calendar) calendarListOfRoundStart.get(i).clone();
+                if (i > 0) {
+                    Calendar calendarOfPreviousRoundEnd = (Calendar) calendarListOfRoundStart.get(i - 1).clone();
+                    calendarOfPreviousRoundEnd.add(Calendar.DATE, 2);
+                    previousRoundEndTimeInMillis = calendarOfPreviousRoundEnd.getTime().getTime();
+                } else {
+                    previousRoundEndTimeInMillis = 0;
+                }
                 break;
             }
         }
