@@ -13,7 +13,7 @@ public class NoConnectionActivity extends AppCompatActivity {
         ActivityNoConnectionBinding binding = ActivityNoConnectionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.button2.setOnClickListener(view -> {
+        binding.reloadConnectionButton.setOnClickListener(view -> {
             if (NetworkChangeReceiver.isNetworkAvailable(getApplicationContext())) {
                 onBackPressed();
                 finish();

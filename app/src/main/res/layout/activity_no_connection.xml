@@ -5,25 +5,43 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/darkRed"
         tools:context=".ui.NoConnectionActivity">
 
+    <ImageView
+            android:layout_width="@dimen/logo_dimension"
+            android:layout_height="@dimen/logo_dimension"
+            app:srcCompat="@android:drawable/stat_sys_warning"
+            app:layout_constraintBottom_toTopOf="@+id/noConnection"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/no_connection"/>
+
     <TextView
+            android:id="@+id/noConnection"
             android:text="@string/no_connection"
+            android:textSize="30sp"
+            android:textStyle="bold|italic"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
+            android:id="@+id/reloadConnectionButton"
             android:text="@string/reload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button2"
+            android:minWidth="@dimen/min_touch_48dp"
+            android:minHeight="@dimen/min_touch_48dp"
+            app:backgroundTint="@color/teal_200"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"/>
+            app:layout_constraintTop_toBottomOf="@+id/noConnection"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

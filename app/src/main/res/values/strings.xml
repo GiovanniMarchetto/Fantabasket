@@ -135,4 +135,5 @@
     <string name="email_for_reset_password_not_sent">It\'s not possible to sent email for reset password</string>
     <string name="email_of_user_account_null">Email of your account is null</string>
     <string name="zero">0</string>
+    <string name="display">Schermo</string>
 </resources>
