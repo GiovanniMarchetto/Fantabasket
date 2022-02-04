@@ -5,6 +5,7 @@ import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import static it.units.fantabasket.utils.AssetDecoderUtil.calendarListOfRoundStart;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "ConstantConditions"})
 public class DecoderUtil {
 
     public static final String GIORNATA_ = "giornata_";
@@ -40,10 +41,10 @@ public class DecoderUtil {
         List<HashMap<String, Object>> classifica = null;
         HashMap<String, List<Game>> calendario = null;
         if (started) {
-            classifica = (List<HashMap<String, Object>>) legaParams.get(CLASSIFICA);
+            classifica = decodeClassifica(legaParams.get(CLASSIFICA), legaType);
         }
         if (legaType == LegaType.CALENDARIO && started) {
-            calendario = (HashMap<String, List<Game>>) legaParams.get(CALENDARIO);
+            calendario = decodeCalendario(legaParams.get(CALENDARIO));
         }
 
         return new Lega(
@@ -61,6 +62,35 @@ public class DecoderUtil {
                 classifica,
                 calendario
         );
+    }
+
+    @NotNull
+    private static HashMap<String, List<Game>> decodeCalendario(Object calendarioToDecode) {
+        HashMap<String, List<Game>> calendario;
+        calendario = new HashMap<>();
+
+        HashMap<String, List<HashMap<String, Object>>> calendarioOfObject =
+                (HashMap<String, List<HashMap<String, Object>>>) calendarioToDecode;
+
+        for (String key : calendarioOfObject.keySet()) {
+            List<Game> gameList = getGamesFromHashmap(calendarioOfObject.get(key));
+            calendario.put(key, gameList);
+        }
+        return calendario;
+    }
+
+    private static List<HashMap<String, Object>> decodeClassifica(Object classificaToDecode, LegaType legaType) {
+        List<HashMap<String, Object>> classificaDecodificate = new ArrayList<>();
+        for (HashMap<String, Object> elementOfClassifica : (List<HashMap<String, Object>>) classificaToDecode) {
+            elementOfClassifica.put(TOTAL_POINTS_SCORED, (int) ((long) elementOfClassifica.get(TOTAL_POINTS_SCORED)));
+
+            if (legaType == LegaType.CALENDARIO) {
+                elementOfClassifica.put(TOTAL_POINTS_ALLOWED, (int) ((long) elementOfClassifica.get(TOTAL_POINTS_ALLOWED)));
+                elementOfClassifica.put(POINTS_OF_VICTORIES, (int) ((long) elementOfClassifica.get(POINTS_OF_VICTORIES)));
+            }
+            classificaDecodificate.add(elementOfClassifica);
+        }
+        return classificaDecodificate;
     }
 
     public static User getUserFromHashMapOfDB(Object snapshotOfUser) {
@@ -107,8 +137,8 @@ public class DecoderUtil {
             Object awayPoints = hashMap.get("awayPoints");
             gameList.add(
                     new Game((String) hashMap.get("homeUserId"), (String) hashMap.get("awayUserId"),
-                            homePoints != null ? (int) homePoints : 0,
-                            awayPoints != null ? (int) awayPoints : 0));
+                            homePoints != null ? (int) ((long) homePoints) : 0,
+                            awayPoints != null ? (int) ((long) awayPoints) : 0));
         }
         return gameList;
     }

@@ -131,16 +131,16 @@ public class MainActivity extends AppCompatActivity {
             for (String memberId : leagueOn.get().getPartecipanti()) {
                 addMemberListener(memberId);
             }
-
-            if (homeFragment != null) {
-                homeFragment.onStart();
-            }
         };
     }
 
     private void addMemberListener(String memberId) {
-        MyValueEventListener memberListener = snapshotMember ->
-                membersLeagueOn.put(memberId, getUserFromHashMapOfDB(snapshotMember.getValue()));
+        MyValueEventListener memberListener = snapshotMember -> {
+            membersLeagueOn.put(memberId, getUserFromHashMapOfDB(snapshotMember.getValue()));
+            if (homeFragment != null && membersLeagueOn.size() == leagueOn.get().getNumPartecipanti()) {
+                homeFragment.onStart();
+            }
+        };
         usersReference.child(memberId).addValueEventListener(memberListener);
         membersLeagueOnListenerList.put(memberId, memberListener);
     }

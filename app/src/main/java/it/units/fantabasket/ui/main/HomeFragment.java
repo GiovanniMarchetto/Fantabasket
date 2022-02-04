@@ -14,8 +14,6 @@ import it.units.fantabasket.databinding.FragmentHomeBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.enums.LegaType;
-import it.units.fantabasket.enums.Team;
-import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.Utils;
 
 import java.util.ArrayList;
@@ -24,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.utils.AssetDecoderUtil.*;
 import static it.units.fantabasket.utils.DecoderUtil.*;
 
 public class HomeFragment extends Fragment {
@@ -74,16 +73,22 @@ public class HomeFragment extends Fragment {
 
             HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
 
-            if (AssetDecoderUtil.currentRound > 0 && AssetDecoderUtil.currentRound <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
+            final int lastRoundOfTheSeason = calendarListOfRoundStart.size();
+
+            if (currentRound > 0 && currentRound <= lastRoundOfTheSeason) {
                 binding.nextGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + AssetDecoderUtil.currentRound);
+                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + currentRound);
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeNextGame, binding.teamHomeNextGame, binding.pointsHomeNextGame,
                         binding.logoAwayNextGame, binding.teamAwayNextGame, binding.pointsAwayNextGame);
             }
-            if (AssetDecoderUtil.currentRound - 1 > 0 && AssetDecoderUtil.currentRound - 1 <= AssetDecoderUtil.calendarListOfRoundStart.size()) {
+
+            final int previousRound = currentRound - 1;
+
+            if (previousRound > 0 && previousRound <= lastRoundOfTheSeason
+                    && previousRound >= leagueOn.get().getGiornataInizio()) {
                 binding.lastGameLayout.setVisibility(View.VISIBLE);
-                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + (AssetDecoderUtil.currentRound - 1));
+                List<Game> partiteDellaGiornata = calendario.get(GIORNATA_ + previousRound);
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeLastGame, binding.teamHomeLastGame, binding.pointsHomeLastGame,
                         binding.logoAwayLastGame, binding.teamAwayLastGame, binding.pointsAwayLastGame);
@@ -99,7 +104,7 @@ public class HomeFragment extends Fragment {
 
                 String parametro = (leagueOn.get().getTipologia() == LegaType.CALENDARIO)
                         ? POINTS_OF_VICTORIES : TOTAL_POINTS_SCORED;
-                binding.totalePunti.setText((String) classifica.get(posizione).get(parametro));
+                binding.totalePunti.setText(String.valueOf(classifica.get(posizione).get(parametro)));
                 break;
             }
         }
@@ -129,7 +134,9 @@ public class HomeFragment extends Fragment {
 
         Calendar nowCalendarPlusTwoHours = Utils.getCalendarNow();
         nowCalendarPlusTwoHours.add(Calendar.HOUR, 2);
-        int giornataInizioLega = nowCalendarPlusTwoHours.before(AssetDecoderUtil.calendarOfCurrentRoundStart) ? AssetDecoderUtil.currentRound : AssetDecoderUtil.currentRound + 1;
+        int giornataInizioLega = nowCalendarPlusTwoHours.before(calendarOfCurrentRoundStart)
+                ? currentRound : currentRound + 1;
+
         legheReference.child(legaSelezionata).child(GIORNATA_INIZIO).setValue(giornataInizioLega);
         legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(giornataInizioLega - 1);
 
@@ -150,59 +157,64 @@ public class HomeFragment extends Fragment {
         legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(classifica);
 
         if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-            HashMap<String, List<Game>> campionato = createCalendario(leagueOn.get().getPartecipanti());
+            HashMap<String, List<Game>> campionato = createCalendario(leagueOn.get().getPartecipanti(), giornataInizioLega);
             legheReference.child(legaSelezionata).child(CALENDARIO).setValue(campionato);
         }
 
         legheReference.child(legaSelezionata).child("started").setValue(true);
         legheReference.child(legaSelezionata).child("numPartecipanti").setValue(leagueOn.get().getPartecipanti().size());
 
-        refreshFragment();
+        onStart();
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void refreshFragment() {
-        getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
-    }
-
-    private HashMap<String, List<Game>> createCalendario(List<String> players) {
-        int allGiornate = (Team.values().length - 1) * 2;
-        int coppieTotaliPerGiornata = (players.size() - players.size() % 2) / 2;// TODO: rendi possibile che con il calendario si possa fare solo in pari
-
-        List<Game> allCouples = new ArrayList<>();
-
-        for (int i = 0; i < players.size() - 1; i++) {
-            for (int j = i + 1; j < players.size(); j++) {
-                allCouples.add(new Game(players.get(i), players.get(j)));
-            }
-        }
+    private HashMap<String, List<Game>> createCalendario(List<String> members, int primaGiornata) {
+        final int ultimaGiornata = calendarListOfRoundStart.size();
+        int coppieTotaliPerGiornata = (members.size() - members.size() % 2) / 2;
 
         HashMap<String, List<Game>> campionato = new HashMap<>();
+        int ultimaGiornataCreata = 0;
+        while (ultimaGiornata > ultimaGiornataCreata) {
+            if (ultimaGiornataCreata != 0) {
+                primaGiornata = ultimaGiornataCreata + 1;
+            }
 
-        for (int i = 1; i <= allGiornate / 2; i++) {
-            int j = i + allGiornate / 2;
-            List<Game> partiteAndata = new ArrayList<>(coppieTotaliPerGiornata);
-            List<Game> partiteRitorno = new ArrayList<>(coppieTotaliPerGiornata);
-            List<String> giocatoriPresentiNelTurno = new ArrayList<>();
+            List<Game> allCouples = new ArrayList<>();
 
-            for (Game couple : allCouples) {
-                if (!giocatoriPresentiNelTurno.contains(couple.homeUserId) && !giocatoriPresentiNelTurno.contains(couple.awayUserId)) {
-                    giocatoriPresentiNelTurno.add(couple.homeUserId);
-                    giocatoriPresentiNelTurno.add(couple.awayUserId);
-                    partiteAndata.add(couple);
-                    Game coupleReturn = new Game(couple.awayUserId, couple.homeUserId);
-                    partiteRitorno.add(coupleReturn);
+            for (int i = 0; i < members.size() - 1; i++) {
+                for (int j = i + 1; j < members.size(); j++) {
+                    allCouples.add(new Game(members.get(i), members.get(j)));
                 }
             }
 
-            allCouples.removeAll(partiteAndata);
+            for (int i = 1; i < members.size(); i++) {
+                int j = i + members.size() - 1;
+                List<Game> partiteAndata = new ArrayList<>(coppieTotaliPerGiornata);
+                List<Game> partiteRitorno = new ArrayList<>(coppieTotaliPerGiornata);
+                List<String> giocatoriPresentiNelTurno = new ArrayList<>();
 
-            if (Math.random() < 0.5) {
-                campionato.put(GIORNATA_ + i, partiteAndata);
-                campionato.put(GIORNATA_ + j, partiteRitorno);
-            } else {
-                campionato.put(GIORNATA_ + i, partiteRitorno);
-                campionato.put(GIORNATA_ + j, partiteAndata);
+                for (Game couple : allCouples) {
+                    if (!giocatoriPresentiNelTurno.contains(couple.homeUserId) && !giocatoriPresentiNelTurno.contains(couple.awayUserId)) {
+                        giocatoriPresentiNelTurno.add(couple.homeUserId);
+                        giocatoriPresentiNelTurno.add(couple.awayUserId);
+                        partiteAndata.add(couple);
+                        Game coupleReturn = new Game(couple.awayUserId, couple.homeUserId);
+                        partiteRitorno.add(coupleReturn);
+                    }
+                }
+
+                allCouples.removeAll(partiteAndata);
+
+                final boolean homeOrAwayFactor = Math.random() < 0.5;
+                i = i + primaGiornata - 1;
+                j = j + primaGiornata - 1;
+                if (i <= ultimaGiornata) {
+                    campionato.put(GIORNATA_ + i, (homeOrAwayFactor) ? partiteAndata : partiteRitorno);
+                    ultimaGiornataCreata = i;
+                    if (j <= ultimaGiornata) {
+                        campionato.put(GIORNATA_ + j, (homeOrAwayFactor) ? partiteRitorno : partiteAndata);
+                        ultimaGiornataCreata = j;
+                    }
+                }
             }
         }
 
