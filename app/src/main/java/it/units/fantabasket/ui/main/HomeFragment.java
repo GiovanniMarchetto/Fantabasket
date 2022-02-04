@@ -49,12 +49,7 @@ public class HomeFragment extends Fragment {
             binding.teamLogo.setImageBitmap(decodedByte);
         }
 
-        binding.infoAboutLeague.setVisibility((leagueOn != null) ? View.VISIBLE : View.GONE);
-        binding.noLeagueSelected.setVisibility((leagueOn == null) ? View.VISIBLE : View.GONE);
-
         if (leagueOn != null) {
-            binding.noLeagueSelected.setVisibility(View.GONE);
-            binding.infoAboutLeague.setVisibility(View.VISIBLE);
             binding.legaName.setText(leagueOn.get().getName());
             if (leagueOn.get().isStarted()) {
                 showInfoAboutLeagueForThisUser();
