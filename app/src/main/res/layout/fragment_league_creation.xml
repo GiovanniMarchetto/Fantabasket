@@ -190,6 +190,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/esteco"/>
+                android:backgroundTint="@color/deepBlue"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

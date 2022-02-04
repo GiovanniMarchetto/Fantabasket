@@ -66,11 +66,17 @@ public class RosterManagerFragment extends Fragment {
         binding = FragmentRosterManagerBinding.inflate(inflater, container, false);
         rosterContext = getContext();
 
-        newRoster = new ArrayList<>(user.roster);
+        newRoster = new ArrayList<>();
         money = MONEY_SIZE;
-        numberOfPlayersSelected = newRoster.size();
-        for (String playerId : user.roster) {
-            money = money - completePlayersList.get(playerId).getCost();
+        numberOfPlayersSelected = 0;
+
+        if (user.roster != null) {
+            newRoster.addAll(user.roster);
+            numberOfPlayersSelected = user.roster.size();
+
+            for (String playerId : user.roster) {
+                money = money - completePlayersList.get(playerId).getCost();
+            }
         }
         mapOfLayoutByPlayerId = new HashMap<>();
 

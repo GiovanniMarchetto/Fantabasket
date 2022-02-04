@@ -68,7 +68,7 @@ public class LeaderboardFragment extends Fragment {
             binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
             binding.updateLeaderboardButton.setOnClickListener(view -> calcolaGiornateDaUnCertoRound(0));
         }
-        binding.updateLeaderboardButton.setEnabled(isEnable);
+        binding.updateLeaderboardButton.setEnabled(leagueOn.get().isStarted() && isEnable);
     }
 
     private void showClassifica(Context context) {
@@ -116,7 +116,7 @@ public class LeaderboardFragment extends Fragment {
     private void addToCalendarioViewAllRounds(Context context, HashMap<String, List<Game>> calendario) {
         for (String key : calendario.keySet()) {
             TextView titleGiornata = new TextView(context);
-            titleGiornata.setBackgroundColor(getResources().getColor(R.color.esteco, context.getTheme()));
+            titleGiornata.setBackgroundColor(getResources().getColor(R.color.deepBlue, context.getTheme()));
             titleGiornata.setTextColor(Color.WHITE);
             titleGiornata.setText(key);
             binding.calendarioContainer.addView(titleGiornata);
@@ -156,6 +156,8 @@ public class LeaderboardFragment extends Fragment {
     private TextView getBaseTextView(Context context, int resIdString) {
         TextView textView = new TextView(context);
         textView.setBackgroundColor(Color.LTGRAY);
+        textView.setTextColor(Color.DKGRAY);
+        textView.setPadding(10, 0, 0, 0);
         textView.setText(resIdString);
         return textView;
     }

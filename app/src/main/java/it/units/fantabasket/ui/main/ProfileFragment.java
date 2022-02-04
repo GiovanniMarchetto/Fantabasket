@@ -40,9 +40,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Lega actualLega = leagueOn.get();
-        if (actualLega != null) {
-            addLegaParamsAtView(activity, actualLega, binding.leagueParams);
+        if (leagueOn != null) {
+            Lega actualLega = leagueOn.get();
+            if (actualLega != null) {
+                addLegaParamsAtView(activity, actualLega, binding.leagueParams);
+            }
         }
 
         binding.changeLegaButton.setOnClickListener(viewListener -> {
@@ -51,8 +53,11 @@ public class ProfileFragment extends Fragment {
         });
 
         //TEAM params
-
-        binding.nicknameProfile.setText(user.nickname);
+        if (user != null) {
+            binding.nicknameProfile.setText(user.nickname);
+            binding.teamNameProfile.setText(user.teamName);
+            binding.teamLogoProfile.setImageBitmap(Utils.getBitmapFromBase64(user.teamLogo));
+        }
 
         binding.nicknameProfile.addTextChangedListener((TextWatcherAfterChange) editable -> {
             if (editable.toString().equals("")) {
@@ -66,7 +71,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        binding.teamNameProfile.setText(user.teamName);
 
         binding.teamNameChangeButton.setOnClickListener(viewListener -> {
             String teamNameUpdate = binding.teamNameProfile.getText().toString();
@@ -75,8 +79,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
-        binding.teamLogoProfile.setImageBitmap(Utils.getBitmapFromBase64(user.teamLogo));
 
         ActivityResultLauncher<Intent> teamLogoLoaderLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

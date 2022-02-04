@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,13 +21,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -118,7 +115,7 @@ public class Utils {
                 .setAction("Action", null);
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(Color.parseColor(backgroundColor));
-        snackbar.setTextColor(Color.WHITE);
+        snackbar.setTextColor(Color.LTGRAY);
         snackbar.show();
     }
 
@@ -148,15 +145,4 @@ public class Utils {
         return fusedLocationProviderClient.getLastLocation();
     }
 
-    @NotNull
-    public static String setTheme(SharedPreferences sharedPreferences) {
-        String theme = sharedPreferences.getString("theme", null);
-
-        if ("light".equals(theme)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else if ("dark".equals(theme)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        return theme;
-    }
 }

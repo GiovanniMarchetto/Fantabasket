@@ -149,7 +149,9 @@ public class LeagueChoiceFragment extends Fragment {
             List<Integer> distances, Lega lega, LegaLayout legaLayout) {
 
         int distanceFromUser = getLegaDistance(lega.getLatitude(), lega.getLongitude());
-        distances.add(distanceFromUser);
+        if (!distances.contains(distanceFromUser)) {
+            distances.add(distanceFromUser);
+        }
 
         List<LinearLayout> updateList = legaLayoutDistancesHashMap.get(distanceFromUser);
         if (updateList == null) {

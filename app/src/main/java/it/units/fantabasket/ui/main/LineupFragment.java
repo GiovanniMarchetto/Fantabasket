@@ -185,9 +185,10 @@ public class LineupFragment extends Fragment {
                 lineup.put(position, null);
             }
         }
-
-        for (String playerId : user.roster) {
-            rosterOfPlayers.add(completePlayersList.get(playerId));
+        if (user.roster != null) {
+            for (String playerId : user.roster) {
+                rosterOfPlayers.add(completePlayersList.get(playerId));
+            }
         }
     }
 

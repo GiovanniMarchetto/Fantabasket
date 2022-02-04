@@ -1,11 +1,14 @@
 package it.units.fantabasket.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,7 +25,7 @@ import it.units.fantabasket.entities.User;
 import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
-import it.units.fantabasket.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -51,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.i("MIO", "start activity");
 
         if (preferencesChanged) {
-            Utils.setTheme(PreferenceManager.getDefaultSharedPreferences(this));
+            setTheme(PreferenceManager.getDefaultSharedPreferences(this));
+
+            Log.i("MIO", "SET THEME TEORICALLY");
             preferencesChanged = false;
         }
     }
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             preferencesChanged = true;
 
                             if (key.equals("theme")) {
-                                String theme = Utils.setTheme(sharedPreferences);
+                                String theme = setTheme(sharedPreferences);
                                 Toast.makeText(this, theme + " theme", Toast.LENGTH_SHORT).show();
                             }
 
@@ -173,5 +179,17 @@ public class MainActivity extends AppCompatActivity {
         Intent preferencesIntent = new Intent(this, SettingsActivity.class);
         startActivity(preferencesIntent);
         return super.onOptionsItemSelected(item);
+    }
+
+    @NotNull
+    private String setTheme(SharedPreferences sharedPreferences) {
+        String theme = sharedPreferences.getString("theme", null);
+
+        if ("light".equals(theme)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else if ("dark".equals(theme)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        return theme;
     }
 }
