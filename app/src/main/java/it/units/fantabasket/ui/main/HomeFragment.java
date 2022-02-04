@@ -160,6 +160,7 @@ public class HomeFragment extends Fragment {
         }
 
         legheReference.child(legaSelezionata).child("started").setValue(true);
+        legheReference.child(legaSelezionata).child("numPartecipanti").setValue(leagueOn.get().getPartecipanti().size());
 
         refreshFragment();
     }
