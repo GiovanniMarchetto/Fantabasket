@@ -10,6 +10,7 @@ import android.widget.TextView;
 import it.units.fantabasket.entities.Lega;
 
 import static it.units.fantabasket.layouts.ExpandCollapseLayout.setExpandCollapseLayout;
+import static it.units.fantabasket.layouts.PlayerLayoutHorizontal.getPixels;
 import static it.units.fantabasket.utils.Utils.LAYOUT_PARAMS;
 
 public class LegaLayout {
@@ -20,6 +21,7 @@ public class LegaLayout {
         legaHeaderLayout = new LinearLayout(context);
         legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);
         legaHeaderLayout.setLayoutParams(LAYOUT_PARAMS);
+        legaHeaderLayout.setMinimumHeight(getPixels(context, 48));
         int paddingLati = 20;
         legaHeaderLayout.setPadding(paddingLati, 0, paddingLati, 0);
         GradientDrawable border = new GradientDrawable();
@@ -29,6 +31,7 @@ public class LegaLayout {
 
         TextView name = new TextView(context);
         name.setText(lega.getName());
+        name.setTextColor(Color.BLACK);
         name.setTextSize(20);
         legaHeaderLayout.addView(name);
 
@@ -38,6 +41,12 @@ public class LegaLayout {
         legaParamsLayout.setPadding(paddingLati * 2, 0, paddingLati * 2, paddingLati);
 
         addLegaParamsAtView(context, lega, legaParamsLayout);
+
+        for (int i = 0; i < legaParamsLayout.getChildCount(); i++) {
+            LinearLayout linearLayout = (LinearLayout) legaParamsLayout.getChildAt(i);
+            ((TextView) linearLayout.getChildAt(0)).setTextColor(Color.BLACK);
+            ((TextView) linearLayout.getChildAt(1)).setTextColor(Color.BLACK);
+        }
 
         actionButton = new Button(context);
         final String colorBlueOpaqueString = "#133A53";

@@ -66,7 +66,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         playerButton.setTextColor(player.getNumberColor());
         playerButton.setBackground(context.getDrawable(player.getShirt()));
 
-        int pixels = getPixelsOfShirts(context);
+        int pixels = getPixels(context, 58);
         //linear params: width and height
         LayoutParams linearParamsButton = new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -110,9 +110,8 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         return infoLayout;
     }
 
-    private static int getPixelsOfShirts(Context context) {
+    public static int getPixels(Context context, int dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        int dp = 58;
         return (int) (dp * scale + 0.5f);
     }
 
