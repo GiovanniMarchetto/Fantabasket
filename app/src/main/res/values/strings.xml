@@ -141,4 +141,5 @@
     <string name="league_with_same_name">A league with this name already exist</string>
     <string name="started_yet">È già iniziata</string>
     <string name="no_more_space">NON CI SONO POSTI</string>
+    <string name="open_maps">Active localization and open Maps for the actual position</string>
 </resources>

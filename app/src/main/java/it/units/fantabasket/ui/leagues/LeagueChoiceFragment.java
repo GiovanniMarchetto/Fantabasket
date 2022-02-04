@@ -1,5 +1,6 @@
 package it.units.fantabasket.ui.leagues;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
 import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
+import it.units.fantabasket.utils.UpdateLocationInterface;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,13 +37,16 @@ public class LeagueChoiceFragment extends Fragment {
 
     private FragmentLeagueChoiceBinding binding;
     private Context context;
+    private Activity activity;
     private double lastLocationLatitude;
     private double lastLocationLongitude;
+    private UpdateLocationInterface updateLocationForOrderLeagues;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLeagueChoiceBinding.inflate(inflater, container, false);
         context = getContext();
+        activity = getActivity();
         return binding.getRoot();
     }
 
@@ -104,15 +109,22 @@ public class LeagueChoiceFragment extends Fragment {
                     }
                 }
 
-                final Task<Location> locationTask = Utils.getLastLocation(context, getActivity());
+                final Task<Location> locationTask = Utils.getLastLocation(context, activity);
+                updateLocationForOrderLeagues = (location, legaLayoutHashMap) -> {
+                    if (location != null) {
+                        lastLocationLatitude = location.getLatitude();
+                        lastLocationLongitude = location.getLongitude();
+                        reorderOpenLeaguesByDistance(legaLayoutHashMap);
+                    } else {
+                        Utils.showSnackbar(binding.LeagueChoiceFragmentView,
+                                getString(R.string.open_maps), Utils.WARNING);
+                    }
+                };
+
                 if (locationTask != null) {
-                    locationTask.addOnSuccessListener(location -> {
-                        if (location != null) {
-                            lastLocationLatitude = location.getLatitude();
-                            lastLocationLongitude = location.getLongitude();
-                            reorderOpenLeaguesByDistance(legaLinearLayoutHashMap);
-                        }
-                    });
+                    locationTask.addOnSuccessListener(location -> updateLocationForOrderLeagues.updateLocation(location, legaLinearLayoutHashMap));
+                } else {
+                    Utils.useLocalizationAndExecuteUpdate(context, activity, updateLocationForOrderLeagues, legaLinearLayoutHashMap);
                 }
             }
 

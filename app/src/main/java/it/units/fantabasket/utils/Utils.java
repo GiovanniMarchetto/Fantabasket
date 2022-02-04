@@ -13,6 +13,7 @@ import android.graphics.ImageDecoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -22,14 +23,17 @@ import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.core.app.ActivityCompat;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.*;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import it.units.fantabasket.entities.Lega;
+import it.units.fantabasket.layouts.LegaLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
@@ -45,6 +49,7 @@ public class Utils {
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     public static String teamLogoBase64;
+    private static LocationCallback locationCallback;
 
     public static ActivityResultCallback<ActivityResult> getActivityResultCallbackForChangeTeamLogoAndSaveIfSpecified(
             ContentResolver contentResolver, ImageView imageView, boolean saveInDB) {
@@ -143,6 +148,47 @@ public class Utils {
         }
 
         return fusedLocationProviderClient.getLastLocation();
+    }
+
+    public static void useLocalizationAndExecuteUpdate(
+            Context context, Activity activity,
+            UpdateLocationInterface updateLocationInterface, HashMap<Lega, LegaLayout> legaLinearLayoutHashMap) {
+
+        FusedLocationProviderClient fusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(activity);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PackageManager.PERMISSION_GRANTED
+            );
+            return;
+        }
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(20 * 1000);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.i("MIO", "risultati attivari");
+                Location location = null;
+                if (locationResult != null) {
+                    final List<Location> locationList = locationResult.getLocations();
+                    if (locationList.size() > 0) {
+                        location = locationList.get(locationList.size() - 1);
+                    }
+
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                }
+                updateLocationInterface.updateLocation(location, legaLinearLayoutHashMap);
+            }
+        };
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
 
 }

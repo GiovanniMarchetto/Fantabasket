@@ -1,5 +1,7 @@
 package it.units.fantabasket.ui.leagues;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,12 +13,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.tasks.Task;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLeagueCreationBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
+import it.units.fantabasket.utils.UpdateLocationInterface;
 import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +34,14 @@ import static it.units.fantabasket.utils.Utils.MIO_TAG;
 
 public class LeagueCreationFragment extends Fragment {
 
+    private static LocationRequest locationRequest;
     private FragmentLeagueCreationBinding binding;
-
     private int numPartecipanti = 8;
     private double latitude;
     private double longitude;
     private double lastLocationLatitude = 100;//[0,90] -->100 is impossible
     private double lastLocationLongitude = 200;//[-180,180] -->200 is impossible
+    private UpdateLocationInterface updateLocationForCreation;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,13 +102,10 @@ public class LeagueCreationFragment extends Fragment {
     }
 
     private void retriveLastLocationAndSetParameters() {
-        final Task<Location> locationTask = Utils.getLastLocation(getContext(), getActivity());
-        if (locationTask == null) {
-            binding.yourLocationTextView.setError(getString(R.string.no_location));
-            return;
-        }
+        Context context = getContext();
+        Activity activity = getActivity();
 
-        locationTask.addOnSuccessListener(location -> {
+        updateLocationForCreation = (location, legaLinearLayoutHashMap) -> {
             if (location != null) {
                 lastLocationLatitude = location.getLatitude();
                 lastLocationLongitude = location.getLongitude();
@@ -119,7 +121,8 @@ public class LeagueCreationFragment extends Fragment {
                 }
                 if (addresses != null && addresses.size() > 0) {
                     final Address address = addresses.get(0);
-                    String cityAndCountry = "(" + address.getCountryCode() + ") " + address.getLocality();
+                    String locality = (address.getLocality() != null) ? address.getLocality() : address.getCountryName();
+                    String cityAndCountry = "(" + address.getCountryCode() + ") " + locality;
                     binding.yourLocationTextView.setText(cityAndCountry);
                     binding.yourLocationTextView.setError(null);
                 } else {
@@ -127,8 +130,18 @@ public class LeagueCreationFragment extends Fragment {
                 }
             } else {
                 binding.yourLocationTextView.setError(getString(R.string.no_location));
+                Utils.showSnackbar(binding.leagueCreationFragmentView,
+                        getString(R.string.open_maps), Utils.WARNING);
             }
-        });
+        };
+
+        final Task<Location> locationTask = Utils.getLastLocation(context, activity);
+        if (locationTask != null) {
+            locationTask.addOnSuccessListener(location -> updateLocationForCreation.updateLocation(location, null));
+        } else {
+            Utils.useLocalizationAndExecuteUpdate(context, activity, updateLocationForCreation, null);
+        }
+
     }
 
     private void manageNumberOfMember() {
@@ -179,5 +192,4 @@ public class LeagueCreationFragment extends Fragment {
             longitude = 2.3522219;
         }
     }
-
 }
