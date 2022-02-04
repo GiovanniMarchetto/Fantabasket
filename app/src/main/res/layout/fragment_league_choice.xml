@@ -39,7 +39,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="@dimen/padding_8dp"
-                    android:background="@color/darkRed"
                     android:layout_marginBottom="@dimen/basic_margin_16dp">
 
                 <TextView
@@ -47,7 +46,9 @@
                         android:text="@string/nessuna_lega_partecipata"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/darkRed"
                         android:textColor="@color/white"
+                        android:padding="@dimen/padding_8dp"
                         android:layout_gravity="center"/>
             </LinearLayout>
 
@@ -63,15 +64,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/padding_8dp"
-                    android:background="@color/darkRed">
+                    android:padding="@dimen/padding_8dp">
 
                 <TextView
                         android:id="@+id/nessunaLegaDisponibile"
                         android:text="@string/nessuna_lega_presente"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/darkRed"
                         android:textColor="@color/white"
+                        android:padding="@dimen/padding_8dp"
                         android:layout_gravity="center"/>
             </LinearLayout>
 

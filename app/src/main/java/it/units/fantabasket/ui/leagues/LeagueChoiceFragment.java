@@ -1,7 +1,6 @@
 package it.units.fantabasket.ui.leagues;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -118,9 +117,7 @@ public class LeagueChoiceFragment extends Fragment {
             }
 
             binding.nessunaLegaPartecipata.setVisibility((numLeghePartecipate.get() > 0) ? View.GONE : View.VISIBLE);
-            binding.leghePartecipate.setBackgroundColor((numLeghePartecipate.get() > 0) ? Color.WHITE : Color.RED);
             binding.nessunaLegaDisponibile.setVisibility((numLegheDisponibili.get() > 0) ? View.GONE : View.VISIBLE);
-            binding.legheDisponibili.setBackgroundColor((numLegheDisponibili.get() > 0) ? Color.WHITE : Color.RED);
         };
     }
 
