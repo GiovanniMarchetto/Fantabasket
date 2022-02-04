@@ -62,9 +62,8 @@ public class HomeFragment extends Fragment {
                 Button startLeagueButton = binding.startLeagueButton;
                 startLeagueButton.setVisibility(View.VISIBLE);
                 if (isUserTheAdminOfLeague && (
-                        leagueOn.get().getTipologia() == LegaType.CALENDARIO
-                                && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
-                        || (leagueOn.get().getTipologia() == LegaType.FORMULA1 && leagueOn.get().getPartecipanti().size() > 1)) {
+                        (leagueOn.get().getTipologia() == LegaType.CALENDARIO && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
+                                || (leagueOn.get().getTipologia() == LegaType.FORMULA1 && leagueOn.get().getPartecipanti().size() > 1))) {
 
                     startLeagueButton.setOnClickListener(viewListener -> initializeAndStartLeague());
                     startLeagueButton.setEnabled(true);
