@@ -56,7 +56,7 @@
                     android:value=".ui.MainActivity"/>
         </activity>
         <activity
-                android:name=".ui.LeaguesActivity"
+                android:name=".ui.leagues.LeaguesActivity"
                 android:exported="true"
                 android:label="@string/title_activity_leagues"
                 android:theme="@style/Theme.Fantabasket.NoActionBar"/>

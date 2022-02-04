@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static it.units.fantabasket.ui.LeaguesActivity.*;
+import static it.units.fantabasket.ui.leagues.LeaguesActivity.*;
 import static it.units.fantabasket.utils.Utils.ERROR;
 import static it.units.fantabasket.utils.Utils.MIO_TAG;
 

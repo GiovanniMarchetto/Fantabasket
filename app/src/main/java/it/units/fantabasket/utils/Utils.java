@@ -115,7 +115,7 @@ public class Utils {
                 .setAction("Action", null);
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(Color.parseColor(backgroundColor));
-        snackbar.setTextColor(Color.LTGRAY);
+        snackbar.setTextColor(Color.BLACK);
         snackbar.show();
     }
 

@@ -15,8 +15,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentProfileBinding;
 import it.units.fantabasket.entities.Lega;
-import it.units.fantabasket.ui.LeaguesActivity;
 import it.units.fantabasket.ui.access.AccessActivity;
+import it.units.fantabasket.ui.leagues.LeaguesActivity;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
 

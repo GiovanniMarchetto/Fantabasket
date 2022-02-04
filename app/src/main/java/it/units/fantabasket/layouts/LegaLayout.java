@@ -1,6 +1,5 @@
 package it.units.fantabasket.layouts;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -17,7 +16,6 @@ public class LegaLayout {
     private final LinearLayout legaHeaderLayout;
     private final Button actionButton;
 
-    @SuppressLint("SetTextI18n")
     public LegaLayout(Context context, Lega lega) {
         legaHeaderLayout = new LinearLayout(context);
         legaHeaderLayout.setOrientation(LinearLayout.VERTICAL);

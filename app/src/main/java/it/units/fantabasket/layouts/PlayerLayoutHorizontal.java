@@ -116,7 +116,7 @@ public class PlayerLayoutHorizontal extends LinearLayout {
         return (int) (dp * scale + 0.5f);
     }
 
-    @SuppressLint("SetTextI18n")
+
     @NotNull
     private LinearLayout createAndGetRightLinearLayout(Context context, Player player) {
         LayoutParams subParam = new LayoutParams(

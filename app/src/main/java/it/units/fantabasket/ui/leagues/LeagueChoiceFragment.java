@@ -19,7 +19,6 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLeagueChoiceBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
-import it.units.fantabasket.ui.LeaguesActivity;
 import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
 import it.units.fantabasket.utils.Utils;

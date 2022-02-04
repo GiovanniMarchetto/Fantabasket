@@ -48,7 +48,7 @@
     <string name="next_game">Next Game</string>
     <string name="save">Save</string>
     <string name="reset">Reset</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

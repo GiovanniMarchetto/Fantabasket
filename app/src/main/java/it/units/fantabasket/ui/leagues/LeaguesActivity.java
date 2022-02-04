@@ -1,4 +1,4 @@
-package it.units.fantabasket.ui;
+package it.units.fantabasket.ui.leagues;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityLeaguesBinding;
+import it.units.fantabasket.ui.MainActivity;
 import org.jetbrains.annotations.NotNull;
 
 public class LeaguesActivity extends AppCompatActivity {

@@ -3,7 +3,6 @@ package it.units.fantabasket.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -49,19 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
     private MyValueEventListener leagueOnListener;
     private HashMap<String, MyValueEventListener> membersLeagueOnListenerList;
-    private boolean preferencesChanged = true;
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("MIO", "start activity");
-
-        if (preferencesChanged) {
-            setTheme(PreferenceManager.getDefaultSharedPreferences(this));
-
-            Log.i("MIO", "SET THEME TEORICALLY");
-            preferencesChanged = false;
-        }
+        setTheme(PreferenceManager.getDefaultSharedPreferences(this));
     }
 
     @Override
@@ -118,13 +109,10 @@ public class MainActivity extends AppCompatActivity {
         PreferenceManager.getDefaultSharedPreferences(this).
                 registerOnSharedPreferenceChangeListener(
                         (sharedPreferences, key) -> {
-                            preferencesChanged = true;
-
                             if (key.equals("theme")) {
                                 String theme = setTheme(sharedPreferences);
                                 Toast.makeText(this, theme + " theme", Toast.LENGTH_SHORT).show();
                             }
-
                         });
     }
 
