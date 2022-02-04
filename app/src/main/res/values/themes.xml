@@ -13,16 +13,5 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-
     </style>
-
-    <style name="Theme.Fantabasket.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="Theme.Fantabasket.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="Theme.Fantabasket.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
 </resources>
