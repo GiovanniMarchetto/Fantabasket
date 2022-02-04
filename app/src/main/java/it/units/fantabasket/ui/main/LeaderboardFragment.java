@@ -61,11 +61,6 @@ public class LeaderboardFragment extends Fragment {
             isEnable = true;
             binding.updateLeaderboardButton.setOnClickListener(view ->
                     calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
-        } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.numberOfGamesInTheSeason) {
-            isEnable = true;
-            binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
-            binding.updateLeaderboardButton.setOnClickListener(view ->
-                    calcolaGiornateDaUnCertoRound(leagueOn.get().getGiornataInizio()));
         }
         binding.updateLeaderboardButton.setEnabled(leagueOn.get().isStarted() && isEnable
                 && playersStatistics != null);
