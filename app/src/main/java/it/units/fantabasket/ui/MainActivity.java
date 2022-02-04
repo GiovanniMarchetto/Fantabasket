@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public static DatabaseReference userDataReference;
     public static DatabaseReference usersReference;
     public static DatabaseReference legheReference;
+    public static HashMap<String, HashMap<String, Object>> playersStatistics = null;
 
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         userDataReference = usersReference.child(firebaseUser.getUid());
         legheReference = FirebaseDatabase.getInstance().getReference("leghe");
 
+        //legaSelezionata
         userDataReference.addValueEventListener((MyValueEventListener) snapshotLega -> {
             @SuppressWarnings("unchecked")
             HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
@@ -91,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //statisticheGiocatori
+        //noinspection unchecked
+        FirebaseDatabase.getInstance().getReference("playersStatistics").addListenerForSingleValueEvent(
+                (MyValueEventListener) snapshot ->
+                        playersStatistics = (HashMap<String, HashMap<String, Object>>) snapshot.getValue()
+        );
 
         //nav nad app-bar
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);

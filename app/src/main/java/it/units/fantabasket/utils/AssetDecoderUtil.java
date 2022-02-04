@@ -18,6 +18,7 @@ public class AssetDecoderUtil {
     public static Calendar calendarOfCurrentRoundStart;
     public static long previousRoundEndTimeInMillis;
     public static List<Calendar> calendarListOfRoundStart;
+    public static int numberOfGamesInTheSeason;
 
     public static HashMap<String, Player> completePlayersList;
     public static int maxCostOfAPlayer;
@@ -47,7 +48,9 @@ public class AssetDecoderUtil {
             Log.e(MIO_TAG, "Error loading asset files --> " + e.getMessage(), e);
         }
 
-        for (int i = 0; i < calendarListOfRoundStart.size(); i++) {//sono in ordine
+        numberOfGamesInTheSeason = calendarListOfRoundStart.size();
+
+        for (int i = 0; i < numberOfGamesInTheSeason; i++) {//sono in ordine
             Calendar cloneOfCalendar = (Calendar) calendarListOfRoundStart.get(i).clone();
             cloneOfCalendar.add(Calendar.DATE, 2);//si suppone che due giorni dopo siano finite le partite
             if (currentCal.before(cloneOfCalendar)) {

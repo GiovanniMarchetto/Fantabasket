@@ -97,6 +97,7 @@
 
         <!--region   NEXT GAME INFO LAYOUT     -->
         <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/nextGameLayout"
                 android:layout_marginTop="@dimen/basic_margin_16dp"
                 android:layout_width="match_parent"
@@ -211,13 +212,14 @@
 
         <!--region   LAST GAME LAYOUT     -->
         <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/lastGameLayout"
                 android:layout_marginTop="@dimen/basic_margin_16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_corners_blue"
-                android:padding="@dimen/basic_margin_16dp"
+                android:padding="@dimen/padding_8dp"
                 android:gravity="center">
 
             <TextView
@@ -250,8 +252,9 @@
                             android:text="@string/hometeam"
                             android:textSize="@dimen/text_size_20"
                             android:textColor="@color/white"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textAlignment="center"
                             android:layout_gravity="center"/>
 
                     <ImageView

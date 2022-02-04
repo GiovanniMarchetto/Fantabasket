@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLeaderboardBinding;
 import it.units.fantabasket.entities.Game;
@@ -16,7 +15,6 @@ import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.layouts.LeaderboardElementLayout;
 import it.units.fantabasket.utils.AssetDecoderUtil;
-import it.units.fantabasket.utils.MyValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -63,13 +61,14 @@ public class LeaderboardFragment extends Fragment {
             isEnable = true;
             binding.updateLeaderboardButton.setOnClickListener(view ->
                     calcolaGiornateDaUnCertoRound(leagueOn.get().getLastRoundCalculated() + 1));
-        } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.calendarListOfRoundStart.size()) {
+        } else if (leagueOn.get().getLastRoundCalculated() == AssetDecoderUtil.numberOfGamesInTheSeason) {
             isEnable = true;
             binding.updateLeaderboardButton.setText(getString(R.string.ricalcola_tutte_le_giornate));
             binding.updateLeaderboardButton.setOnClickListener(view ->
                     calcolaGiornateDaUnCertoRound(leagueOn.get().getGiornataInizio()));
         }
-        binding.updateLeaderboardButton.setEnabled(leagueOn.get().isStarted() && isEnable);
+        binding.updateLeaderboardButton.setEnabled(leagueOn.get().isStarted() && isEnable
+                && playersStatistics != null);
     }
 
     private void showClassifica(Context context) {
@@ -133,9 +132,9 @@ public class LeaderboardFragment extends Fragment {
     }
 
     private void calcolaGiornateDaUnCertoRound(int firstRoundToCalculate) {
-        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
+        List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
-            List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
+        for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
 
             if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
                 List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get(GIORNATA_ + roundToCalculate);
@@ -147,11 +146,13 @@ public class LeaderboardFragment extends Fragment {
             } else {
                 updateClassificaLegaFormula1(classifica, roundToCalculate);
             }
-
-            List<HashMap<String, Object>> orderClassifica = reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
-            legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(orderClassifica);
-            legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(roundToCalculate);
         }
+
+        List<HashMap<String, Object>> orderClassifica =
+                reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
+
+        legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(orderClassifica);
+        legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(AssetDecoderUtil.currentRound - 1);
     }
 
     private TextView getBaseTextView(Context context, int resIdString) {
@@ -177,28 +178,29 @@ public class LeaderboardFragment extends Fragment {
 
     @NotNull
     private List<HashMap<String, Object>> reorderClassificaFromLegaType(List<HashMap<String, Object>> classifica, LegaType legaType) {
-        List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classifica.size());
+        final int classificaSize = classifica.size();
+        List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classificaSize);
 
-        for (int i = 0; i < classifica.size(); i++) {
-            HashMap<String, Object> max = classifica.get(0);
+        for (int i = 0; i < classificaSize; i++) {
+            HashMap<String, Object> moreHighMember = classifica.get(0);
             for (HashMap<String, Object> hashMap : classifica) {
                 if (!classificaUpdate.contains(hashMap)) {
                     if (legaType == LegaType.CALENDARIO) {
-                        if ((int) hashMap.get(POINTS_OF_VICTORIES) > (int) max.get(POINTS_OF_VICTORIES) ||
-                                ((int) hashMap.get(POINTS_OF_VICTORIES) == (int) max.get(POINTS_OF_VICTORIES) &&
-                                        (int) hashMap.get(TOTAL_POINTS_SCORED) == (int) max.get(TOTAL_POINTS_SCORED))) {
-                            max = hashMap;
+                        if ((int) hashMap.get(POINTS_OF_VICTORIES) > (int) moreHighMember.get(POINTS_OF_VICTORIES) ||
+                                ((int) hashMap.get(POINTS_OF_VICTORIES) == (int) moreHighMember.get(POINTS_OF_VICTORIES) &&
+                                        (int) hashMap.get(TOTAL_POINTS_SCORED) == (int) moreHighMember.get(TOTAL_POINTS_SCORED))) {
+                            moreHighMember = hashMap;
                         }
                     } else {
-                        if ((int) hashMap.get(TOTAL_POINTS_SCORED) > (int) max.get(TOTAL_POINTS_SCORED)) {
-                            max = hashMap;
+                        if ((int) hashMap.get(TOTAL_POINTS_SCORED) > (int) moreHighMember.get(TOTAL_POINTS_SCORED)) {
+                            moreHighMember = hashMap;
                         }
                     }
 
                 }
             }
-            classificaUpdate.add(max);
-            classifica.remove(max);
+            classificaUpdate.add(moreHighMember);
+            classifica.remove(moreHighMember);
         }
         return classificaUpdate;
     }
@@ -244,12 +246,18 @@ public class LeaderboardFragment extends Fragment {
     }
 
     private int calcolaPuntiGiornataFromUserId(int giornata, String userId) {
-        HashMap<FieldPositions, String> formazione = membersLeagueOn.get(userId).formazioniPerGiornata.get(giornata - 1);
+        final HashMap<String, HashMap<FieldPositions, String>> formazioniPerGiornata =
+                membersLeagueOn.get(userId).formazioniPerGiornata;
+        if (formazioniPerGiornata == null) {
+            return 0;
+        }
+
+        HashMap<FieldPositions, String> formazione = formazioniPerGiornata.get(GIORNATA_ + giornata);
         int pointsScored = 0;
 
         if (formazione == null) {
             for (int oldRound = giornata - 1; oldRound > 0; oldRound--) {
-                formazione = membersLeagueOn.get(userId).formazioniPerGiornata.get(oldRound - 1);
+                formazione = formazioniPerGiornata.get(GIORNATA_ + oldRound);
                 if (formazione != null) break;
             }
         }
@@ -268,20 +276,16 @@ public class LeaderboardFragment extends Fragment {
     }
 
     private int getPointsFromPlayerIdAndGiornata(String playerId, int giornata) {
-        final int[] vote = {0};
-        FirebaseDatabase.getInstance().getReference("playersStatistics").child(playerId).addListenerForSingleValueEvent(
-                (MyValueEventListener) snapshot -> {
-                    HashMap<String, Object> playerStatistic = (HashMap<String, Object>) snapshot.getValue();
-                    int points = ((List<Integer>) playerStatistic.get("points")).get(giornata);
-                    int fouls = ((List<Integer>) playerStatistic.get("fouls")).get(giornata);
-                    int rebounds = ((List<Integer>) playerStatistic.get("rebounds")).get(giornata);
-                    int recoverBalls = ((List<Integer>) playerStatistic.get("recoverBalls")).get(giornata);
-                    int lostBalls = ((List<Integer>) playerStatistic.get("lostBalls")).get(giornata);
+        int posizioneGiornataInLista = giornata - 1;
+        HashMap<String, Object> playerStatistic = playersStatistics.get(playerId);
 
-                    vote[0] = points + rebounds + recoverBalls - fouls - lostBalls;
-                }
-        );
-        return vote[0];
+        int points = (int) (long) ((List<Long>) playerStatistic.get("points")).get(posizioneGiornataInLista);
+        int fouls = (int) (long) ((List<Long>) playerStatistic.get("fouls")).get(posizioneGiornataInLista);
+        int rebounds = (int) (long) ((List<Long>) playerStatistic.get("rebounds")).get(posizioneGiornataInLista);
+        int recoverBalls = (int) (long) ((List<Long>) playerStatistic.get("recoverBalls")).get(posizioneGiornataInLista);
+        int lostBalls = (int) (long) ((List<Long>) playerStatistic.get("lostBalls")).get(posizioneGiornataInLista);
+
+        return points + rebounds + recoverBalls - fouls - lostBalls;
     }
 
     private double getFactorPositionOnField(FieldPositions fieldPosition) {

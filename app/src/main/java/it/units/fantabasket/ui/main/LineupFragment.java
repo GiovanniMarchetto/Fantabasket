@@ -33,6 +33,7 @@ import java.util.List;
 import static it.units.fantabasket.ui.MainActivity.user;
 import static it.units.fantabasket.ui.MainActivity.userDataReference;
 import static it.units.fantabasket.utils.AssetDecoderUtil.completePlayersList;
+import static it.units.fantabasket.utils.DecoderUtil.GIORNATA_;
 import static it.units.fantabasket.utils.Utils.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -168,10 +169,10 @@ public class LineupFragment extends Fragment {
         rosterOfPlayers = new ArrayList<>();
 
         if (user.formazioniPerGiornata != null &&
-                user.formazioniPerGiornata.size() > AssetDecoderUtil.currentRound &&
-                user.formazioniPerGiornata.get(AssetDecoderUtil.currentRound) != null) {
+                user.formazioniPerGiornata.get(GIORNATA_ + AssetDecoderUtil.currentRound) != null) {
 
-            HashMap<FieldPositions, String> formazioneSalvata = user.formazioniPerGiornata.get(AssetDecoderUtil.currentRound);
+            HashMap<FieldPositions, String> formazioneSalvata =
+                    user.formazioniPerGiornata.get(GIORNATA_ + AssetDecoderUtil.currentRound);
 
             for (FieldPositions position : formazioneSalvata.keySet()) {
                 String playerId = formazioneSalvata.get(position);

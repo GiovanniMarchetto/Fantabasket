@@ -12,7 +12,7 @@ public class User {
     public String teamLogo;
     public String legaSelezionata;
     public List<String> roster;
-    public List<HashMap<FieldPositions, String>> formazioniPerGiornata;
+    public HashMap<String, HashMap<FieldPositions, String>> formazioniPerGiornata;
 
     public User(String id, String nickname, String teamName, String teamLogo) {
         this.id = id;
@@ -26,7 +26,7 @@ public class User {
 
     public User(String id, String nickname, String teamName, String teamLogo,
                 String legaSelezionata, List<String> roster,
-                List<HashMap<FieldPositions, String>> formazioniPerGiornata) {
+                HashMap<String, HashMap<FieldPositions, String>> formazioniPerGiornata) {
         this.id = id;
         this.nickname = nickname;
         this.teamName = teamName;

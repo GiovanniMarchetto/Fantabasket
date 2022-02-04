@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
 
             HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
 
-            final int lastRoundOfTheSeason = calendarListOfRoundStart.size();
+            final int lastRoundOfTheSeason = numberOfGamesInTheSeason;
 
             if (currentRound > 0 && currentRound <= lastRoundOfTheSeason) {
                 binding.nextGameLayout.setVisibility(View.VISIBLE);
@@ -168,7 +168,7 @@ public class HomeFragment extends Fragment {
     }
 
     private HashMap<String, List<Game>> createCalendario(List<String> members, int primaGiornata) {
-        final int ultimaGiornata = calendarListOfRoundStart.size();
+        final int ultimaGiornata = numberOfGamesInTheSeason;
         int coppieTotaliPerGiornata = (members.size() - members.size() % 2) / 2;
 
         HashMap<String, List<Game>> campionato = new HashMap<>();

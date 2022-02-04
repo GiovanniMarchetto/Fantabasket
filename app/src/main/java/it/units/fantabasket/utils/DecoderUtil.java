@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static it.units.fantabasket.utils.AssetDecoderUtil.calendarListOfRoundStart;
+import static it.units.fantabasket.utils.AssetDecoderUtil.numberOfGamesInTheSeason;
 
 @SuppressWarnings({"unchecked", "ConstantConditions"})
 public class DecoderUtil {
@@ -102,28 +102,22 @@ public class DecoderUtil {
         String teamLogo = (String) userParams.get("teamLogo");
         String legaSelezionata = (String) userParams.get("legaSelezionata");
         List<String> roster = (List<String>) userParams.get("roster");
-        List<HashMap<FieldPositions, String>> formazioniPerGiornata = null;
+        HashMap<String, HashMap<FieldPositions, String>> formazioniPerGiornata = null;
 
         HashMap<String, HashMap<String, String>> formazioniRawMap = (HashMap<String, HashMap<String, String>>) userParams.get("formazioniPerGiornata");
         if (formazioniRawMap != null) {
-            formazioniPerGiornata = new ArrayList<>(calendarListOfRoundStart.size());
-            List<Integer> indexArray = new ArrayList<>(formazioniRawMap.size());
-            for (String stringIndex : formazioniRawMap.keySet()) {
-                int index = Integer.parseInt(stringIndex);
-                indexArray.add(index);
-            }
-            for (int i = 0; i < calendarListOfRoundStart.size(); i++) {
-                if (indexArray.contains(i)) {
-                    HashMap<String, String> stringHashMap = formazioniRawMap.get(String.valueOf(i));
-                    HashMap<FieldPositions, String> correctHashMap = new HashMap<>();
-                    assert stringHashMap != null;
+            formazioniPerGiornata = new HashMap<>(numberOfGamesInTheSeason);
+
+            for (String giornataString : formazioniRawMap.keySet()) {
+                HashMap<String, String> stringHashMap = formazioniRawMap.get(giornataString);
+                HashMap<FieldPositions, String> correctHashMap = null;
+                if (stringHashMap != null) {
+                    correctHashMap = new HashMap<>();
                     for (String key : stringHashMap.keySet()) {
                         correctHashMap.put(FieldPositions.valueOf(key), stringHashMap.get(key));
                     }
-                    formazioniPerGiornata.add(i, correctHashMap);
-                } else {
-                    formazioniPerGiornata.add(i, null);
                 }
+                formazioniPerGiornata.put(giornataString, correctHashMap);
             }
         }
 
