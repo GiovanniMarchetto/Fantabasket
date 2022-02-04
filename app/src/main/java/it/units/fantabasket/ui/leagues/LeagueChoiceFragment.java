@@ -182,6 +182,7 @@ public class LeagueChoiceFragment extends Fragment {
                 List<String> newPartecipanti = lega.getPartecipanti();
                 newPartecipanti.add(firebaseUser.getUid());
                 legheReference.child(legaName).child("partecipanti").setValue(newPartecipanti);
+                binding.refreshButton.performClick();
             } else {
                 Utils.showSnackbar(view, getString(R.string.started_yet), Utils.ERROR);
             }
