@@ -137,6 +137,7 @@
         </LinearLayout>
 
         <TextView
+                android:id="@+id/profileTextView"
                 android:text="@string/profile"
                 android:textSize="@dimen/text_size_20"
                 android:textStyle="bold"
@@ -146,35 +147,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_anchorGravity="top|center"
-                app:layout_anchor="@+id/linearLayout"
-                android:id="@+id/textView"/>
+                app:layout_anchor="@+id/linearLayout"/>
 
-        <LinearLayout
+        <TextView
+                android:id="@+id/emailProfile"
+                android:textSize="@dimen/text_size_20"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:padding="@dimen/padding_8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-            <EditText
-                    android:id="@+id/emailProfile"
-                    android:textSize="@dimen/text_size_20"
-                    android:gravity="center"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:inputType="textEmailAddress"
-                    android:ems="10"
-                    tools:ignore="Autofill,LabelFor"/>
-
-            <Button
-                    android:id="@+id/emailChangeButton"
-                    android:text="@string/change_email"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-        </LinearLayout>
+                android:ems="10"/>
 
         <Button
                 android:id="@+id/passwordChangeButton"

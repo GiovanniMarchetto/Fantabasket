@@ -94,24 +94,7 @@ public class ProfileFragment extends Fragment {
 
 
         //profile params
-
         binding.emailProfile.setText(firebaseUser.getEmail());
-
-        binding.emailProfile.addTextChangedListener(AccessActivity.getTextWatcherForValidateEmailField(binding.emailProfile));
-
-        binding.emailChangeButton.setOnClickListener(viewListener -> {
-            String emailUpdate = binding.emailProfile.getText().toString();
-            if (binding.emailProfile.getError() == null && !emailUpdate.equals(firebaseUser.getEmail())) {
-                firebaseUser.updateEmail(emailUpdate)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, getString(R.string.email_changed), Utils.GOOD);
-                            } else {
-                                Utils.showSnackbar(view, getString(R.string.email_not_changed), Utils.ERROR);
-                            }
-                        });
-            }
-        });
 
         binding.passwordChangeButton.setOnClickListener(viewListener -> {
             String emailAddress = firebaseUser.getEmail();
