@@ -2,6 +2,7 @@ package it.units.fantabasket.ui.main;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -94,6 +95,7 @@ public class LeaderboardFragment extends Fragment {
         String[] infoLeaderboard = {"   ", "Team name", "scored", "allowed", "win pt"};
         for (int c = 0; c < columnCount; c++) {
             TextView titleColumn = new TextView(context);
+            titleColumn.setTypeface(Typeface.DEFAULT_BOLD);
             titleColumn.setText(infoLeaderboard[c]);
 
             setGridParams(gridLayout, c, 0, titleColumn);
