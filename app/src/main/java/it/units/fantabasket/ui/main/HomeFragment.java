@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
                 Button startLeagueButton = binding.startLeagueButton;
                 startLeagueButton.setVisibility(View.VISIBLE);
                 if (isUserTheAdminOfLeague && (
-                        (leagueOn.get().getTipologia() == LegaType.CALENDARIO && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
+                        (isLeagueOnCalendarioType && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
                                 || (leagueOn.get().getTipologia() == LegaType.FORMULA1 && leagueOn.get().getPartecipanti().size() > 1))) {
 
                     startLeagueButton.setOnClickListener(viewListener -> initializeAndStartLeague());
@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
 
     @SuppressWarnings("ConstantConditions")
     private void showInfoAboutLeagueForThisUser() {
-        if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+        if (isLeagueOnCalendarioType) {
             binding.nextGameLayout.setVisibility(View.VISIBLE);
 
             HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
                 String posizioneInClassifica = (posizione + 1) + "º";
                 binding.posizioneInClassifica.setText(posizioneInClassifica);
 
-                String parametro = (leagueOn.get().getTipologia() == LegaType.CALENDARIO)
+                String parametro = (isLeagueOnCalendarioType)
                         ? POINTS_OF_VICTORIES : TOTAL_POINTS_SCORED;
                 binding.totalePunti.setText(String.valueOf(classifica.get(posizione).get(parametro)));
                 break;
@@ -151,7 +151,7 @@ public class HomeFragment extends Fragment {
             elementOfClassifica.put(TEAM_NAME, member.teamName);
             elementOfClassifica.put(TOTAL_POINTS_SCORED, 0);
 
-            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+            if (isLeagueOnCalendarioType) {
                 elementOfClassifica.put(TOTAL_POINTS_ALLOWED, 0);
                 elementOfClassifica.put(POINTS_OF_VICTORIES, 0);
             }
@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment {
         }
         legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(classifica);
 
-        if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+        if (isLeagueOnCalendarioType) {
             HashMap<String, List<Game>> campionato = createCalendario(leagueOn.get().getPartecipanti(), giornataInizioLega);
             legheReference.child(legaSelezionata).child(CALENDARIO).setValue(campionato);
         }

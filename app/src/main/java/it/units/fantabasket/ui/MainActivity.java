@@ -21,6 +21,7 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityMainBinding;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.entities.User;
+import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public static String legaSelezionata;
     public static AtomicReference<Lega> leagueOn;//legaSelezionata
     public static boolean isUserTheAdminOfLeague;
+    public static boolean isLeagueOnCalendarioType;
     public static HashMap<String, User> membersLeagueOn;
 
     private MyValueEventListener leagueOnListener;
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             leagueOn = new AtomicReference<>();
             leagueOn.set(DecoderUtil.getLegaFromHashMapOfDB(snapshotLeague.getValue()));
             isUserTheAdminOfLeague = leagueOn.get().getAdmin().equals(firebaseUser.getUid());
+            isLeagueOnCalendarioType = leagueOn.get().getTipologia() == LegaType.CALENDARIO;
 
             removeOldMemberListener();
 

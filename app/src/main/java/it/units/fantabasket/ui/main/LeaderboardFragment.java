@@ -13,6 +13,7 @@ import it.units.fantabasket.databinding.FragmentLeaderboardBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.enums.FieldPositions;
 import it.units.fantabasket.enums.LegaType;
+import it.units.fantabasket.layouts.ExpandCollapseLayout;
 import it.units.fantabasket.layouts.LeaderboardElementLayout;
 import it.units.fantabasket.utils.AssetDecoderUtil;
 import org.jetbrains.annotations.NotNull;
@@ -38,12 +39,13 @@ public class LeaderboardFragment extends Fragment {
         if (legaSelezionata != null) {
             showClassifica(context);
 
-            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
-                showCalendario(context);
-            } else {
-                binding.calendarShortcut.setVisibility(View.GONE);
-            }
+            ExpandCollapseLayout.setExpandCollapseLayout(binding.calendarShortcut, binding.calendarioContainer);
 
+            binding.calendarShortcut.setVisibility((isLeagueOnCalendarioType) ? View.VISIBLE : View.GONE);
+
+            if (isLeagueOnCalendarioType) {
+                loadCalendario(context);
+            }
         } else {
             binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
         }
@@ -99,11 +101,10 @@ public class LeaderboardFragment extends Fragment {
         return elementLayout;
     }
 
-    private void showCalendario(Context context) {
+    private void loadCalendario(Context context) {
         HashMap<String, List<Game>> calendario = leagueOn.get().getCalendario();
 
         if (calendario != null) {
-            binding.calendarioContainer.setVisibility(View.VISIBLE);
             addToCalendarioViewAllRounds(context, calendario);
         }
     }
@@ -136,7 +137,7 @@ public class LeaderboardFragment extends Fragment {
 
         for (int roundToCalculate = firstRoundToCalculate; roundToCalculate < AssetDecoderUtil.currentRound; roundToCalculate++) {
 
-            if (leagueOn.get().getTipologia() == LegaType.CALENDARIO) {
+            if (isLeagueOnCalendarioType) {
                 List<Game> gameListOfRoundToCalculate = leagueOn.get().getCalendario().get(GIORNATA_ + roundToCalculate);
                 calcoloGiornataCalendario(roundToCalculate, gameListOfRoundToCalculate);
                 legheReference.child(legaSelezionata).child(CALENDARIO).child(GIORNATA_ + roundToCalculate).setValue(gameListOfRoundToCalculate);
