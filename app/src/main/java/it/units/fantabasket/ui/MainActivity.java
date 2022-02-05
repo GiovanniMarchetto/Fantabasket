@@ -1,6 +1,8 @@
 package it.units.fantabasket.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,6 +27,7 @@ import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.utils.AssetDecoderUtil;
 import it.units.fantabasket.utils.DecoderUtil;
 import it.units.fantabasket.utils.MyValueEventListener;
+import it.units.fantabasket.utils.NetworkChangeReceiver;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -61,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BroadcastReceiver receiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        this.registerReceiver(receiver, filter);
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

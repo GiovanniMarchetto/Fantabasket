@@ -1,6 +1,8 @@
 package it.units.fantabasket.ui.access;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +15,6 @@ import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityAccessBinding;
 import it.units.fantabasket.entities.User;
 import it.units.fantabasket.ui.MainActivity;
-import it.units.fantabasket.ui.NoConnectionActivity;
 import it.units.fantabasket.utils.NetworkChangeReceiver;
 import it.units.fantabasket.utils.TextWatcherAfterChange;
 import it.units.fantabasket.utils.Utils;
@@ -56,6 +57,12 @@ public class AccessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BroadcastReceiver receiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        this.registerReceiver(receiver, filter);
+
         accessBinding = ActivityAccessBinding.inflate(getLayoutInflater());
         setContentView(accessBinding.getRoot());
 
@@ -120,13 +127,10 @@ public class AccessActivity extends AppCompatActivity {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();//inizializzo
 
-        boolean isConnect = NetworkChangeReceiver.isNetworkAvailable(getApplicationContext());
+        boolean isConnect = NetworkChangeReceiver.isNetworkAvailable(this);
 
         if (isConnect) {
             passToMainActivityIfUserNotNull();
-        } else {
-            Intent intent = new Intent(this, NoConnectionActivity.class);
-            startActivity(intent);
         }
     }
 

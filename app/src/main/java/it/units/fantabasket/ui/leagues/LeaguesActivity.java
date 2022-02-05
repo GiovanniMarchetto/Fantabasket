@@ -2,7 +2,9 @@ package it.units.fantabasket.ui.leagues;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.ActivityLeaguesBinding;
 import it.units.fantabasket.ui.MainActivity;
+import it.units.fantabasket.utils.NetworkChangeReceiver;
 import org.jetbrains.annotations.NotNull;
 
 public class LeaguesActivity extends AppCompatActivity {
@@ -30,6 +33,11 @@ public class LeaguesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BroadcastReceiver receiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        this.registerReceiver(receiver, filter);
 
         firebaseUserLeagues = FirebaseAuth.getInstance().getCurrentUser();
         userDataReferenceInLeagues = FirebaseDatabase.getInstance().getReference("users").child(firebaseUserLeagues.getUid());
