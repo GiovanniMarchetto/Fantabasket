@@ -21,7 +21,7 @@
                 android:layout_height="@dimen/min_touch_48dp"
                 android:textSize="@dimen/text_size_20"
                 android:drawableEnd="@drawable/ic_calendar"
-                android:background="@drawable/rounded_corners"
+                android:background="@color/orange_300"
                 android:clickable="true"
                 android:focusable="true"/>
 

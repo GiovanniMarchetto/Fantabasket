@@ -3,13 +3,19 @@
     <color name="listPlayerBackGround">#B3B3B3</color>
     <color name="lightGrey">#878787</color>
     <color name="deepGrey">#515151</color>
-    <color name="verdeAcqua">#A7FFEB</color>
+    <color name="verdeAcqua">#6EBBA9</color>
 
     <color name="orange_200">#FFCC80</color>
     <color name="orange_300">#FFB74D</color>
     <color name="orange">#FFA300</color>
     <color name="deepOrange">#C87C0B</color>
     <color name="moreDeepOrange">#9F6105</color>
+
+    <color name="orange_basket">#B54213</color>
+    <color name="orange_soft_basket">#E47041</color>
+    <color name="orange_light_basket">#FF9B6F</color>
+    <color name="pink_basket">#EF7F4D</color>
+    <color name="black_basket">#161616</color>
 
     <color name="teal_100">#B2EBF2</color>
     <color name="deepBlue">#133A53</color>

@@ -2,12 +2,12 @@
 
     <style name="Theme.Fantabasket" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/orange_soft_basket</item>
+        <item name="colorPrimaryVariant">@color/orange_basket</item>
+        <item name="colorOnPrimary">@color/black_basket</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/orange</item>
-        <item name="colorSecondaryVariant">@color/deepOrange</item>
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_700</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
