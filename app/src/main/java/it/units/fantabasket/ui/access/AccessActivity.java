@@ -6,8 +6,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,9 +30,6 @@ public class AccessActivity extends AppCompatActivity {
 
     private ActivityAccessBinding accessBinding;
     private FirebaseAuth mAuth;
-    private Fragment loginFragment;
-    private Fragment registrationFragment;
-    private FragmentTransaction transaction;
 
     @NotNull
     public static TextWatcherAfterChange getTextWatcherForValidatePassword(EditText editText) {
@@ -66,9 +65,6 @@ public class AccessActivity extends AppCompatActivity {
         accessBinding = ActivityAccessBinding.inflate(getLayoutInflater());
         setContentView(accessBinding.getRoot());
 
-        loginFragment = new LoginFragment();
-        registrationFragment = new RegistrationFragment();
-
         accessBinding.userEmail.addTextChangedListener(
                 getTextWatcherForValidateEmailField(accessBinding.userEmail));
 
@@ -91,16 +87,18 @@ public class AccessActivity extends AppCompatActivity {
             }
         });
 
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_access);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.LoginFragment, R.id.RegistrationFragment).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         accessBinding.loginRegistrationSwitch.setOnCheckedChangeListener((compoundButton, fromLoginToRegister) -> {
-            transaction = getSupportFragmentManager().beginTransaction();
             if (fromLoginToRegister) {
                 accessBinding.actionButton.setText(getString(R.string.register));
-                transaction.replace(R.id.access_fragment_container, registrationFragment);
+                navController.navigate(R.id.action_LoginFragment_to_RegistrationFragment);
             } else {
                 accessBinding.actionButton.setText(getString(R.string.login));
-                transaction.replace(R.id.access_fragment_container, loginFragment);
+                navController.navigate(R.id.action_RegistrationFragment_to_LoginFragment);
             }
-            transaction.commit();
         });
     }
 

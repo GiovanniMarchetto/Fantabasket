@@ -83,6 +83,7 @@ public class Utils {
                             }
 
                             imageView.setImageBitmap(bitmap);
+                            imageView.setVisibility(View.VISIBLE);
                             Log.i(MIO_TAG, "LOGO-- prima: " + original.getByteCount()
                                     + " --> " + bitmap.getByteCount() + " --> baos " + imageBytes.length);
                         } catch (IOException e) {
