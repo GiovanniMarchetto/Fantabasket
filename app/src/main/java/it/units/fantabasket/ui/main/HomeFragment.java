@@ -42,6 +42,8 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (user != null) {
+            binding.posizioneInClassifica.setText("");
+            binding.totalePunti.setText("");
             binding.teamName.setText(user.teamName);
 
             Bitmap decodedByte = Utils.getBitmapFromBase64(user.teamLogo);
