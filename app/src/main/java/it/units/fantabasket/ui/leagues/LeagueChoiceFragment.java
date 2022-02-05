@@ -92,6 +92,8 @@ public class LeagueChoiceFragment extends Fragment {
                         numLeghePartecipate.getAndIncrement();
                         idActionDescription = R.string.seleziona_lega;
                         binding.leghePartecipate.addView(legaLayout.getLegaHeaderLayout());
+                    } else if (lega.getPartecipanti().size() == lega.getNumPartecipanti()) {
+                        continue;
                     } else {
                         numLegheDisponibili.getAndIncrement();
                         idActionDescription = R.string.unisciti_lega;
