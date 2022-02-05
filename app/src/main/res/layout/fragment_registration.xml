@@ -37,25 +37,18 @@
             android:hint="@string/team_name"
             tools:ignore="Autofill"/>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_8dp"
-            android:gravity="center_horizontal">
+    <Button
+            android:id="@+id/teamLogoButton"
+            android:text="@string/team_logo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <ImageView
-                android:id="@+id/teamLogoImage"
-                android:layout_gravity="center"
-                android:layout_width="@dimen/logo_dimension"
-                android:layout_height="@dimen/logo_dimension"
-                android:contentDescription="@string/team_logo_image"/>
-
-        <Button
-                android:id="@+id/teamLogoButton"
-                android:text="@string/team_logo"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-    </LinearLayout>
+    <ImageView
+            android:id="@+id/teamLogoImage"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="@dimen/logo_dimension"
+            android:layout_height="@dimen/logo_dimension"
+            android:contentDescription="@string/team_logo_image"/>
 </LinearLayout>
