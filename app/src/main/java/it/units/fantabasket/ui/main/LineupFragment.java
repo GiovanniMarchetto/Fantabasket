@@ -168,6 +168,12 @@ public class LineupFragment extends Fragment {
         lineup = new HashMap<>(lineupSize);
         rosterOfPlayers = new ArrayList<>();
 
+        if (user.roster != null) {
+            for (String playerId : user.roster) {
+                rosterOfPlayers.add(completePlayersList.get(playerId));
+            }
+        }
+
         if (user.formazioniPerGiornata != null &&
                 user.formazioniPerGiornata.get(GIORNATA_ + AssetDecoderUtil.currentRound) != null) {
 
@@ -176,19 +182,18 @@ public class LineupFragment extends Fragment {
 
             for (FieldPositions position : formazioneSalvata.keySet()) {
                 String playerId = formazioneSalvata.get(position);
-                Player player = completePlayersList.get(playerId);
+                if (user.roster != null && user.roster.contains(playerId)) {
+                    Player player = completePlayersList.get(playerId);
 
-                lineup.put(position, player);
-                occupyPositionField(playerOnFieldLayoutHashMap.get(position), player);
+                    lineup.put(position, player);
+                    occupyPositionField(playerOnFieldLayoutHashMap.get(position), player);
+                } else {
+                    lineup.put(position, null);
+                }
             }
         } else {
             for (FieldPositions position : FieldPositions.values()) {
                 lineup.put(position, null);
-            }
-        }
-        if (user.roster != null) {
-            for (String playerId : user.roster) {
-                rosterOfPlayers.add(completePlayersList.get(playerId));
             }
         }
     }
