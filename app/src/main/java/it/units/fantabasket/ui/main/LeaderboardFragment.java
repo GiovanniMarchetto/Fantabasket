@@ -70,10 +70,8 @@ public class LeaderboardFragment extends Fragment {
         List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
         if (classifica != null) {
-            for (int i = 1; i < classifica.size(); i++) {
-                HashMap<String, Object> element = classifica.get(i);
-                int totalPointsScored = (int) element.get(TOTAL_POINTS_SCORED);
-                LeaderboardElementLayout elementLayout = getLeaderboardElementLayout(context, i, element, totalPointsScored);
+            for (int i = 0; i < classifica.size(); i++) {
+                LeaderboardElementLayout elementLayout = getLeaderboardElementLayout(context, i, classifica.get(i));
                 binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
             }
         } else {
@@ -83,11 +81,14 @@ public class LeaderboardFragment extends Fragment {
 
     @NotNull
     private LeaderboardElementLayout getLeaderboardElementLayout(
-            Context context, int i, HashMap<String, Object> element, int totalPointsScored) {
+            Context context, int i, HashMap<String, Object> element) {
+
+        int totalPointsScored = (int) element.get(TOTAL_POINTS_SCORED);
+
         LeaderboardElementLayout elementLayout;
         if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
             elementLayout = new LeaderboardElementLayout(context,
-                    i, (String) element.get(TEAM_NAME), totalPointsScored);
+                    i + 1, (String) element.get(TEAM_NAME), totalPointsScored);
         } else {
             int totalPointsAllowed = (int) element.get(TOTAL_POINTS_ALLOWED);
             int pointsOfVictories = (int) element.get(POINTS_OF_VICTORIES);
@@ -109,15 +110,19 @@ public class LeaderboardFragment extends Fragment {
 
 
     private void addToCalendarioViewAllRounds(Context context, HashMap<String, List<Game>> calendario) {
-        for (String key : calendario.keySet()) {
+        for (int indexRound = 1; indexRound <= calendario.size(); indexRound++) {
             TextView titleGiornata = new TextView(context);
-            titleGiornata.setBackgroundColor(getResources().getColor(R.color.deepBlue, context.getTheme()));
+            titleGiornata.setBackgroundColor(getResources().getColor(R.color.deepGrey, context.getTheme()));
             titleGiornata.setTextColor(Color.WHITE);
-            titleGiornata.setText(key);
+            titleGiornata.setPadding(15, 0, 0, 0);
+            final String roundDescription = context.getString(R.string.round) + " " + indexRound;
+            titleGiornata.setText(roundDescription);
             binding.calendarioContainer.addView(titleGiornata);
 
-            for (Game game : calendario.get(key)) {
-                String gameString = game.homeUserId + " " + game.homePoints + " - " + game.awayPoints + " " + game.awayUserId;
+            for (Game game : calendario.get(GIORNATA_ + indexRound)) {
+                final String homeUserId = membersLeagueOn.get(game.homeUserId).teamName;
+                final String awayUserId = membersLeagueOn.get(game.awayUserId).teamName;
+                String gameString = homeUserId + " " + game.homePoints + " - " + game.awayPoints + " " + awayUserId;
                 TextView gameTextView = new TextView(context);
                 gameTextView.setText(gameString);
                 gameTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
