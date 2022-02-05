@@ -143,4 +143,5 @@
     <string name="no_more_space">NON CI SONO POSTI</string>
     <string name="open_maps">Active localization and open Maps for the actual position</string>
     <string name="round">round</string>
+    <string name="reset_password">Reset password</string>
 </resources>

@@ -4,5 +4,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".ui.access.LoginFragment">
+
+    <Button
+            android:id="@+id/lostPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/min_touch_48dp"
+            app:backgroundTint="@color/purple_200"
+            android:textColor="@color/black"
+            android:text="@string/reset_password"/>
 </LinearLayout>

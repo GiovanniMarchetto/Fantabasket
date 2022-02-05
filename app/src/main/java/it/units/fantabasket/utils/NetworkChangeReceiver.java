@@ -27,7 +27,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        Log.e("Sulod sa network reciever", "Sulod sa network reciever");
         if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkRequest networkRequest = new NetworkRequest.Builder().build();

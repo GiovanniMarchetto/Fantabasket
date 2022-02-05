@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import it.units.fantabasket.databinding.FragmentLoginBinding;
+import it.units.fantabasket.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -22,6 +23,9 @@ public class LoginFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        loginBinding.lostPasswordButton.setOnClickListener(viewListener ->
+                Utils.sendEmailForResetPassword(view, AccessActivity.email));
     }
 
     @Override

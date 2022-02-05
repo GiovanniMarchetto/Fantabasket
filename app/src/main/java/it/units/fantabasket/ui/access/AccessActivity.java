@@ -2,7 +2,6 @@ package it.units.fantabasket.ui.access;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -24,6 +23,8 @@ import static it.units.fantabasket.utils.Utils.ERROR;
 
 public class AccessActivity extends AppCompatActivity {
 
+    public static String email = null;
+
     private ActivityAccessBinding accessBinding;
     private FirebaseAuth mAuth;
     private Fragment loginFragment;
@@ -42,7 +43,11 @@ public class AccessActivity extends AppCompatActivity {
     @NotNull
     public static TextWatcherAfterChange getTextWatcherForValidateEmailField(EditText editText) {
         return editable -> {
-            if (!editable.toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) {
+            final String emailUpdate = editable.toString();
+            if (emailUpdate.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) {
+                email = emailUpdate;
+            } else {
+                email = null;
                 editText.setError(editText.getContext().getString(R.string.invalid_email_address));
             }
         };
@@ -116,7 +121,6 @@ public class AccessActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();//inizializzo
 
         boolean isConnect = NetworkChangeReceiver.isNetworkAvailable(getApplicationContext());
-        Log.i("MIO", "Connessione: " + isConnect);
 
         if (isConnect) {
             passToMainActivityIfUserNotNull();

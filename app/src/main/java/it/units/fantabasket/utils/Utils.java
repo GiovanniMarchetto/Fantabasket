@@ -26,8 +26,11 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.*;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import it.units.fantabasket.R;
 import it.units.fantabasket.entities.Lega;
 import it.units.fantabasket.layouts.LegaLayout;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -173,17 +176,15 @@ public class Utils {
 
         locationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Log.i("MIO", "risultati attivari");
+            public void onLocationResult(@NotNull LocationResult locationResult) {
                 Location location = null;
-                if (locationResult != null) {
-                    final List<Location> locationList = locationResult.getLocations();
-                    if (locationList.size() > 0) {
-                        location = locationList.get(locationList.size() - 1);
-                    }
-
-                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                final List<Location> locationList = locationResult.getLocations();
+                if (locationList.size() > 0) {
+                    location = locationList.get(locationList.size() - 1);
                 }
+
+                fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
                 updateLocationInterface.updateLocation(location, legaLinearLayoutHashMap);
             }
         };
@@ -191,4 +192,18 @@ public class Utils {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
 
+    public static void sendEmailForResetPassword(@NotNull View view, String email) {
+        if (email != null) {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            showSnackbar(view, view.getContext().getString(it.units.fantabasket.R.string.email_for_password_reset_sent), GOOD);
+                        } else {
+                            showSnackbar(view, view.getContext().getString(it.units.fantabasket.R.string.email_for_reset_password_not_sent), ERROR);
+                        }
+                    });
+        } else {
+            showSnackbar(view, view.getContext().getString(R.string.email_of_user_account_null), ERROR);
+        }
+    }
 }

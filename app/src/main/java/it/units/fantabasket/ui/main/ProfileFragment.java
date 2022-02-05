@@ -98,18 +98,7 @@ public class ProfileFragment extends Fragment {
 
         binding.passwordChangeButton.setOnClickListener(viewListener -> {
             String emailAddress = firebaseUser.getEmail();
-            if (emailAddress != null) {
-                FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Utils.showSnackbar(view, getString(R.string.email_for_password_reset_sent), Utils.GOOD);
-                            } else {
-                                Utils.showSnackbar(view, getString(R.string.email_for_reset_password_not_sent), Utils.ERROR);
-                            }
-                        });
-            } else {
-                Utils.showSnackbar(view, getString(R.string.email_of_user_account_null), Utils.ERROR);
-            }
+            Utils.sendEmailForResetPassword(view, emailAddress);
         });
 
         binding.exitButton.setOnClickListener(viewListener -> returnToLogin());
