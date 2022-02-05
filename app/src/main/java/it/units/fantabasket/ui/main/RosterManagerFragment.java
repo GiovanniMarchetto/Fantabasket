@@ -1,7 +1,6 @@
 package it.units.fantabasket.ui.main;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -194,8 +193,8 @@ public class RosterManagerFragment extends Fragment {
         costView.setPadding(15, 0, 15, 0);
         playerLayout.getRightLinearLayout().addView(costView, 1);
 
-        int colorTake = Color.parseColor("#66BB6A");
-        int colorFree = rosterContext.getColor(R.color.listPlayerBackGround);
+        int colorTake = rosterContext.getColor(R.color.green_400);
+        int colorFree = rosterContext.getColor(R.color.orange_light_basket);
 
         GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
         if (newRoster.contains(player.getId())) {
