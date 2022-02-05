@@ -81,6 +81,8 @@ public class HomeFragment extends Fragment {
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeNextGame, binding.teamHomeNextGame, binding.pointsHomeNextGame,
                         binding.logoAwayNextGame, binding.teamAwayNextGame, binding.pointsAwayNextGame);
+            } else {
+                binding.nextGameLayout.setVisibility(View.GONE);
             }
 
             final int previousRound = currentRound - 1;
@@ -92,6 +94,8 @@ public class HomeFragment extends Fragment {
                 setGameLayout(partiteDellaGiornata,
                         binding.logoHomeLastGame, binding.teamHomeLastGame, binding.pointsHomeLastGame,
                         binding.logoAwayLastGame, binding.teamAwayLastGame, binding.pointsAwayLastGame);
+            } else {
+                binding.lastGameLayout.setVisibility(View.GONE);
             }
         }
 
