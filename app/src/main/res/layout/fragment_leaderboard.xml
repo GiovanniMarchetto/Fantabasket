@@ -31,22 +31,25 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_8dp"
                 android:orientation="vertical"/>
-        
+
+        <TextView
+                android:id="@+id/leaderboardShortcut"
+                android:text="@string/title_leaderboard"
+                android:padding="@dimen/padding_8dp"
+                android:textSize="@dimen/text_size_20"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/min_touch_48dp"
+                android:layout_marginTop="@dimen/basic_margin_16dp"
+                android:textColor="@color/white"
+                android:drawableEnd="@drawable/ic_podium_white"
+                android:background="@drawable/rounded_corners_blue"/>
+
         <LinearLayout
-                android:id="@+id/leaderboard"
+                android:id="@+id/leaderboardContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/padding_8dp">
-
-            <TextView
-                    android:text="@string/title_leaderboard"
-                    android:padding="@dimen/padding_8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:background="@color/deepBlue"/>
-        </LinearLayout>
+                android:layout_marginTop="@dimen/padding_8dp"/>
 
         <Button
                 android:id="@+id/updateLeaderboardButton"

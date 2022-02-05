@@ -3,18 +3,19 @@ package it.units.fantabasket.ui.main;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import it.units.fantabasket.R;
 import it.units.fantabasket.databinding.FragmentLeaderboardBinding;
 import it.units.fantabasket.entities.Game;
 import it.units.fantabasket.enums.FieldPositions;
-import it.units.fantabasket.enums.LegaType;
 import it.units.fantabasket.layouts.ExpandCollapseLayout;
-import it.units.fantabasket.layouts.LeaderboardElementLayout;
+import it.units.fantabasket.layouts.LeaderboardElementHelper;
 import it.units.fantabasket.utils.AssetDecoderUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,8 @@ public class LeaderboardFragment extends Fragment {
         binding = FragmentLeaderboardBinding.inflate(inflater, container, false);
         Context context = getContext();
 
-        if (legaSelezionata != null) {
+        if (legaSelezionata != null && leagueOn != null
+                && leagueOn.get() != null && membersLeagueOn.size() == leagueOn.get().getNumPartecipanti()) {
             showClassifica(context);
 
             ExpandCollapseLayout.setExpandCollapseLayout(binding.calendarShortcut, binding.calendarioContainer);
@@ -47,7 +49,7 @@ public class LeaderboardFragment extends Fragment {
                 loadCalendario(context);
             }
         } else {
-            binding.leaderboard.addView(getBaseTextView(context, R.string.not_league_selected));
+            binding.leaderboardContainer.addView(getBaseTextView(context, R.string.not_league_selected));
         }
 
         if (isUserTheAdminOfLeague) {
@@ -71,34 +73,76 @@ public class LeaderboardFragment extends Fragment {
     private void showClassifica(Context context) {
         List<HashMap<String, Object>> classifica = leagueOn.get().getClassifica();
 
+
         if (classifica != null) {
-            for (int i = 0; i < classifica.size(); i++) {
-                LeaderboardElementLayout elementLayout = getLeaderboardElementLayout(context, i, classifica.get(i));
-                binding.leaderboard.addView(elementLayout.getLeaderboardElementLayout());
-            }
+            binding.leaderboardContainer.addView(getLeaderboardGrid(classifica));
         } else {
-            binding.leaderboard.addView(getBaseTextView(context, R.string.not_started_yet));
+            binding.leaderboardContainer.addView(getBaseTextView(context, R.string.not_started_yet));
         }
     }
 
+    private GridLayout getLeaderboardGrid(List<HashMap<String, Object>> classifica) {
+        final Context context = getContext();
+        GridLayout gridLayout = new GridLayout(context);
+        gridLayout.setAlignmentMode(GridLayout.ALIGN_BOUNDS);
+
+        final int columnCount = isLeagueOnCalendarioType ? 5 : 2;
+        gridLayout.setColumnCount(columnCount);
+        final int rowCount = classifica.size() + 1;
+        gridLayout.setRowCount(rowCount);
+
+        String[] infoLeaderboard = {"   ", "Team name", "scored", "allowed", "win pt"};
+        for (int c = 0; c < columnCount; c++) {
+            TextView titleColumn = new TextView(context);
+            titleColumn.setText(infoLeaderboard[c]);
+
+            setGridParams(gridLayout, c, 0, titleColumn);
+        }
+
+        for (int r = 1; r < rowCount; r++) {
+            List<TextView> elementLeaderboard = getLeaderboardElement(context, r, classifica.get(r - 1));
+
+            for (int c = 0; c < columnCount; c++) {
+                TextView element = elementLeaderboard.get(c);
+                setGridParams(gridLayout, c, r, element);
+            }
+        }
+        return gridLayout;
+    }
+
+    private void setGridParams(GridLayout gridLayout, int col, int row, TextView textView) {
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        gridLayout.addView(textView);
+        GridLayout.LayoutParams param = new GridLayout.LayoutParams();
+        param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        param.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        param.setMargins(5, 5, 5, 0);
+        param.setGravity(Gravity.CENTER);
+        param.columnSpec = GridLayout.spec(col, GridLayout.FILL);
+        param.rowSpec = GridLayout.spec(row);
+        textView.setLayoutParams(param);
+    }
+
     @NotNull
-    private LeaderboardElementLayout getLeaderboardElementLayout(
-            Context context, int i, HashMap<String, Object> element) {
+    private List<TextView> getLeaderboardElement(
+            Context context, int position, HashMap<String, Object> element) {
 
         int totalPointsScored = (int) element.get(TOTAL_POINTS_SCORED);
+        final String teamName = (String) element.get(TEAM_NAME);
 
-        LeaderboardElementLayout elementLayout;
-        if (leagueOn.get().getTipologia() == LegaType.FORMULA1) {
-            elementLayout = new LeaderboardElementLayout(context,
-                    i + 1, (String) element.get(TEAM_NAME), totalPointsScored);
-        } else {
+        LeaderboardElementHelper elementLayout;
+        if (isLeagueOnCalendarioType) {
             int totalPointsAllowed = (int) element.get(TOTAL_POINTS_ALLOWED);
             int pointsOfVictories = (int) element.get(POINTS_OF_VICTORIES);
-            elementLayout = new LeaderboardElementLayout(context,
-                    i, (String) element.get(TEAM_NAME), totalPointsScored,
+
+            elementLayout = new LeaderboardElementHelper(context,
+                    position, teamName, totalPointsScored,
                     totalPointsAllowed, pointsOfVictories);
+        } else {
+            elementLayout = new LeaderboardElementHelper(context,
+                    position, teamName, totalPointsScored);
         }
-        return elementLayout;
+        return elementLayout.getLeaderboardElementList();
     }
 
     private void loadCalendario(Context context) {
@@ -150,7 +194,7 @@ public class LeaderboardFragment extends Fragment {
         }
 
         List<HashMap<String, Object>> orderClassifica =
-                reorderClassificaFromLegaType(classifica, leagueOn.get().getTipologia());
+                reorderClassificaFromLegaType(classifica);
 
         legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(orderClassifica);
         legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(AssetDecoderUtil.currentRound - 1);
@@ -178,32 +222,39 @@ public class LeaderboardFragment extends Fragment {
     }
 
     @NotNull
-    private List<HashMap<String, Object>> reorderClassificaFromLegaType(List<HashMap<String, Object>> classifica, LegaType legaType) {
+    private List<HashMap<String, Object>> reorderClassificaFromLegaType(List<HashMap<String, Object>> classifica) {
         final int classificaSize = classifica.size();
         List<HashMap<String, Object>> classificaUpdate = new ArrayList<>(classificaSize);
 
         for (int i = 0; i < classificaSize; i++) {
             HashMap<String, Object> moreHighMember = classifica.get(0);
             for (HashMap<String, Object> hashMap : classifica) {
-                if (!classificaUpdate.contains(hashMap)) {
-                    if (legaType == LegaType.CALENDARIO) {
-                        if ((int) hashMap.get(POINTS_OF_VICTORIES) > (int) moreHighMember.get(POINTS_OF_VICTORIES) ||
-                                ((int) hashMap.get(POINTS_OF_VICTORIES) == (int) moreHighMember.get(POINTS_OF_VICTORIES) &&
-                                        (int) hashMap.get(TOTAL_POINTS_SCORED) == (int) moreHighMember.get(TOTAL_POINTS_SCORED))) {
-                            moreHighMember = hashMap;
-                        }
-                    } else {
-                        if ((int) hashMap.get(TOTAL_POINTS_SCORED) > (int) moreHighMember.get(TOTAL_POINTS_SCORED)) {
-                            moreHighMember = hashMap;
-                        }
-                    }
-
+                if (!classificaUpdate.contains(hashMap) && isMoreHigherInLeaderboard(moreHighMember, hashMap)) {
+                    moreHighMember = hashMap;
                 }
             }
             classificaUpdate.add(moreHighMember);
             classifica.remove(moreHighMember);
         }
         return classificaUpdate;
+    }
+
+    private boolean isMoreHigherInLeaderboard(HashMap<String, Object> moreHighMember, HashMap<String, Object> hashMap) {
+        boolean isMoreHigherInLeaderboard;
+        final boolean moreTotalPointsScored = (int) hashMap.get(TOTAL_POINTS_SCORED) > (int) moreHighMember.get(TOTAL_POINTS_SCORED);
+
+        if (isLeagueOnCalendarioType) {
+            final boolean moreWinPoints = (int) hashMap.get(POINTS_OF_VICTORIES) > (int) moreHighMember.get(POINTS_OF_VICTORIES);
+            final boolean equalWinPoints = (int) hashMap.get(POINTS_OF_VICTORIES) == (int) moreHighMember.get(POINTS_OF_VICTORIES);
+            final boolean equalTotalPointsScored = (int) hashMap.get(TOTAL_POINTS_SCORED) == (int) moreHighMember.get(TOTAL_POINTS_SCORED);
+            final boolean lessTotalPointsAllowed = (int) hashMap.get(TOTAL_POINTS_ALLOWED) < (int) moreHighMember.get(TOTAL_POINTS_ALLOWED);
+
+            isMoreHigherInLeaderboard = moreWinPoints || (equalWinPoints && moreTotalPointsScored)
+                    || (equalWinPoints && equalTotalPointsScored && lessTotalPointsAllowed);
+        } else {
+            isMoreHigherInLeaderboard = moreTotalPointsScored;
+        }
+        return isMoreHigherInLeaderboard;
     }
 
     private void updateClassificaLegaCalendario(List<HashMap<String, Object>> classifica, List<Game> gameList) {
