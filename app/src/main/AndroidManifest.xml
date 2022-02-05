@@ -17,6 +17,7 @@
             android:theme="@style/Theme.Fantabasket">
         <activity
                 android:name=".ui.NoConnectionActivity"
+                android:theme="@style/Theme.Fantabasket.NoActionBar"
                 android:exported="true"/>
 
         <receiver
