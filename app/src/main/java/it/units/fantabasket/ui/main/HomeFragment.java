@@ -50,10 +50,12 @@ public class HomeFragment extends Fragment {
 
         if (leagueOn != null) {
             binding.legaName.setText(leagueOn.get().getName());
+            Button startLeagueButton = binding.startLeagueButton;
+
             if (leagueOn.get().isStarted()) {
+                startLeagueButton.setVisibility(View.GONE);
                 showInfoAboutLeagueForThisUser();
             } else {
-                Button startLeagueButton = binding.startLeagueButton;
                 startLeagueButton.setVisibility(View.VISIBLE);
                 if (isUserTheAdminOfLeague && (
                         (isLeagueOnCalendarioType && leagueOn.get().getPartecipanti().size() == leagueOn.get().getNumPartecipanti())
