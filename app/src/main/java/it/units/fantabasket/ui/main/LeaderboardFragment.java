@@ -86,7 +86,7 @@ public class LeaderboardFragment extends Fragment {
         GridLayout gridLayout = new GridLayout(context);
         gridLayout.setAlignmentMode(GridLayout.ALIGN_BOUNDS);
 
-        final int columnCount = isLeagueOnCalendarioType ? 5 : 2;
+        final int columnCount = isLeagueOnCalendarioType ? 5 : 3;
         gridLayout.setColumnCount(columnCount);
         final int rowCount = classifica.size() + 1;
         gridLayout.setRowCount(rowCount);
@@ -118,7 +118,7 @@ public class LeaderboardFragment extends Fragment {
         param.width = GridLayout.LayoutParams.WRAP_CONTENT;
         param.setMargins(5, 5, 5, 0);
         param.setGravity(Gravity.CENTER);
-        param.columnSpec = GridLayout.spec(col, GridLayout.FILL);
+        param.columnSpec = GridLayout.spec(col, GridLayout.FILL, 1f);
         param.rowSpec = GridLayout.spec(row);
         textView.setLayoutParams(param);
     }
