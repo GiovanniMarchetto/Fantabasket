@@ -118,6 +118,8 @@ public class ProfileFragment extends Fragment {
     private void returnToLogin() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
+        Utils.teamLogoBase64 = "";
+
         Intent intent = new Intent(activity, AccessActivity.class);
         startActivity(intent);
         activity.finish();

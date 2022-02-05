@@ -8,11 +8,12 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 public interface MyValueEventListener extends ValueEventListener {
+    String TAG_EVENT_LISTENER = "MIO-ERRORE";
 
     void onDataChange(@NonNull @NotNull DataSnapshot snapshot);
 
     @Override
     default void onCancelled(@NonNull @NotNull DatabaseError error) {
-        Log.w("MIO-ERRORE", error.getMessage() + System.lineSeparator() + error.getDetails());
+        Log.w(TAG_EVENT_LISTENER, error.getMessage() + System.lineSeparator() + error.getDetails());
     }
 }
