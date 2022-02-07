@@ -134,7 +134,7 @@
 
                     <TextView
                             android:id="@+id/teamHomeNextGame"
-                            android:text="@string/hometeam"
+                            android:text="@string/homeTeam"
                             android:textSize="@dimen/text_size_20"
                             android:textColor="@color/black"
                             android:layout_width="match_parent"
@@ -183,7 +183,7 @@
 
                     <TextView
                             android:id="@+id/teamAwayNextGame"
-                            android:text="@string/awayteam"
+                            android:text="@string/awayTeam"
                             android:textSize="@dimen/text_size_20"
                             android:textColor="@color/black"
                             android:layout_width="match_parent"
@@ -249,7 +249,7 @@
 
                     <TextView
                             android:id="@+id/teamHomeLastGame"
-                            android:text="@string/hometeam"
+                            android:text="@string/homeTeam"
                             android:textSize="@dimen/text_size_20"
                             android:textColor="@color/white"
                             android:layout_width="match_parent"
@@ -298,7 +298,7 @@
 
                     <TextView
                             android:id="@+id/teamAwayLastGame"
-                            android:text="@string/awayteam"
+                            android:text="@string/awayTeam"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_20"
                             android:layout_width="match_parent"

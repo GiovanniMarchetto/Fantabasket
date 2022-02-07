@@ -8,7 +8,7 @@
     <fragment
             android:id="@+id/LeagueChoiceFragment"
             android:name="it.units.fantabasket.ui.leagues.LeagueChoiceFragment"
-            android:label="@string/league_choice_fragment_label"
+            android:label="@string/title_league_choice"
             tools:layout="@layout/fragment_league_choice">
 
         <action
@@ -18,7 +18,7 @@
     <fragment
             android:id="@+id/LeagueCreationFragment"
             android:name="it.units.fantabasket.ui.leagues.LeagueCreationFragment"
-            android:label="@string/league_creation_fragment_label"
+            android:label="@string/title_league_creation"
             tools:layout="@layout/fragment_league_creation">
 
         <action

@@ -8,7 +8,7 @@
     <fragment
             android:id="@+id/LoginFragment"
             android:name="it.units.fantabasket.ui.access.LoginFragment"
-            android:label="@string/login_fragment_label"
+            android:label="@string/title_login"
             tools:layout="@layout/fragment_login">
 
         <action
@@ -18,7 +18,7 @@
     <fragment
             android:id="@+id/RegistrationFragment"
             android:name="it.units.fantabasket.ui.access.RegistrationFragment"
-            android:label="@string/registration_fragment_label"
+            android:label="@string/title_registration"
             tools:layout="@layout/fragment_registration">
 
         <action
