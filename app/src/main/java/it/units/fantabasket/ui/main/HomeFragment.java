@@ -213,14 +213,14 @@ public class HomeFragment extends Fragment {
                 allCouples.removeAll(partiteAndata);
 
                 final boolean homeOrAwayFactor = Math.random() < 0.5;
-                i = i + primaGiornata - 1;
-                j = j + primaGiornata - 1;
-                if (i <= ultimaGiornata) {
-                    campionato.put(GIORNATA_ + i, (homeOrAwayFactor) ? partiteAndata : partiteRitorno);
-                    ultimaGiornataCreata = i;
-                    if (j <= ultimaGiornata) {
-                        campionato.put(GIORNATA_ + j, (homeOrAwayFactor) ? partiteRitorno : partiteAndata);
-                        ultimaGiornataCreata = j;
+                int nuovaGiornataAndata = i + primaGiornata - 1;
+                int nuovaGiornataRitorno = j + primaGiornata - 1;
+                if (nuovaGiornataAndata <= ultimaGiornata) {
+                    campionato.put(GIORNATA_ + nuovaGiornataAndata, (homeOrAwayFactor) ? partiteAndata : partiteRitorno);
+                    ultimaGiornataCreata = Math.max(ultimaGiornataCreata, nuovaGiornataAndata);
+                    if (nuovaGiornataRitorno <= ultimaGiornata) {
+                        campionato.put(GIORNATA_ + nuovaGiornataRitorno, (homeOrAwayFactor) ? partiteRitorno : partiteAndata);
+                        ultimaGiornataCreata = Math.max(ultimaGiornataCreata, nuovaGiornataRitorno);
                     }
                 }
             }
