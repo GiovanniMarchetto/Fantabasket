@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static it.units.fantabasket.ui.MainActivity.*;
+import static it.units.fantabasket.utils.AssetDecoderUtil.numberOfGamesInTheSeason;
 import static it.units.fantabasket.utils.DecoderUtil.*;
 
 @SuppressWarnings({"ConstantConditions", "unchecked"})
@@ -157,7 +158,7 @@ public class LeaderboardFragment extends Fragment {
 
 
     private void addToCalendarioViewAllRounds(Context context, HashMap<String, List<Game>> calendario) {
-        for (int indexRound = 1; indexRound <= calendario.size(); indexRound++) {
+        for (int indexRound = leagueOn.get().getGiornataInizio(); indexRound <= numberOfGamesInTheSeason; indexRound++) {
             TextView titleGiornata = new TextView(context);
             titleGiornata.setBackgroundColor(getResources().getColor(R.color.deepGrey, context.getTheme()));
             titleGiornata.setTextColor(Color.WHITE);
