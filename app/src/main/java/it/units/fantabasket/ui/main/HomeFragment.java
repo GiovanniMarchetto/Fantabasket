@@ -41,9 +41,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        binding.posizioneInClassifica.setText("");
+        binding.totalePunti.setText("");
+        binding.legaName.setText("");
+        binding.nextGameLayout.setVisibility(View.GONE);
+        binding.nextGameLayout.setVisibility(View.GONE);
+
         if (user != null) {
-            binding.posizioneInClassifica.setText("");
-            binding.totalePunti.setText("");
             binding.teamName.setText(user.teamName);
 
             Bitmap decodedByte = Utils.getBitmapFromBase64(user.teamLogo);
