@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshotLega.getValue();
             if (hashMap != null) {
                 user = getUserFromHashMapOfDB(hashMap);
+                homeFragment.onStart();
 
                 if (!Objects.equals(legaSelezionata, user.legaSelezionata)) {
                     if (leagueOnListener != null) {
