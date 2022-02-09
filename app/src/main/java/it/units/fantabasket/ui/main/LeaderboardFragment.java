@@ -201,6 +201,7 @@ public class LeaderboardFragment extends Fragment {
 
         legheReference.child(legaSelezionata).child(CLASSIFICA).setValue(orderClassifica);
         legheReference.child(legaSelezionata).child(LAST_ROUND_CALCULATED).setValue(AssetDecoderUtil.currentRound - 1);
+        binding.updateLeaderboardButton.setEnabled(false);
     }
 
     private TextView getBaseTextView(Context context, int resIdString) {
