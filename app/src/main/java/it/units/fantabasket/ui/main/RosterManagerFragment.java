@@ -194,7 +194,7 @@ public class RosterManagerFragment extends Fragment {
         playerLayout.getRightLinearLayout().addView(costView, 1);
 
         int colorTake = rosterContext.getColor(R.color.green_400);
-        int colorFree = rosterContext.getColor(R.color.orange_light_basket);
+        int colorFree = rosterContext.getColor(R.color.listPlayerBackGround);
 
         GradientDrawable border = (GradientDrawable) playerLayout.getPlayerLayout().getBackground();
         if (newRoster.contains(player.getId())) {
