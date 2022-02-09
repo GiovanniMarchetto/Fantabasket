@@ -108,6 +108,9 @@ public class ProfileFragment extends Fragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
         Utils.teamLogoBase64 = "";
+        user = null;
+        leagueOn = null;
+        membersLeagueOn = null;
 
         Intent intent = new Intent(activity, AccessActivity.class);
         startActivity(intent);
