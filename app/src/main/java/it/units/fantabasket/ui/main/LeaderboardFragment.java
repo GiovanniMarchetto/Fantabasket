@@ -50,13 +50,13 @@ public class LeaderboardFragment extends Fragment {
             if (isLeagueOnCalendarioType) {
                 loadCalendario(context);
             }
+
+            if (isUserTheAdminOfLeague) {
+                binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
+                setUpdateLeaderboardButton();
+            }
         } else {
             binding.leaderboardContainer.addView(getBaseTextView(context, R.string.not_league_selected));
-        }
-
-        if (isUserTheAdminOfLeague) {
-            binding.updateLeaderboardButton.setVisibility(View.VISIBLE);
-            setUpdateLeaderboardButton();
         }
         return binding.getRoot();
     }
