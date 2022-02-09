@@ -77,7 +77,8 @@ public class LineupFragment extends Fragment {
                     for (FieldPositions key : lineup.keySet()) {
                         formazioneDBFormat.put(key.name(), lineup.get(key).getId());
                     }
-                    userDataReference.child("formazioniPerGiornata").child(String.valueOf(AssetDecoderUtil.currentRound)).setValue(formazioneDBFormat);
+                    userDataReference.child("formazioniPerGiornata").child(GIORNATA_ + AssetDecoderUtil.currentRound)
+                            .setValue(formazioneDBFormat);
                     Utils.showSnackbar(view, "Salvata!", GOOD);
                 } else {
                     Utils.showSnackbar(view, "Formazione non completa", ERROR);
